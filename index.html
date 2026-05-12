@@ -12,28 +12,24 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #111827;
       background: #f9fafb;
+      color: #111827;
     }
 
     /* ===== HERO ===== */
     .hero {
-      position: relative;
       min-height: 90vh;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       color: white;
+      padding: 40px 20px;
       background:
-        linear-gradient(
-          rgba(15, 23, 42, 0.75),
-          rgba(15, 23, 42, 0.85)
-        ),
-        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?q=80&w=1600&auto=format&fit=crop");
+        linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
+        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
       background-size: cover;
       background-position: center;
-      padding: 40px 20px;
     }
 
     .hero-content {
@@ -41,17 +37,17 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
-      margin-bottom: 20px;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
       font-weight: 800;
+      margin-bottom: 20px;
       line-height: 1.1;
     }
 
     .hero p {
       font-size: 1.2rem;
+      color: #e5e7eb;
       max-width: 750px;
       margin: 0 auto 40px;
-      color: #e5e7eb;
     }
 
     .hero-buttons {
@@ -63,9 +59,9 @@
 
     .btn {
       padding: 16px 30px;
-      border-radius: 14px;
       font-size: 1rem;
       font-weight: 600;
+      border-radius: 14px;
       border: none;
       cursor: pointer;
       transition: transform .15s ease, box-shadow .15s ease;
@@ -92,17 +88,17 @@
       margin: -80px auto 80px;
       background: white;
       border-radius: 24px;
-      padding: 40px;
+      padding: 50px 40px;
       box-shadow: 0 30px 60px rgba(0,0,0,.1);
     }
 
     .map-title {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .map-title h2 {
-      font-size: 2rem;
+      font-size: 2.1rem;
       margin-bottom: 10px;
     }
 
@@ -118,37 +114,55 @@
       margin-bottom: 40px;
     }
 
+    .stat strong {
+      display: block;
+      font-size: 2.2rem;
+      color: #4f46e5;
+    }
+
     .stat {
       text-align: center;
     }
 
-    .stat strong {
-      display: block;
-      font-size: 2rem;
-      color: #4f46e5;
-    }
-
-    /* ===== MAP SVG ===== */
+    /* ===== MAP ===== */
     .map-wrapper {
+      position: relative;
       display: flex;
       justify-content: center;
-      overflow-x: auto;
     }
 
     svg {
       max-width: 100%;
     }
 
-    .province {
-      fill: #c7d2fe;
-      stroke: white;
-      stroke-width: 1;
+    .region {
+      stroke: #ffffff;
+      stroke-width: 2;
       cursor: pointer;
-      transition: fill .2s ease;
+      transition: fill .2s ease, transform .2s ease;
     }
 
-    .province:hover {
-      fill: #6366f1;
+    .region:hover {
+      transform: scale(1.02);
+    }
+
+    .r1 { fill: #e0e7ff; }
+    .r2 { fill: #c7d2fe; }
+    .r3 { fill: #a5b4fc; }
+    .r4 { fill: #818cf8; }
+    .r5 { fill: #6366f1; }
+
+    /* Tooltip */
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: #111827;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: none;
+      z-index: 10;
     }
 
     footer {
@@ -182,35 +196,31 @@
   <section class="map-section">
     <div class="map-title">
       <h2>Talento disponible en toda España</h2>
-      <p>Personas registradas por provincia (datos simulados)</p>
+      <p>Personas registradas por comunidad (datos simulados)</p>
     </div>
 
     <div class="stats">
-      <div class="stat">
-        <strong>12.438</strong>
-        Trabajadores inscritos
-      </div>
-      <div class="stat">
-        <strong>47</strong>
-        Provincias activas
-      </div>
-      <div class="stat">
-        <strong>962</strong>
-        Empresas registradas
-      </div>
+      <div class="stat"><strong>12.438</strong>Trabajadores inscritos</div>
+      <div class="stat"><strong>47</strong>Provincias activas</div>
+      <div class="stat"><strong>962</strong>Empresas registradas</div>
     </div>
 
     <div class="map-wrapper">
-      <!-- MAPA SIMPLIFICADO (SVG) -->
-      <svg viewBox="0 0 800 500" aria-label="Mapa de España">
-        <rect class="province" x="100" y="100" width="120" height="90"></rect>
-        <rect class="province" x="240" y="100" width="140" height="90"></rect>
-        <rect class="province" x="400" y="110" width="160" height="100"></rect>
-        <rect class="province" x="180" y="210" width="160" height="110"></rect>
-        <rect class="province" x="360" y="240" width="180" height="120"></rect>
-        <text x="320" y="60" text-anchor="middle" font-size="20" fill="#374151">
-          España (visual)
-        </text>
+      <div id="tooltip" class="tooltip"></div>
+
+      <svg viewBox="0 0 600 420">
+        <path class="region r5" data-name="Andalucía" data-count="2435"
+          d="M120 280 L200 300 L260 280 L240 340 L140 340 Z"/>
+        <path class="region r4" data-name="Cataluña" data-count="1820"
+          d="M420 120 L490 140 L470 200 L410 170 Z"/>
+        <path class="region r3" data-name="Madrid" data-count="1650"
+          d="M300 220 L320 225 L315 245 L295 240 Z"/>
+        <path class="region r4" data-name="Comunitat Valenciana" data-count="1202"
+          d="M380 220 L430 260 L400 300 L360 260 Z"/>
+        <path class="region r2" data-name="País Vasco" data-count="640"
+          d="M260 90 L300 100 L290 130 L250 115 Z"/>
+        <path class="region r3" data-name="Galicia" data-count="870"
+          d="M120 100 L170 110 L160 150 L110 140 Z"/>
       </svg>
     </div>
   </section>
@@ -218,6 +228,26 @@
   <footer>
     © Plataforma de Talento · MVP
   </footer>
+
+  <!-- JAVASCRIPT (MAP TOOLTIP) -->
+  <script>
+    const tooltip = document.getElementById("tooltip");
+
+    document.querySelectorAll(".region").forEach(region => {
+      region.addEventListener("mousemove", e => {
+        tooltip.innerHTML =
+          "<strong>" + region.dataset.name + "</strong><br>" +
+          region.dataset.count + " inscritos";
+        tooltip.style.display = "block";
+        tooltip.style.left = e.pageX + 15 + "px";
+        tooltip.style.top = e.pageY + 15 + "px";
+      });
+
+      region.addEventListener("mouseleave", () => {
+        tooltip.style.display = "none";
+      });
+    });
+  </script>
 
 </body>
 </html>
