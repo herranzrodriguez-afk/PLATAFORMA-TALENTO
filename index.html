@@ -9,12 +9,12 @@
   <style>
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: system-ui, sans-serif;
       background: #f9fafb;
       color: #111827;
     }
 
-    /* HERO */
+    /* ===== HOME ===== */
     .hero {
       min-height: 90vh;
       display: flex;
@@ -27,53 +27,68 @@
         linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
         url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
       background-size: cover;
-      background-position: center;
     }
 
     .hero h1 {
       font-size: 3rem;
-      font-weight: 800;
       margin-bottom: 16px;
     }
 
     .hero p {
       font-size: 1.2rem;
-      color: #e5e7eb;
-      max-width: 760px;
-      margin: 0 auto 32px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
+      margin-bottom: 30px;
+      max-width: 700px;
     }
 
     .btn {
       padding: 16px 30px;
       border-radius: 14px;
       border: none;
-      font-weight: 600;
       cursor: pointer;
+      font-weight: 600;
       font-size: 1rem;
+      margin: 10px;
     }
 
     .btn-worker { background:#6366f1; color:white; }
     .btn-company { background:white; color:#111827; }
 
-    /* FORM */
-    .form-section {
-      max-width: 900px;
-      margin: 60px auto;
-      background: white;
-      border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 30px 60px rgba(0,0,0,.1);
+    /* ===== MODAL ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
 
-    .form-section h2 {
-      text-align: center;
-      margin-bottom: 30px;
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      width: 95%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 24px;
+      padding: 40px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    h2 {
+      margin-bottom: 20px;
     }
 
     label {
@@ -82,132 +97,118 @@
       display: block;
     }
 
-    input, textarea, select {
+    input, textarea {
       width: 100%;
-      margin-top: 8px;
-      padding: 12px;
+      padding: 10px;
+      margin-top: 6px;
       border-radius: 10px;
       border: 1px solid #d1d5db;
-      font-size: 1rem;
     }
 
-    textarea {
-      resize: vertical;
-    }
-
-    .checkbox-group, .days-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .checkbox-group label,
-    .days-group label {
-      font-weight: 500;
-    }
-
-    .submit-btn {
+    /* ===== DISPONIBILIDAD ===== */
+    .schedule {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
       margin-top: 30px;
+    }
+
+    .day {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .day strong {
+      display: block;
+      margin-bottom: 10px;
       background: #6366f1;
       color: white;
-      padding: 16px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
     }
 
-    footer {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
+    .day input {
+      margin-bottom: 8px;
+    }
+
+    .submit {
+      margin-top: 40px;
+      width: 100%;
+      padding: 18px;
+      background: #6366f1;
+      color: white;
+      font-size: 1.1rem;
+      border-radius: 14px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
 
-<!-- HERO -->
+<!-- HOME -->
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>Regístrate y empieza a recibir oportunidades de trabajo según tu disponibilidad y experiencia.</p>
-    <div class="hero-buttons">
-      <button class="btn btn-worker" onclick="document.getElementById('worker-form').scrollIntoView({behavior:'smooth'})">
-        Soy trabajador
-      </button>
-      <button class="btn btn-company">Soy empresa</button>
+    <p>Regístrate y define tu disponibilidad semanal de forma clara y visual.</p>
+    <button class="btn btn-worker" onclick="openModal()">Soy trabajador</button>
+    <button class="btn btn-company">Soy empresa</button>
+  </div>
+</section>
+
+<!-- MODAL TRABAJADOR -->
+<div class="modal" id="workerModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">✕</span>
+
+    <h2>Inscripción de trabajador</h2>
+
+    <label>Nombre</label>
+    <input type="text">
+
+    <label>Apellidos</label>
+    <input type="text">
+
+    <label>Teléfono</label>
+    <input type="tel">
+
+    <label>Email</label>
+    <input type="email">
+
+    <h3 style="margin-top:30px;">Disponibilidad semanal</h3>
+
+    <div class="schedule">
+      <div class="day"><strong>L</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
+      <div class="day"><strong>M</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
+      <div class="day"><strong>X</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
+      <div class="day"><strong>J</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
+      <div class="day"><strong>V</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
+      <div class="day"><strong>S</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
+      <div class="day"><strong>D</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
     </div>
+
+    <label style="margin-top:30px;">Adjuntar CV</label>
+    <input type="file" accept=".pdf,.doc,.docx,image/*">
+
+    <label>Cuéntanos cómo eres como persona</label>
+    <textarea rows="4"></textarea>
+
+    <button class="submit">Enviar inscripción</button>
   </div>
-</section>
+</div>
 
-<!-- FORMULARIO TRABAJADOR -->
-<section class="form-section" id="worker-form">
-  <h2>Inscripción de trabajador</h2>
-
-  <label>Nombre *</label>
-  <input type="text" required>
-
-  <label>Apellidos *</label>
-  <input type="text" required>
-
-  <label>Teléfono *</label>
-  <input type="tel" required>
-
-  <label>Email *</label>
-  <input type="email" required>
-
-  <label>Disponibilidad semanal</label>
-  <div class="days-group">
-    <label><input type="checkbox"> Lunes</label>
-    <label><input type="checkbox"> Martes</label>
-    <label><input type="checkbox"> Miércoles</label>
-    <label><input type="checkbox"> Jueves</label>
-    <label><input type="checkbox"> Viernes</label>
-    <label><input type="checkbox"> Sábado</label>
-    <label><input type="checkbox"> Domingo</label>
-  </div>
-
-  <div class="checkbox-group">
-    <label><input type="checkbox"> Mañana</label>
-    <label><input type="checkbox"> Tarde</label>
-    <label><input type="checkbox"> Noche</label>
-    <label><input type="checkbox"> Jornada completa</label>
-  </div>
-
-  <label>Categorías de experiencia</label>
-  <div class="checkbox-group">
-    <label><input type="checkbox"> Hostelería</label>
-    <label><input type="checkbox"> Eventos y promociones</label>
-    <label><input type="checkbox"> Retail / Tienda</label>
-    <label><input type="checkbox"> Logística</label>
-    <label><input type="checkbox"> Atención al cliente</label>
-    <label><input type="checkbox"> Otros</label>
-  </div>
-
-  <label>Idiomas</label>
-  <div class="checkbox-group">
-    <label><input type="checkbox"> Español</label>
-    <label><input type="checkbox"> Inglés</label>
-    <label><input type="checkbox"> Francés</label>
-    <label><input type="checkbox"> Otros</label>
-  </div>
-
-  <label>Adjuntar CV</label>
-  <input type="file" accept=".pdf,.doc,.docx,image/*">
-
-  <label>Cuéntanos cómo eres como persona</label>
-  <textarea rows="4" placeholder="Motivación, actitud, disponibilidad extra..."></textarea>
-
-  <button class="submit-btn">Enviar inscripción</button>
-</section>
-
-<footer>
-  © Proyecto empresa Javi · MVP
-</footer>
+<script>
+  function openModal() {
+    document.getElementById("workerModal").classList.add("active");
+  }
+  function closeModal() {
+    document.getElementById("workerModal").classList.remove("active");
+  }
+</script>
 
 </body>
 </html>
