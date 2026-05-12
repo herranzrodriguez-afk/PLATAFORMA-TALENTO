@@ -7,11 +7,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
   <!-- MarkerCluster -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+  />
 
   <style>
     body {
@@ -109,19 +118,33 @@
       color: #6b7280;
     }
 
-    /* Custom number bubble */
+    /* Bubble style */
     .bubble {
       background: #6366f1;
       color: white;
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 14px;
       box-shadow: 0 4px 14px rgba(0,0,0,.35);
+    }
+
+    .cluster-bubble {
+      background: #4338ca;
+      color: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4);
     }
   </style>
 </head>
@@ -131,7 +154,9 @@
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>Visualiza cuántas personas hay disponibles por provincia y población en España.</p>
+    <p>
+      Consulta cuántas personas hay disponibles por provincia y población en España.
+    </p>
     <div class="hero-buttons">
       <button class="btn btn-worker">Soy trabajador</button>
       <button class="btn btn-company">Soy empresa</button>
@@ -142,7 +167,10 @@
 <section class="map-section">
   <div class="map-title">
     <h2>Talento disponible en España</h2>
-    <p>Zoom general: provincias · Zoom detallado: poblaciones</p>
+    <p>
+      Zoom general: provincias · Zoom detallado: poblaciones  
+      (las burbujas siempre muestran el total de personas)
+    </p>
   </div>
 
   <div class="stats">
@@ -169,80 +197,64 @@
     attribution: "&copy; OpenStreetMap"
   }).addTo(map);
 
-  /* === CAPA PROVINCIAS === */
-  const provinceLayer = L.layerGroup();
-
-  const provinces = [
-    ["Madrid", 40.4168, -3.7038, 1410],
-    ["Barcelona", 41.3851, 2.1734, 1340],
-    ["Valencia", 39.4699, -0.3763, 1020],
-    ["Sevilla", 37.3891, -5.9845, 720],
-    ["Málaga", 36.7213, -4.4214, 580],
-    ["Bizkaia", 43.2630, -2.9350, 420],
-    ["A Coruña", 43.3623, -8.4115, 460]
-  ];
-
-  provinces.forEach(p => {
-    provinceLayer.addLayer(
-      L.marker([p[1], p[2]], {
-        icon: L.divIcon({
-          html: `<div class="bubble">${p[3]}</div>`
-        })
-      }).bindPopup(`<strong>${p[0]}</strong><br>${p[3]} candidatos`)
-    );
-  });
-
-  map.addLayer(provinceLayer);
-
-  /* === CAPA POBLACIONES === */
+  /**
+   * CLUSTER QUE SUMA PERSONAS (NO MARCADORES)
+   */
   const populationLayer = L.markerClusterGroup({
     maxClusterRadius: 60,
-    showCoverageOnHover: false
+    showCoverageOnHover: false,
+    iconCreateFunction: function (cluster) {
+      let total = 0;
+
+      cluster.getAllChildMarkers().forEach(marker => {
+        total += marker.options.personCount;
+      });
+
+      return L.divIcon({
+        html: `<div class="cluster-bubble">${total}</div>`,
+        className: "",
+        iconSize: [56, 56]
+      });
+    }
   });
 
+  /**
+   * DATOS SIMULADOS POR POBLACIÓN
+   */
   const populations = [
+    // Madrid provincia
     ["Madrid", 40.4168, -3.7038, 800],
     ["Alcalá de Henares", 40.4818, -3.3641, 220],
     ["Getafe", 40.3083, -3.7329, 190],
 
+    // Barcelona provincia
     ["Barcelona", 41.3851, 2.1734, 900],
     ["Hospitalet", 41.3662, 2.1167, 260],
     ["Badalona", 41.4469, 2.2450, 180],
 
+    // Valencia
     ["Valencia", 39.4699, -0.3763, 650],
-    ["Torrent", 39.4370, -0.4655, 370],
 
+    // Andalucía
     ["Sevilla", 37.3891, -5.9845, 540],
-    ["Dos Hermanas", 37.2836, -5.9221, 180],
-
-    ["Málaga", 36.7213, -4.4214, 430],
-    ["Marbella", 36.5101, -4.8824, 150]
+    ["Málaga", 36.7213, -4.4214, 430]
   ];
 
   populations.forEach(p => {
-    populationLayer.addLayer(
-      L.marker([p[1], p[2]], {
-        icon: L.divIcon({
-          html: `<div class="bubble">${p[3]}</div>`
-        })
-      }).bindPopup(`<strong>${p[0]}</strong><br>${p[3]} candidatos`)
+    const marker = L.marker([p[1], p[2]], {
+      personCount: p[3],
+      icon: L.divIcon({
+        html: `<div class="bubble">${p[3]}</div>`,
+        className: ""
+      })
+    }).bindPopup(
+      `<strong>${p[0]}</strong><br>${p[3]} personas disponibles`
     );
+
+    populationLayer.addLayer(marker);
   });
 
-  function updateLayers() {
-    const zoom = map.getZoom();
-
-    if (zoom <= 6) {
-      map.addLayer(provinceLayer);
-      map.removeLayer(populationLayer);
-    } else {
-      map.removeLayer(provinceLayer);
-      map.addLayer(populationLayer);
-    }
-  }
-
-  updateLayers();
-  map.on("zoomend", updateLayers);
+  map.addLayer(populationLayer);
 </script>
 
 </body>
