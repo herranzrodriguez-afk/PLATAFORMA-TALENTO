@@ -47,16 +47,16 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-size: clamp(2.5rem, 5vw, 3.8rem);
       font-weight: 800;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .hero p {
       font-size: 1.2rem;
       color: #e5e7eb;
-      max-width: 750px;
-      margin: 0 auto 30px;
+      max-width: 760px;
+      margin: 0 auto 32px;
     }
 
     .hero-buttons {
@@ -104,8 +104,8 @@
       display: flex;
       justify-content: center;
       gap: 40px;
-      margin-bottom: 30px;
       flex-wrap: wrap;
+      margin-bottom: 30px;
     }
 
     .stat strong {
@@ -116,90 +116,123 @@
 
     #map {
       width: 100%;
-      height: 520px;
-      border-radius: 16px;
+      height: 540px;
+      border-radius: 18px;
     }
 
     footer {
       text-align: center;
       padding: 40px;
       color: #6b7280;
+      font-size: .9rem;
+    }
+
+    /* Cluster numbers */
+    .marker-cluster div {
+      background: #6366f1;
+      color: white;
+      border-radius: 50%;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div>
-      <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-      <p>
-        Conectamos personas disponibles para trabajar con empresas
-        en cualquier punto de España.
-      </p>
-
-      <div class="hero-buttons">
-        <button class="btn btn-worker">Soy trabajador</button>
-        <button class="btn btn-company">Soy empresa</button>
-      </div>
+<section class="hero">
+  <div>
+    <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+    <p>
+      Visualiza en tiempo real dónde hay personas disponibles
+      para trabajar en cualquier punto de España.
+    </p>
+    <div class="hero-buttons">
+      <button class="btn btn-worker">Soy trabajador</button>
+      <button class="btn btn-company">Soy empresa</button>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- MAP -->
-  <section class="map-section">
-    <div class="map-title">
-      <h2>Talento disponible en toda España</h2>
-      <p>Las burbujas muestran el número de personas registradas</p>
-    </div>
+<section class="map-section">
+  <div class="map-title">
+    <h2>Talento disponible en toda España</h2>
+    <p>
+      Al hacer zoom, las burbujas se desglosan de provincias
+      a poblaciones (datos simulados).
+    </p>
+  </div>
 
-    <div class="stats">
-      <div class="stat"><strong>12.438</strong>Trabajadores</div>
-      <div class="stat"><strong>47</strong>Provincias</div>
-      <div class="stat"><strong>962</strong>Empresas</div>
-    </div>
+  <div class="stats">
+    <div class="stat"><strong>12.438</strong>Trabajadores</div>
+    <div class="stat"><strong>47</strong>Provincias</div>
+    <div class="stat"><strong>962</strong>Empresas</div>
+  </div>
 
-    <div id="map"></div>
-  </section>
+  <div id="map"></div>
+</section>
 
-  <footer>
-    © Proyecto empresa Javi · MVP
-  </footer>
+<footer>
+  © Proyecto empresa Javi · MVP
+</footer>
 
-  <!-- JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<!-- JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-  <script>
-    const map = L.map("map").setView([40.4, -3.7], 6);
+<script>
+  const map = L.map("map").setView([40.4, -3.7], 6);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap"
-    }).addTo(map);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap"
+  }).addTo(map);
 
-    const cluster = L.markerClusterGroup({
-      showCoverageOnHover: false,
-      spiderfyOnMaxZoom: true,
-      maxClusterRadius: 60
-    });
+  const cluster = L.markerClusterGroup({
+    maxClusterRadius: 70,
+    showCoverageOnHover: false
+  });
 
-    const data = [
-      { city: "Madrid", coords: [40.4168, -3.7038], count: 800 },
-      { city: "Barcelona", coords: [41.3851, 2.1734], count: 900 },
-      { city: "Valencia", coords: [39.4699, -0.3763], count: 650 },
-      { city: "Sevilla", coords: [37.3891, -5.9845], count: 540 },
-      { city: "Málaga", coords: [36.7213, -4.4214], count: 430 },
-      { city: "Bilbao", coords: [43.263, -2.935], count: 300 },
-      { city: "Zaragoza", coords: [41.6488, -0.8891], count: 350 },
-      { city: "Murcia", coords: [37.9922, -1.1307], count: 280 },
-      { city: "A Coruña", coords: [43.3623, -8.4115], count: 320 }
-    ];
+  // === DATOS SIMULADOS ===
+  // Cada punto representa población.
+  const locations = [
+    // Madrid provincia
+    ["Madrid", 40.4168, -3.7038, 800],
+    ["Alcalá de Henares", 40.4818, -3.3641, 220],
+    ["Getafe", 40.3083, -3.7329, 190],
 
-    data.forEach(item => {
-      const marker = L.marker(item.coords, {
-        icon: L.divIcon({
-          className: "custom-marker",
-          html: `<div style="
+    // Barcelona provincia
+    ["Barcelona", 41.3851, 2.1734, 900],
+    ["Hospitalet", 41.3662, 2.1167, 260],
+    ["Badalona", 41.4469, 2.2450, 180],
+
+    // Valencia provincia
+    ["Valencia", 39.4699, -0.3763, 650],
+    ["Torrent", 39.4370, -0.4655, 210],
+    ["Gandía", 38.9680, -0.1851, 160],
+
+    // Andalucía
+    ["Sevilla", 37.3891, -5.9845, 540],
+    ["Dos Hermanas", 37.2836, -5.9221, 180],
+    ["Málaga", 36.7213, -4.4214, 430],
+    ["Marbella", 36.5101, -4.8824, 150],
+
+    // País Vasco
+    ["Bilbao", 43.2630, -2.9350, 300],
+    ["Barakaldo", 43.2969, -2.9882, 120],
+
+    // Galicia
+    ["A Coruña", 43.3623, -8.4115, 320],
+    ["Santiago", 42.8782, -8.5448, 140]
+  ];
+
+  locations.forEach(loc => {
+    const marker = L.marker([loc[1], loc[2]], {
+      icon: L.divIcon({
+        className: "",
+        html: `
+          <div style="
             background:#6366f1;
             color:white;
             width:42px;
@@ -209,20 +242,24 @@
             align-items:center;
             justify-content:center;
             font-weight:700;
-            box-shadow:0 4px 10px rgba(0,0,0,0.3);
-          ">${item.count}</div>`
-        })
-      });
-
-      marker.bindPopup(
-        `<strong>${item.city}</strong><br>${item.count} personas disponibles`
-      );
-
-      cluster.addLayer(marker);
+            font-size:13px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.35);
+          ">
+            ${loc[3]}
+          </div>
+        `
+      })
     });
 
-    map.addLayer(cluster);
-  </script>
+    marker.bindPopup(
+      `<strong>${loc[0]}</strong><br>${loc[3]} personas disponibles`
+    );
+
+    cluster.addLayer(marker);
+  });
+
+  map.addLayer(cluster);
+</script>
 
 </body>
 </html>
