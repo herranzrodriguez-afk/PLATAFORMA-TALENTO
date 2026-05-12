@@ -2,128 +2,222 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Plataforma de Talento</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: system-ui, Arial, sans-serif;
-      background: linear-gradient(135deg, #eef2ff, #ecfeff, #ecfdf5);
-      color: #1f2937;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #111827;
+      background: #f9fafb;
     }
-    header {
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 60px 20px 40px;
+      color: white;
+      background:
+        linear-gradient(
+          rgba(15, 23, 42, 0.75),
+          rgba(15, 23, 42, 0.85)
+        ),
+        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?q=80&w=1600&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+      padding: 40px 20px;
     }
-    header h1 {
-      font-size: 2.5rem;
-      color: #4338ca;
+
+    .hero-content {
+      max-width: 900px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 20px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 750px;
+      margin: 0 auto 40px;
+      color: #e5e7eb;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 16px 30px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,.25);
+    }
+
+    .btn-worker {
+      background: #6366f1;
+      color: white;
+    }
+
+    .btn-company {
+      background: white;
+      color: #111827;
+    }
+
+    /* ===== MAP SECTION ===== */
+    .map-section {
+      max-width: 1200px;
+      margin: -80px auto 80px;
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 60px rgba(0,0,0,.1);
+    }
+
+    .map-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .map-title h2 {
+      font-size: 2rem;
       margin-bottom: 10px;
     }
-    header p {
-      max-width: 700px;
-      margin: auto;
-      font-size: 1.1rem;
-      color: #4b5563;
+
+    .map-title p {
+      color: #6b7280;
     }
-    main {
-      max-width: 1100px;
-      margin: auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
     }
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+
+    .stat {
+      text-align: center;
     }
-    .card h2 {
+
+    .stat strong {
+      display: block;
+      font-size: 2rem;
       color: #4f46e5;
-      margin-top: 0;
     }
-    input, textarea, select, button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
+
+    /* ===== MAP SVG ===== */
+    .map-wrapper {
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
     }
-    textarea { resize: vertical; }
-    button {
-      background: #4f46e5;
-      color: white;
-      font-weight: 600;
+
+    svg {
+      max-width: 100%;
+    }
+
+    .province {
+      fill: #c7d2fe;
+      stroke: white;
+      stroke-width: 1;
       cursor: pointer;
-      border: none;
-      margin-top: 18px;
+      transition: fill .2s ease;
     }
-    button:hover {
-      background: #4338ca;
+
+    .province:hover {
+      fill: #6366f1;
     }
+
     footer {
       text-align: center;
-      padding: 30px;
+      padding: 40px;
       color: #6b7280;
-      font-size: 0.9rem;
-    }
-    @media (max-width: 900px) {
-      main { grid-template-columns: 1fr; }
+      font-size: .9rem;
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <h1>Plataforma de Talento</h1>
-  <p>
-    Conectamos personas disponibles para trabajar con empresas que necesitan incorporar talento
-    de forma rápida, flexible y eficiente.
-  </p>
-</header>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+      <p>
+        Conectamos personas disponibles para trabajar con empresas que buscan
+        refuerzos rápidos, locales y fiables en cualquier punto de España.
+      </p>
 
-<main>
-
-  <section class="card">
-    <h2>👤 Soy trabajador</h2>
-    <p>Regístrate indicando tu experiencia y disponibilidad.</p>
-    <input placeholder="Nombre completo">
-    <textarea placeholder="Experiencia profesional"></textarea>
-    <select>
-      <option>Disponibilidad</option>
-      <option>Mañanas</option>
-      <option>Tardes</option>
-      <option>Noches</option>
-      <option>Fines de semana</option>
-      <option>Flexible</option>
-    </select>
-    <button>Registrarme</button>
+      <div class="hero-buttons">
+        <button class="btn btn-worker">Soy trabajador</button>
+        <button class="btn btn-company">Soy empresa</button>
+      </div>
+    </div>
   </section>
 
-  <section class="card">
-    <h2>🏢 Soy empresa</h2>
-    <p>Accede a perfiles disponibles y selecciona el que mejor encaje.</p>
-    <input placeholder="Nombre de la empresa">
-    <select>
-      <option>Tipo de necesidad</option>
-      <option>Evento puntual</option>
-      <option>Contrato temporal</option>
-      <option>Refuerzo de plantilla</option>
-    </select>
-    <button>Buscar talento</button>
+  <!-- MAP -->
+  <section class="map-section">
+    <div class="map-title">
+      <h2>Talento disponible en toda España</h2>
+      <p>Personas registradas por provincia (datos simulados)</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <strong>12.438</strong>
+        Trabajadores inscritos
+      </div>
+      <div class="stat">
+        <strong>47</strong>
+        Provincias activas
+      </div>
+      <div class="stat">
+        <strong>962</strong>
+        Empresas registradas
+      </div>
+    </div>
+
+    <div class="map-wrapper">
+      <!-- MAPA SIMPLIFICADO (SVG) -->
+      <svg viewBox="0 0 800 500" aria-label="Mapa de España">
+        <rect class="province" x="100" y="100" width="120" height="90"></rect>
+        <rect class="province" x="240" y="100" width="140" height="90"></rect>
+        <rect class="province" x="400" y="110" width="160" height="100"></rect>
+        <rect class="province" x="180" y="210" width="160" height="110"></rect>
+        <rect class="province" x="360" y="240" width="180" height="120"></rect>
+        <text x="320" y="60" text-anchor="middle" font-size="20" fill="#374151">
+          España (visual)
+        </text>
+      </svg>
+    </div>
   </section>
 
-</main>
-
-<footer>
-  © Plataforma de Talento · MVP
-</footer>
+  <footer>
+    © Plataforma de Talento · MVP
+  </footer>
 
 </body>
 </html>
-
