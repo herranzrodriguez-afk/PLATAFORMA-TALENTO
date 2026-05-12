@@ -6,22 +6,6 @@
   <title>Proyecto empresa Javi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Leaflet -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-
-  <!-- MarkerCluster -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-  />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-  />
-
   <style>
     body {
       margin: 0;
@@ -47,7 +31,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.6rem, 5vw, 3.8rem);
+      font-size: 3rem;
       font-weight: 800;
       margin-bottom: 16px;
     }
@@ -55,7 +39,7 @@
     .hero p {
       font-size: 1.2rem;
       color: #e5e7eb;
-      max-width: 780px;
+      max-width: 760px;
       margin: 0 auto 32px;
     }
 
@@ -63,7 +47,6 @@
       display: flex;
       gap: 20px;
       justify-content: center;
-      flex-wrap: wrap;
     }
 
     .btn {
@@ -78,38 +61,63 @@
     .btn-worker { background:#6366f1; color:white; }
     .btn-company { background:white; color:#111827; }
 
-    /* MAP */
-    .map-section {
-      max-width: 1200px;
-      margin: -80px auto 80px;
+    /* FORM */
+    .form-section {
+      max-width: 900px;
+      margin: 60px auto;
       background: white;
       border-radius: 24px;
       padding: 40px;
       box-shadow: 0 30px 60px rgba(0,0,0,.1);
     }
 
-    .map-title {
+    .form-section h2 {
       text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
       margin-bottom: 30px;
-      flex-wrap: wrap;
     }
 
-    .stat strong {
-      font-size: 2rem;
-      color: #4f46e5;
+    label {
+      font-weight: 600;
+      margin-top: 20px;
       display: block;
     }
 
-    #map {
-      height: 540px;
-      border-radius: 18px;
+    input, textarea, select {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .checkbox-group, .days-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group label,
+    .days-group label {
+      font-weight: 500;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      background: #6366f1;
+      color: white;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      width: 100%;
     }
 
     footer {
@@ -117,145 +125,89 @@
       padding: 40px;
       color: #6b7280;
     }
-
-    /* Bubble style */
-    .bubble {
-      background: #6366f1;
-      color: white;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,.35);
-    }
-
-    .cluster-bubble {
-      background: #4338ca;
-      color: white;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 15px;
-      box-shadow: 0 6px 20px rgba(0,0,0,.4);
-    }
   </style>
 </head>
 
 <body>
 
+<!-- HERO -->
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>
-      Consulta cuántas personas hay disponibles por provincia y población en España.
-    </p>
+    <p>Regístrate y empieza a recibir oportunidades de trabajo según tu disponibilidad y experiencia.</p>
     <div class="hero-buttons">
-      <button class="btn btn-worker">Soy trabajador</button>
+      <button class="btn btn-worker" onclick="document.getElementById('worker-form').scrollIntoView({behavior:'smooth'})">
+        Soy trabajador
+      </button>
       <button class="btn btn-company">Soy empresa</button>
     </div>
   </div>
 </section>
 
-<section class="map-section">
-  <div class="map-title">
-    <h2>Talento disponible en España</h2>
-    <p>
-      Zoom general: provincias · Zoom detallado: poblaciones  
-      (las burbujas siempre muestran el total de personas)
-    </p>
+<!-- FORMULARIO TRABAJADOR -->
+<section class="form-section" id="worker-form">
+  <h2>Inscripción de trabajador</h2>
+
+  <label>Nombre *</label>
+  <input type="text" required>
+
+  <label>Apellidos *</label>
+  <input type="text" required>
+
+  <label>Teléfono *</label>
+  <input type="tel" required>
+
+  <label>Email *</label>
+  <input type="email" required>
+
+  <label>Disponibilidad semanal</label>
+  <div class="days-group">
+    <label><input type="checkbox"> Lunes</label>
+    <label><input type="checkbox"> Martes</label>
+    <label><input type="checkbox"> Miércoles</label>
+    <label><input type="checkbox"> Jueves</label>
+    <label><input type="checkbox"> Viernes</label>
+    <label><input type="checkbox"> Sábado</label>
+    <label><input type="checkbox"> Domingo</label>
   </div>
 
-  <div class="stats">
-    <div class="stat"><strong>12.438</strong>Trabajadores</div>
-    <div class="stat"><strong>47</strong>Provincias</div>
-    <div class="stat"><strong>962</strong>Empresas</div>
+  <div class="checkbox-group">
+    <label><input type="checkbox"> Mañana</label>
+    <label><input type="checkbox"> Tarde</label>
+    <label><input type="checkbox"> Noche</label>
+    <label><input type="checkbox"> Jornada completa</label>
   </div>
 
-  <div id="map"></div>
+  <label>Categorías de experiencia</label>
+  <div class="checkbox-group">
+    <label><input type="checkbox"> Hostelería</label>
+    <label><input type="checkbox"> Eventos y promociones</label>
+    <label><input type="checkbox"> Retail / Tienda</label>
+    <label><input type="checkbox"> Logística</label>
+    <label><input type="checkbox"> Atención al cliente</label>
+    <label><input type="checkbox"> Otros</label>
+  </div>
+
+  <label>Idiomas</label>
+  <div class="checkbox-group">
+    <label><input type="checkbox"> Español</label>
+    <label><input type="checkbox"> Inglés</label>
+    <label><input type="checkbox"> Francés</label>
+    <label><input type="checkbox"> Otros</label>
+  </div>
+
+  <label>Adjuntar CV</label>
+  <input type="file" accept=".pdf,.doc,.docx,image/*">
+
+  <label>Cuéntanos cómo eres como persona</label>
+  <textarea rows="4" placeholder="Motivación, actitud, disponibilidad extra..."></textarea>
+
+  <button class="submit-btn">Enviar inscripción</button>
 </section>
 
 <footer>
   © Proyecto empresa Javi · MVP
 </footer>
-
-<!-- JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-<script>
-  const map = L.map("map").setView([40.4, -3.7], 6);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap"
-  }).addTo(map);
-
-  /**
-   * CLUSTER QUE SUMA PERSONAS (NO MARCADORES)
-   */
-  const populationLayer = L.markerClusterGroup({
-    maxClusterRadius: 60,
-    showCoverageOnHover: false,
-    iconCreateFunction: function (cluster) {
-      let total = 0;
-
-      cluster.getAllChildMarkers().forEach(marker => {
-        total += marker.options.personCount;
-      });
-
-      return L.divIcon({
-        html: `<div class="cluster-bubble">${total}</div>`,
-        className: "",
-        iconSize: [56, 56]
-      });
-    }
-  });
-
-  /**
-   * DATOS SIMULADOS POR POBLACIÓN
-   */
-  const populations = [
-    // Madrid provincia
-    ["Madrid", 40.4168, -3.7038, 800],
-    ["Alcalá de Henares", 40.4818, -3.3641, 220],
-    ["Getafe", 40.3083, -3.7329, 190],
-
-    // Barcelona provincia
-    ["Barcelona", 41.3851, 2.1734, 900],
-    ["Hospitalet", 41.3662, 2.1167, 260],
-    ["Badalona", 41.4469, 2.2450, 180],
-
-    // Valencia
-    ["Valencia", 39.4699, -0.3763, 650],
-
-    // Andalucía
-    ["Sevilla", 37.3891, -5.9845, 540],
-    ["Málaga", 36.7213, -4.4214, 430]
-  ];
-
-  populations.forEach(p => {
-    const marker = L.marker([p[1], p[2]], {
-      personCount: p[3],
-      icon: L.divIcon({
-        html: `<div class="bubble">${p[3]}</div>`,
-        className: ""
-      })
-    }).bindPopup(
-      `<strong>${p[0]}</strong><br>${p[3]} personas disponibles`
-    );
-
-    populationLayer.addLayer(marker);
-  });
-
-  map.addLayer(populationLayer);
-</script>
 
 </body>
 </html>
