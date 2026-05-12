@@ -2,19 +2,27 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Plataforma de Talento</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Proyecto empresa Javi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Leaflet CSS -->
+  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
-  <style>
-    * { box-sizing: border-box; }
+  <!-- MarkerCluster -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+  />
 
+  <style>
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -38,10 +46,6 @@
       background-position: center;
     }
 
-    .hero-content {
-      max-width: 900px;
-    }
-
     .hero h1 {
       font-size: clamp(2.4rem, 5vw, 3.6rem);
       font-weight: 800;
@@ -52,7 +56,7 @@
       font-size: 1.2rem;
       color: #e5e7eb;
       max-width: 750px;
-      margin: 0 auto 40px;
+      margin: 0 auto 30px;
     }
 
     .hero-buttons {
@@ -81,7 +85,7 @@
       color: #111827;
     }
 
-    /* MAP SECTION */
+    /* MAP */
     .map-section {
       max-width: 1200px;
       margin: -80px auto 80px;
@@ -112,16 +116,14 @@
 
     #map {
       width: 100%;
-      height: 500px;
+      height: 520px;
       border-radius: 16px;
-      overflow: hidden;
     }
 
     footer {
       text-align: center;
       padding: 40px;
       color: #6b7280;
-      font-size: .9rem;
     }
   </style>
 </head>
@@ -130,11 +132,11 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-content">
+    <div>
       <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
       <p>
-        Conectamos personas disponibles para trabajar con empresas que buscan
-        refuerzos rápidos, locales y fiables en cualquier punto de España.
+        Conectamos personas disponibles para trabajar con empresas
+        en cualquier punto de España.
       </p>
 
       <div class="hero-buttons">
@@ -148,52 +150,78 @@
   <section class="map-section">
     <div class="map-title">
       <h2>Talento disponible en toda España</h2>
-      <p>Personas registradas por ciudad (datos simulados)</p>
+      <p>Las burbujas muestran el número de personas registradas</p>
     </div>
 
     <div class="stats">
-      <div class="stat"><strong>12.438</strong>Trabajadores inscritos</div>
-      <div class="stat"><strong>47</strong>Provincias activas</div>
-      <div class="stat"><strong>962</strong>Empresas registradas</div>
+      <div class="stat"><strong>12.438</strong>Trabajadores</div>
+      <div class="stat"><strong>47</strong>Provincias</div>
+      <div class="stat"><strong>962</strong>Empresas</div>
     </div>
 
     <div id="map"></div>
   </section>
 
   <footer>
-    © Plataforma de Talento · MVP
+    © Proyecto empresa Javi · MVP
   </footer>
 
-  <!-- Leaflet JS -->
+  <!-- JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <script>
-    const map = L.map('map').setView([40.4168, -3.7038], 6);
+    const map = L.map("map").setView([40.4, -3.7], 6);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap"
     }).addTo(map);
 
+    const cluster = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: true,
+      maxClusterRadius: 60
+    });
+
     const data = [
-      { city: "Madrid", coords: [40.4168, -3.7038], count: 1650 },
-      { city: "Barcelona", coords: [41.3851, 2.1734], count: 1820 },
-      { city: "Valencia", coords: [39.4699, -0.3763], count: 1202 },
-      { city: "Sevilla", coords: [37.3891, -5.9845], count: 980 },
-      { city: "Bilbao", coords: [43.263, -2.935], count: 640 },
-      { city: "A Coruña", coords: [43.3623, -8.4115], count: 870 }
+      { city: "Madrid", coords: [40.4168, -3.7038], count: 800 },
+      { city: "Barcelona", coords: [41.3851, 2.1734], count: 900 },
+      { city: "Valencia", coords: [39.4699, -0.3763], count: 650 },
+      { city: "Sevilla", coords: [37.3891, -5.9845], count: 540 },
+      { city: "Málaga", coords: [36.7213, -4.4214], count: 430 },
+      { city: "Bilbao", coords: [43.263, -2.935], count: 300 },
+      { city: "Zaragoza", coords: [41.6488, -0.8891], count: 350 },
+      { city: "Murcia", coords: [37.9922, -1.1307], count: 280 },
+      { city: "A Coruña", coords: [43.3623, -8.4115], count: 320 }
     ];
 
     data.forEach(item => {
-      L.circleMarker(item.coords, {
-        radius: Math.sqrt(item.count) / 2,
-        fillColor: "#6366f1",
-        color: "#4338ca",
-        weight: 1,
-        fillOpacity: 0.8
-      })
-      .addTo(map)
-      .bindPopup(`<strong>${item.city}</strong><br>${item.count} inscritos`);
+      const marker = L.marker(item.coords, {
+        icon: L.divIcon({
+          className: "custom-marker",
+          html: `<div style="
+            background:#6366f1;
+            color:white;
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+            box-shadow:0 4px 10px rgba(0,0,0,0.3);
+          ">${item.count}</div>`
+        })
+      });
+
+      marker.bindPopup(
+        `<strong>${item.city}</strong><br>${item.count} personas disponibles`
+      );
+
+      cluster.addLayer(marker);
     });
+
+    map.addLayer(cluster);
   </script>
 
 </body>
