@@ -1,6 +1,28 @@
 
 <!DOCTYPE html>
-<html lang="es 20px;<html lang="es">
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Proyecto empresa Javi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    /* ===== HOME ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      color: white;
       background:
         linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
         url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
@@ -15,8 +37,8 @@
 
     .hero p {
       font-size: 1.2rem;
-      margin-bottom: 30px;
-      max-width: 700px;
+      max-width: 720px;
+      margin: 0 auto 32px;
     }
 
     .btn {
@@ -29,8 +51,15 @@
       margin: 10px;
     }
 
-    .btn-worker { background:#6366f1; color:white; }
-    .btn-company { background:white; color:#111827; }
+    .btn-worker {
+      background: #6366f1;
+      color: white;
+    }
+
+    .btn-company {
+      background: white;
+      color: #111827;
+    }
 
     /* ===== MODAL ===== */
     .modal {
@@ -40,7 +69,7 @@
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 999;
     }
 
     .modal.active {
@@ -60,8 +89,8 @@
 
     .close {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 18px;
+      right: 22px;
       font-size: 24px;
       cursor: pointer;
     }
@@ -72,11 +101,12 @@
 
     h3 {
       margin-top: 40px;
+      margin-bottom: 10px;
     }
 
     label {
       font-weight: 600;
-      margin-top: 18px;
+      margin-top: 16px;
       display: block;
     }
 
@@ -86,6 +116,7 @@
       margin-top: 6px;
       border-radius: 10px;
       border: 1px solid #d1d5db;
+      font-size: 1rem;
     }
 
     textarea {
@@ -153,6 +184,18 @@
       font-weight: 700;
       cursor: pointer;
     }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 900px) {
+      .schedule {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
   </style>
 </head>
 
@@ -162,7 +205,10 @@
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>Regístrate y define tu disponibilidad y experiencia de forma clara y profesional.</p>
+    <p>
+      Regístrate como trabajador y define tu disponibilidad,
+      experiencia y preferencias de forma clara y profesional.
+    </p>
     <button class="btn btn-worker" onclick="openModal()">Soy trabajador</button>
     <button class="btn btn-company">Soy empresa</button>
   </div>
@@ -203,40 +249,45 @@
     </div>
 
     <!-- CATEGORÍAS -->
-    <h3>Categorías de trabajo en las que tienes experiencia</h3>
+    <h3>Categorías de trabajo con experiencia</h3>
 
     <div class="categories">
-      <div class="category"><label><input type="checkbox"> Hostelería (camarero/a, ayudante)</label></div>
+      <div class="category"><label><input type="checkbox"> Hostelería (camarero/a)</label></div>
       <div class="category"><label><input type="checkbox"> Cocina</label></div>
       <div class="category"><label><input type="checkbox"> Eventos</label></div>
-      <div class="category"><label><input type="checkbox"> Promociones / street marketing</label></div>
+      <div class="category"><label><input type="checkbox"> Promociones / Marketing</label></div>
       <div class="category"><label><input type="checkbox"> Retail / tienda</label></div>
       <div class="category"><label><input type="checkbox"> Logística / almacén</label></div>
       <div class="category"><label><input type="checkbox"> Reposición</label></div>
       <div class="category"><label><input type="checkbox"> Atención al cliente</label></div>
-      <div class="category"><label><input type="checkbox"> Imagen / azafato/a</label></div>
+      <div class="category"><label><input type="checkbox"> Imagen / azafato-a</label></div>
       <div class="category"><label><input type="checkbox"> Montaje / desmontaje</label></div>
       <div class="category"><label><input type="checkbox"> Comercial</label></div>
       <div class="category"><label><input type="checkbox"> Otros</label></div>
     </div>
 
-    <!-- CV Y DESCRIPCIÓN -->
+    <!-- CV + DESCRIPCIÓN -->
     <h3>Información adicional</h3>
 
-    <label>Adjuntar CV (PDF, Word o imagen)</label>
+    <label>Adjuntar CV</label>
     <input type="file" accept=".pdf,.doc,.docx,image/*">
 
-    <label>Háblanos de ti</label>
-    <textarea rows="4" placeholder="Cómo eres trabajando, actitud, disponibilidad extra, preferencias..."></textarea>
+    <label>Cómo eres como persona</label>
+    <textarea rows="4" placeholder="Actitud, experiencia, disponibilidad extra, preferencias..."></textarea>
 
     <button class="submit">Enviar inscripción</button>
   </div>
 </div>
 
+<footer>
+  © Proyecto empresa Javi · MVP
+</footer>
+
 <script>
   function openModal() {
     document.getElementById("workerModal").classList.add("active");
   }
+
   function closeModal() {
     document.getElementById("workerModal").classList.remove("active");
   }
@@ -244,24 +295,3 @@
 
 </body>
 </html>
-<head>
-  <meta charset="UTF-8">
-  <title>Proyecto empresa Javi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f9fafb;
-      color: #111827;
-    }
-
-    /* ===== HOME ===== */
-    .hero {
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: white;
