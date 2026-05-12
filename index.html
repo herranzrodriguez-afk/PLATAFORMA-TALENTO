@@ -7,20 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <!-- MarkerCluster -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-  />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 
   <style>
     body {
@@ -47,7 +38,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      font-size: clamp(2.6rem, 5vw, 3.8rem);
       font-weight: 800;
       margin-bottom: 16px;
     }
@@ -55,7 +46,7 @@
     .hero p {
       font-size: 1.2rem;
       color: #e5e7eb;
-      max-width: 760px;
+      max-width: 780px;
       margin: 0 auto 32px;
     }
 
@@ -68,22 +59,15 @@
 
     .btn {
       padding: 16px 30px;
-      font-size: 1rem;
-      font-weight: 600;
       border-radius: 14px;
       border: none;
+      font-weight: 600;
       cursor: pointer;
+      font-size: 1rem;
     }
 
-    .btn-worker {
-      background: #6366f1;
-      color: white;
-    }
-
-    .btn-company {
-      background: white;
-      color: #111827;
-    }
+    .btn-worker { background:#6366f1; color:white; }
+    .btn-company { background:white; color:#111827; }
 
     /* MAP */
     .map-section {
@@ -104,18 +88,17 @@
       display: flex;
       justify-content: center;
       gap: 40px;
-      flex-wrap: wrap;
       margin-bottom: 30px;
+      flex-wrap: wrap;
     }
 
     .stat strong {
-      display: block;
       font-size: 2rem;
       color: #4f46e5;
+      display: block;
     }
 
     #map {
-      width: 100%;
       height: 540px;
       border-radius: 18px;
     }
@@ -124,18 +107,21 @@
       text-align: center;
       padding: 40px;
       color: #6b7280;
-      font-size: .9rem;
     }
 
-    /* Cluster numbers */
-    .marker-cluster div {
+    /* Custom number bubble */
+    .bubble {
       background: #6366f1;
       color: white;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.35);
     }
   </style>
 </head>
@@ -145,10 +131,7 @@
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>
-      Visualiza en tiempo real dónde hay personas disponibles
-      para trabajar en cualquier punto de España.
-    </p>
+    <p>Visualiza cuántas personas hay disponibles por provincia y población en España.</p>
     <div class="hero-buttons">
       <button class="btn btn-worker">Soy trabajador</button>
       <button class="btn btn-company">Soy empresa</button>
@@ -158,11 +141,8 @@
 
 <section class="map-section">
   <div class="map-title">
-    <h2>Talento disponible en toda España</h2>
-    <p>
-      Al hacer zoom, las burbujas se desglosan de provincias
-      a poblaciones (datos simulados).
-    </p>
+    <h2>Talento disponible en España</h2>
+    <p>Zoom general: provincias · Zoom detallado: poblaciones</p>
   </div>
 
   <div class="stats">
@@ -189,76 +169,80 @@
     attribution: "&copy; OpenStreetMap"
   }).addTo(map);
 
-  const cluster = L.markerClusterGroup({
-    maxClusterRadius: 70,
+  /* === CAPA PROVINCIAS === */
+  const provinceLayer = L.layerGroup();
+
+  const provinces = [
+    ["Madrid", 40.4168, -3.7038, 1410],
+    ["Barcelona", 41.3851, 2.1734, 1340],
+    ["Valencia", 39.4699, -0.3763, 1020],
+    ["Sevilla", 37.3891, -5.9845, 720],
+    ["Málaga", 36.7213, -4.4214, 580],
+    ["Bizkaia", 43.2630, -2.9350, 420],
+    ["A Coruña", 43.3623, -8.4115, 460]
+  ];
+
+  provinces.forEach(p => {
+    provinceLayer.addLayer(
+      L.marker([p[1], p[2]], {
+        icon: L.divIcon({
+          html: `<div class="bubble">${p[3]}</div>`
+        })
+      }).bindPopup(`<strong>${p[0]}</strong><br>${p[3]} candidatos`)
+    );
+  });
+
+  map.addLayer(provinceLayer);
+
+  /* === CAPA POBLACIONES === */
+  const populationLayer = L.markerClusterGroup({
+    maxClusterRadius: 60,
     showCoverageOnHover: false
   });
 
-  // === DATOS SIMULADOS ===
-  // Cada punto representa población.
-  const locations = [
-    // Madrid provincia
+  const populations = [
     ["Madrid", 40.4168, -3.7038, 800],
     ["Alcalá de Henares", 40.4818, -3.3641, 220],
     ["Getafe", 40.3083, -3.7329, 190],
 
-    // Barcelona provincia
     ["Barcelona", 41.3851, 2.1734, 900],
     ["Hospitalet", 41.3662, 2.1167, 260],
     ["Badalona", 41.4469, 2.2450, 180],
 
-    // Valencia provincia
     ["Valencia", 39.4699, -0.3763, 650],
-    ["Torrent", 39.4370, -0.4655, 210],
-    ["Gandía", 38.9680, -0.1851, 160],
+    ["Torrent", 39.4370, -0.4655, 370],
 
-    // Andalucía
     ["Sevilla", 37.3891, -5.9845, 540],
     ["Dos Hermanas", 37.2836, -5.9221, 180],
+
     ["Málaga", 36.7213, -4.4214, 430],
-    ["Marbella", 36.5101, -4.8824, 150],
-
-    // País Vasco
-    ["Bilbao", 43.2630, -2.9350, 300],
-    ["Barakaldo", 43.2969, -2.9882, 120],
-
-    // Galicia
-    ["A Coruña", 43.3623, -8.4115, 320],
-    ["Santiago", 42.8782, -8.5448, 140]
+    ["Marbella", 36.5101, -4.8824, 150]
   ];
 
-  locations.forEach(loc => {
-    const marker = L.marker([loc[1], loc[2]], {
-      icon: L.divIcon({
-        className: "",
-        html: `
-          <div style="
-            background:#6366f1;
-            color:white;
-            width:42px;
-            height:42px;
-            border-radius:50%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-weight:700;
-            font-size:13px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.35);
-          ">
-            ${loc[3]}
-          </div>
-        `
-      })
-    });
-
-    marker.bindPopup(
-      `<strong>${loc[0]}</strong><br>${loc[3]} personas disponibles`
+  populations.forEach(p => {
+    populationLayer.addLayer(
+      L.marker([p[1], p[2]], {
+        icon: L.divIcon({
+          html: `<div class="bubble">${p[3]}</div>`
+        })
+      }).bindPopup(`<strong>${p[0]}</strong><br>${p[3]} candidatos`)
     );
-
-    cluster.addLayer(marker);
   });
 
-  map.addLayer(cluster);
+  function updateLayers() {
+    const zoom = map.getZoom();
+
+    if (zoom <= 6) {
+      map.addLayer(provinceLayer);
+      map.removeLayer(populationLayer);
+    } else {
+      map.removeLayer(provinceLayer);
+      map.addLayer(populationLayer);
+    }
+  }
+
+  updateLayers();
+  map.on("zoomend", updateLayers);
 </script>
 
 </body>
