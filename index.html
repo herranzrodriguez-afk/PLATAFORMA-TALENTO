@@ -1,32 +1,11 @@
 
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Proyecto empresa Javi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #f9fafb;
-      color: #111827;
-    }
-
-    /* ===== HOME ===== */
-    .hero {
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: white;
-      padding: 40px 20px;
+<html lang="es 20px;<html lang="es">
       background:
         linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
         url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
       background-size: cover;
+      background-position: center;
     }
 
     .hero h1 {
@@ -91,9 +70,13 @@
       margin-bottom: 20px;
     }
 
+    h3 {
+      margin-top: 40px;
+    }
+
     label {
       font-weight: 600;
-      margin-top: 20px;
+      margin-top: 18px;
       display: block;
     }
 
@@ -105,12 +88,16 @@
       border: 1px solid #d1d5db;
     }
 
+    textarea {
+      resize: vertical;
+    }
+
     /* ===== DISPONIBILIDAD ===== */
     .schedule {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 14px;
-      margin-top: 30px;
+      margin-top: 20px;
     }
 
     .day {
@@ -118,6 +105,7 @@
       border-radius: 12px;
       padding: 12px;
       text-align: center;
+      background: #f9fafb;
     }
 
     .day strong {
@@ -133,6 +121,26 @@
       margin-bottom: 8px;
     }
 
+    /* ===== CATEGORÍAS ===== */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .category {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px;
+      background: #f9fafb;
+    }
+
+    .category label {
+      font-weight: 500;
+    }
+
+    /* ===== SUBMIT ===== */
     .submit {
       margin-top: 40px;
       width: 100%;
@@ -154,7 +162,7 @@
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>Regístrate y define tu disponibilidad semanal de forma clara y visual.</p>
+    <p>Regístrate y define tu disponibilidad y experiencia de forma clara y profesional.</p>
     <button class="btn btn-worker" onclick="openModal()">Soy trabajador</button>
     <button class="btn btn-company">Soy empresa</button>
   </div>
@@ -167,6 +175,7 @@
 
     <h2>Inscripción de trabajador</h2>
 
+    <!-- DATOS PERSONALES -->
     <label>Nombre</label>
     <input type="text">
 
@@ -179,23 +188,46 @@
     <label>Email</label>
     <input type="email">
 
-    <h3 style="margin-top:30px;">Disponibilidad semanal</h3>
+    <!-- DISPONIBILIDAD -->
+    <h3>Disponibilidad semanal</h3>
+    <p>Indica tu horario habitual por día</p>
 
     <div class="schedule">
-      <div class="day"><strong>L</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
-      <div class="day"><strong>M</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
-      <div class="day"><strong>X</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
-      <div class="day"><strong>J</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
-      <div class="day"><strong>V</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
-      <div class="day"><strong>S</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
-      <div class="day"><strong>D</strong><input type="time"><input type="time"><label><input type="checkbox"> Partida</label></div>
+      <div class="day"><strong>L</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>M</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>X</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>J</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>V</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>S</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>D</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
     </div>
 
-    <label style="margin-top:30px;">Adjuntar CV</label>
+    <!-- CATEGORÍAS -->
+    <h3>Categorías de trabajo en las que tienes experiencia</h3>
+
+    <div class="categories">
+      <div class="category"><label><input type="checkbox"> Hostelería (camarero/a, ayudante)</label></div>
+      <div class="category"><label><input type="checkbox"> Cocina</label></div>
+      <div class="category"><label><input type="checkbox"> Eventos</label></div>
+      <div class="category"><label><input type="checkbox"> Promociones / street marketing</label></div>
+      <div class="category"><label><input type="checkbox"> Retail / tienda</label></div>
+      <div class="category"><label><input type="checkbox"> Logística / almacén</label></div>
+      <div class="category"><label><input type="checkbox"> Reposición</label></div>
+      <div class="category"><label><input type="checkbox"> Atención al cliente</label></div>
+      <div class="category"><label><input type="checkbox"> Imagen / azafato/a</label></div>
+      <div class="category"><label><input type="checkbox"> Montaje / desmontaje</label></div>
+      <div class="category"><label><input type="checkbox"> Comercial</label></div>
+      <div class="category"><label><input type="checkbox"> Otros</label></div>
+    </div>
+
+    <!-- CV Y DESCRIPCIÓN -->
+    <h3>Información adicional</h3>
+
+    <label>Adjuntar CV (PDF, Word o imagen)</label>
     <input type="file" accept=".pdf,.doc,.docx,image/*">
 
-    <label>Cuéntanos cómo eres como persona</label>
-    <textarea rows="4"></textarea>
+    <label>Háblanos de ti</label>
+    <textarea rows="4" placeholder="Cómo eres trabajando, actitud, disponibilidad extra, preferencias..."></textarea>
 
     <button class="submit">Enviar inscripción</button>
   </div>
@@ -212,3 +244,24 @@
 
 </body>
 </html>
+<head>
+  <meta charset="UTF-8">
+  <title>Proyecto empresa Javi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    /* ===== HOME ===== */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
