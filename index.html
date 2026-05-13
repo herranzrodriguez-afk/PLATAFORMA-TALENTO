@@ -2,109 +2,259 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Talento España</title>
+  <meta charset="UTF-8">
+  <title>Proyecto empresa Javi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
-<style>
-body {
-    margin:0;
-    font-family: Arial;
-}
+  <!-- MarkerCluster -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+  />
 
-.hero {
-    background-image: url("https://images.unsplash.com/photo-1504674900247-0877df9cc836");
-    height:250px;
-    background-size: cover;
-    filter: brightness(0.6);
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+    }
 
-.card {
-    background:white;
-    width:80%;
-    margin:-80px auto;
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
-    box-shadow:0 5px 20px rgba(0,0,0,0.2);
-}
+    /* HERO */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 40px 20px;
+      background:
+        linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
+        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+    }
 
-.kpis {
-    display:flex;
-    justify-content:center;
-    gap:50px;
-    margin:20px 0;
-}
+    .hero h1 {
+      font-size: clamp(2.6rem, 5vw, 3.8rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
 
-.kpis div {
-    font-size:20px;
-}
+    .hero p {
+      font-size: 1.2rem;
+      color: #e5e7eb;
+      max-width: 780px;
+      margin: 0 auto 32px;
+    }
 
-.kpis strong {
-    display:block;
-    font-size:30px;
-    color:#4f46e5;
-}
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-#map {
-    height:500px;
-    margin-top:20px;
-    border-radius:15px;
-}
-</style>
+    .btn {
+      padding: 16px 30px;
+      border-radius: 14px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-worker { background:#6366f1; color:white; }
+    .btn-company { background:white; color:#111827; }
+
+    /* MAP */
+    .map-section {
+      max-width: 1200px;
+      margin: -80px auto 80px;
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 60px rgba(0,0,0,.1);
+    }
+
+    .map-title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat strong {
+      font-size: 2rem;
+      color: #4f46e5;
+      display: block;
+    }
+
+    #map {
+      height: 540px;
+      border-radius: 18px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    /* Bubble style */
+    .bubble {
+      background: #6366f1;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.35);
+    }
+
+    .cluster-bubble {
+      background: #4338ca;
+      color: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4);
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="hero"></div>
+<section class="hero">
+  <div>
+    <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+    <p>
+      Consulta cuántas personas hay disponibles por provincia y población en España.
+    </p>
+    <div class="hero-buttons">
+      <button class="btn btn-worker">Soy trabajador</button>
+      <button class="btn btn-company">Soy empresa</button>
+    </div>
+  </div>
+</section>
 
-<div class="card">
+<section class="map-section">
+  <div class="map-title">
+    <h2>Talento disponible en España</h2>
+    <p>
+      Zoom general: provincias · Zoom detallado: poblaciones  
+      (las burbujas siempre muestran el total de personas)
+    </p>
+  </div>
 
-<h2>Talento disponible en España</h2>
-<p>Zoom general: provincias · Zoom detallado: poblaciones</p>
+  <div class="stats">
+    <div class="stat"><strong>12.438</strong>Trabajadores</div>
+    <div class="stat"><strong>47</strong>Provincias</div>
+    <div class="stat"><strong>962</strong>Empresas</div>
+  </div>
 
-<div class="kpis">
-    <div><strong>12.438</strong>Trabajadores</div>
-    <div><strong>47</strong>Provincias</div>
-    <div><strong>962</strong>Empresas</div>
-</div>
+  <div id="map"></div>
+</section>
 
-<div id="map"></div>
+<footer>
+  © Proyecto empresa Javi · MVP
+</footer>
 
-</div>
+<!-- JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
+  const map = L.map("map").setView([40.4, -3.7], 6);
 
-var map = L.map('map').setView([40.4168, -3.7038], 6);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap"
+  }).addTo(map);
 
-// Mapa base
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-}).addTo(map);
+  /**
+   * CLUSTER QUE SUMA PERSONAS (NO MARCADORES)
+   */
+  const populationLayer = L.markerClusterGroup({
+    maxClusterRadius: 60,
+    showCoverageOnHover: false,
+    iconCreateFunction: function (cluster) {
+      let total = 0;
 
-// Ejemplo burbujas
-L.circle([40.4168, -3.7038], {
-    radius: 30000,
-    color:"blue"
-}).addTo(map).bindPopup("Madrid: 1210 trabajadores");
+      cluster.getAllChildMarkers().forEach(marker => {
+        total += marker.options.personCount;
+      });
 
-L.circle([41.3851, 2.1734], {
-    radius: 30000,
-    color:"blue"
-}).addTo(map).bindPopup("Barcelona: 1340 trabajadores");
+      return L.divIcon({
+        html: `<div class="cluster-bubble">${total}</div>`,
+        className: "",
+        iconSize: [56, 56]
+      });
+    }
+  });
 
-L.circle([37.3891, -5.9845], {
-    radius: 30000,
-    color:"blue"
-}).addTo(map).bindPopup("Sevilla: 970 trabajadores");
+  /**
+   * DATOS SIMULADOS POR POBLACIÓN
+   */
+  const populations = [
+    // Madrid provincia
+    ["Madrid", 40.4168, -3.7038, 800],
+    ["Alcalá de Henares", 40.4818, -3.3641, 220],
+    ["Getafe", 40.3083, -3.7329, 190],
 
-L.circle([39.4699, -0.3763], {
-    radius: 20000,
-    color:"blue"
-}).addTo(map).bindPopup("Valencia: 650 trabajadores");
+    // Barcelona provincia
+    ["Barcelona", 41.3851, 2.1734, 900],
+    ["Hospitalet", 41.3662, 2.1167, 260],
+    ["Badalona", 41.4469, 2.2450, 180],
 
+    // Valencia
+    ["Valencia", 39.4699, -0.3763, 650],
+
+    // Andalucía
+    ["Sevilla", 37.3891, -5.9845, 540],
+    ["Málaga", 36.7213, -4.4214, 430]
+  ];
+
+  populations.forEach(p => {
+    const marker = L.marker([p[1], p[2]], {
+      personCount: p[3],
+      icon: L.divIcon({
+        html: `<div class="bubble">${p[3]}</div>`,
+        className: ""
+      })
+    }).bindPopup(
+      `<strong>${p[0]}</strong><br>${p[3]} personas disponibles`
+    );
+
+    populationLayer.addLayer(marker);
+  });
+
+  map.addLayer(populationLayer);
 </script>
 
 </body>
