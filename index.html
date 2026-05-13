@@ -2,103 +2,180 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Proyecto Empresa Javi</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      background-color: #f5f5f5;
-      margin: 0;
-    }
+<meta charset="UTF-8">
+<title>Proyecto Empresa Javi</title>
 
-    header {
-      background-color: #222;
-      color: white;
-      padding: 20px;
-    }
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f4f4f4;
+}
 
-    .container {
-      padding: 40px;
-    }
+header {
+    background: #111;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
 
-    button {
-      padding: 15px 30px;
-      margin: 20px;
-      font-size: 18px;
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-    }
+h1 {
+    margin: 0;
+}
 
-    .empresa { background-color: #0066ff; color: white; }
-    .trabajo { background-color: #00aa55; color: white; }
+.container {
+    text-align: center;
+    padding: 40px;
+}
 
-    form {
-      display: none;
-      margin-top: 30px;
-    }
+.buttons button {
+    padding: 15px 25px;
+    margin: 15px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-    input, textarea {
-      display: block;
-      margin: 10px auto;
-      padding: 10px;
-      width: 300px;
-    }
+.empresa {
+    background: #0066ff;
+    color: white;
+}
 
-    .active {
-      display: block;
-    }
-  </style>
+.trabajador {
+    background: #00aa55;
+    color: white;
+}
+
+.mapa {
+    margin: 40px auto;
+    width: 300px;
+}
+
+.region {
+    padding: 15px;
+    margin: 5px;
+    background: #ddd;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.region:hover {
+    background: #bbb;
+}
+
+form {
+    display: none;
+    margin-top: 30px;
+}
+
+input, textarea {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+}
+
+.active {
+    display: block;
+}
+
+.perfil {
+    display: none;
+}
+</style>
+
 </head>
 
 <body>
 
 <header>
-  <h1>Proyecto Empresa Javi</h1>
-  <p>Encuentra talento o trabajo en España</p>
+    <h1>Plataforma de Talento - España</h1>
+    <p>Conecta empresas con trabajadores</p>
 </header>
 
 <div class="container">
 
-  <h2>¿Qué buscas?</h2>
+    <h2>Selecciona qué quieres hacer</h2>
 
-  <button class="empresa" onclick="mostrar('empresa')">Soy empresa</button>
-  <button class="trabajo" onclick="mostrar('trabajador')">Busco trabajo</button>
+    <div class="buttons">
+        <button class="empresa" onclick="mostrarPerfil('empresa')">Soy Empresa</button>
+        <button class="trabajador" onclick="mostrarPerfil('trabajador')">Busco Trabajo</button>
+    </div>
 
-  <!-- FORM EMPRESA -->
-  <form id="empresaForm">
-    <h3>Formulario Empresa</h3>
-    <input type="text" placeholder="Nombre empresa" required>
-    <input type="text" placeholder="Ubicación">
-    <input type="text" placeholder="Puesto buscado">
-    <textarea placeholder="Descripción"></textarea>
-    <button type="submit">Enviar</button>
-  </form>
+    <!-- MAPA -->
+    <div class="mapa">
+        <h3>Selecciona zona</h3>
 
-  <!-- FORM TRABAJADOR -->
-  <form id="trabajadorForm">
-    <h3>Formulario Trabajador</h3>
-    <input type="text" placeholder="Nombre" required>
-    <input type="text" placeholder="Ubicación">
-    <input type="text" placeholder="Experiencia">
-    <textarea placeholder="Descripción"></textarea>
-    <button type="submit">Enviar</button>
-  </form>
+        <div class="region" onclick="seleccionarZona('Norte')">Norte</div>
+        <div class="region" onclick="seleccionarZona('Centro')">Centro</div>
+        <div class="region" onclick="seleccionarZona('Sur')">Sur</div>
+        <div class="region" onclick="seleccionarZona('Levante')">Levante</div>
+        <div class="region" onclick="seleccionarZona('Cataluña')">Cataluña</div>
+
+        <p id="zonaSeleccionada"></p>
+    </div>
+
+    <!-- FORM EMPRESA -->
+    <div class="perfil" id="empresaBox">
+        <form id="empresaForm">
+            <h3>Registro Empresa</h3>
+            <input type="text" placeholder="Empresa" required>
+            <input type="text" id="zonaEmpresa" placeholder="Zona">
+            <input type="text" placeholder="Puesto buscado">
+            <textarea placeholder="Descripción"></textarea>
+            <button type="submit">Registrar Empresa</button>
+        </form>
+    </div>
+
+    <!-- FORM TRABAJADOR -->
+    <div class="perfil" id="trabajadorBox">
+        <form id="trabajadorForm">
+            <h3>Registro Trabajador</h3>
+            <input type="text" placeholder="Nombre" required>
+            <input type="text" id="zonaTrabajador" placeholder="Zona">
+            <input type="text" placeholder="Experiencia">
+            <textarea placeholder="Descripción"></textarea>
+            <button type="submit">Registrarme</button>
+        </form>
+    </div>
 
 </div>
 
 <script>
-  function mostrar(tipo) {
-    document.getElementById("empresaForm").classList.remove("active");
-    document.getElementById("trabajadorForm").classList.remove("active");
+
+let zonaGlobal = "";
+
+function seleccionarZona(zona) {
+    zonaGlobal = zona;
+    document.getElementById("zonaSeleccionada").innerText = "Zona seleccionada: " + zona;
+
+    document.getElementById("zonaEmpresa").value = zona;
+    document.getElementById("zonaTrabajador").value = zona;
+}
+
+function mostrarPerfil(tipo) {
+    document.getElementById("empresaBox").style.display = "none";
+    document.getElementById("trabajadorBox").style.display = "none";
 
     if (tipo === "empresa") {
-      document.getElementById("empresaForm").classList.add("active");
+        document.getElementById("empresaBox").style.display = "block";
     } else {
-      document.getElementById("trabajadorForm").classList.add("active");
+        document.getElementById("trabajadorBox").style.display = "block";
     }
-  }
+}
+
+// Simulación envío formulario
+document.getElementById("empresaForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    alert("Empresa registrada correctamente 🚀");
+});
+
+document.getElementById("trabajadorForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    alert("Perfil registrado correctamente ✅");
+});
+
 </script>
 
 </body>
