@@ -2,294 +2,102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Proyecto empresa Javi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta charset="UTF-8">
+  <title>Proyecto Empresa Javi</title>
   <style>
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f9fafb;
-      color: #111827;
-    }
-
-    /* ===== HOME ===== */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-family: Arial;
       text-align: center;
-      padding: 40px 20px;
+      background-color: #f5f5f5;
+      margin: 0;
+    }
+
+    header {
+      background-color: #222;
       color: white;
-      background:
-        linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
-        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
-      background-size: cover;
-      background-position: center;
+      padding: 20px;
     }
 
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      max-width: 720px;
-      margin: 0 auto 32px;
-    }
-
-    .btn {
-      padding: 16px 30px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1rem;
-      margin: 10px;
-    }
-
-    .btn-worker {
-      background: #6366f1;
-      color: white;
-    }
-
-    .btn-company {
-      background: white;
-      color: #111827;
-    }
-
-    /* ===== MODAL ===== */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: white;
-      width: 95%;
-      max-width: 1200px;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 24px;
+    .container {
       padding: 40px;
-      position: relative;
     }
 
-    .close {
-      position: absolute;
-      top: 18px;
-      right: 22px;
-      font-size: 24px;
+    button {
+      padding: 15px 30px;
+      margin: 20px;
+      font-size: 18px;
       cursor: pointer;
+      border: none;
+      border-radius: 8px;
     }
 
-    h2 {
-      margin-bottom: 20px;
-    }
+    .empresa { background-color: #0066ff; color: white; }
+    .trabajo { background-color: #00aa55; color: white; }
 
-    h3 {
-      margin-top: 40px;
-      margin-bottom: 10px;
-    }
-
-    label {
-      font-weight: 600;
-      margin-top: 16px;
-      display: block;
+    form {
+      display: none;
+      margin-top: 30px;
     }
 
     input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
-    }
-
-    textarea {
-      resize: vertical;
-    }
-
-    /* ===== DISPONIBILIDAD ===== */
-    .schedule {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    .day {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      background: #f9fafb;
-    }
-
-    .day strong {
       display: block;
-      margin-bottom: 10px;
-      background: #6366f1;
-      color: white;
-      padding: 6px;
-      border-radius: 6px;
+      margin: 10px auto;
+      padding: 10px;
+      width: 300px;
     }
 
-    .day input {
-      margin-bottom: 8px;
-    }
-
-    /* ===== CATEGORÍAS ===== */
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    .category {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 14px;
-      background: #f9fafb;
-    }
-
-    .category label {
-      font-weight: 500;
-    }
-
-    /* ===== SUBMIT ===== */
-    .submit {
-      margin-top: 40px;
-      width: 100%;
-      padding: 18px;
-      background: #6366f1;
-      color: white;
-      font-size: 1.1rem;
-      border-radius: 14px;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    footer {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
-    }
-
-    @media (max-width: 900px) {
-      .schedule {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .active {
+      display: block;
     }
   </style>
 </head>
 
 <body>
 
-<!-- HOME -->
-<section class="hero">
-  <div>
-    <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>
-      Regístrate como trabajador y define tu disponibilidad,
-      experiencia y preferencias de forma clara y profesional.
-    </p>
-    <button class="btn btn-worker" onclick="openModal()">Soy trabajador</button>
-    <button class="btn btn-company">Soy empresa</button>
-  </div>
-</section>
+<header>
+  <h1>Proyecto Empresa Javi</h1>
+  <p>Encuentra talento o trabajo en España</p>
+</header>
 
-<!-- MODAL TRABAJADOR -->
-<div class="modal" id="workerModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">✕</span>
+<div class="container">
 
-    <h2>Inscripción de trabajador</h2>
+  <h2>¿Qué buscas?</h2>
 
-    <!-- DATOS PERSONALES -->
-    <label>Nombre</label>
-    <input type="text">
+  <button class="empresa" onclick="mostrar('empresa')">Soy empresa</button>
+  <button class="trabajo" onclick="mostrar('trabajador')">Busco trabajo</button>
 
-    <label>Apellidos</label>
-    <input type="text">
+  <!-- FORM EMPRESA -->
+  <form id="empresaForm">
+    <h3>Formulario Empresa</h3>
+    <input type="text" placeholder="Nombre empresa" required>
+    <input type="text" placeholder="Ubicación">
+    <input type="text" placeholder="Puesto buscado">
+    <textarea placeholder="Descripción"></textarea>
+    <button type="submit">Enviar</button>
+  </form>
 
-    <label>Teléfono</label>
-    <input type="tel">
+  <!-- FORM TRABAJADOR -->
+  <form id="trabajadorForm">
+    <h3>Formulario Trabajador</h3>
+    <input type="text" placeholder="Nombre" required>
+    <input type="text" placeholder="Ubicación">
+    <input type="text" placeholder="Experiencia">
+    <textarea placeholder="Descripción"></textarea>
+    <button type="submit">Enviar</button>
+  </form>
 
-    <label>Email</label>
-    <input type="email">
-
-    <!-- DISPONIBILIDAD -->
-    <h3>Disponibilidad semanal</h3>
-    <p>Indica tu horario habitual por día</p>
-
-    <div class="schedule">
-      <div class="day"><strong>L</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>M</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>X</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>J</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>V</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>S</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>D</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-    </div>
-
-    <!-- CATEGORÍAS -->
-    <h3>Categorías de trabajo con experiencia</h3>
-
-    <div class="categories">
-      <div class="category"><label><input type="checkbox"> Hostelería (camarero/a)</label></div>
-      <div class="category"><label><input type="checkbox"> Cocina</label></div>
-      <div class="category"><label><input type="checkbox"> Eventos</label></div>
-      <div class="category"><label><input type="checkbox"> Promociones / Marketing</label></div>
-      <div class="category"><label><input type="checkbox"> Retail / tienda</label></div>
-      <div class="category"><label><input type="checkbox"> Logística / almacén</label></div>
-      <div class="category"><label><input type="checkbox"> Reposición</label></div>
-      <div class="category"><label><input type="checkbox"> Atención al cliente</label></div>
-      <div class="category"><label><input type="checkbox"> Imagen / azafato-a</label></div>
-      <div class="category"><label><input type="checkbox"> Montaje / desmontaje</label></div>
-      <div class="category"><label><input type="checkbox"> Comercial</label></div>
-      <div class="category"><label><input type="checkbox"> Otros</label></div>
-    </div>
-
-    <!-- CV + DESCRIPCIÓN -->
-    <h3>Información adicional</h3>
-
-    <label>Adjuntar CV</label>
-    <input type="file" accept=".pdf,.doc,.docx,image/*">
-
-    <label>Cómo eres como persona</label>
-    <textarea rows="4" placeholder="Actitud, experiencia, disponibilidad extra, preferencias..."></textarea>
-
-    <button class="submit">Enviar inscripción</button>
-  </div>
 </div>
 
-<footer>
-  © Proyecto empresa Javi · MVP
-</footer>
-
 <script>
-  function openModal() {
-    document.getElementById("workerModal").classList.add("active");
-  }
+  function mostrar(tipo) {
+    document.getElementById("empresaForm").classList.remove("active");
+    document.getElementById("trabajadorForm").classList.remove("active");
 
-  function closeModal() {
-    document.getElementById("workerModal").classList.remove("active");
+    if (tipo === "empresa") {
+      document.getElementById("empresaForm").classList.add("active");
+    } else {
+      document.getElementById("trabajadorForm").classList.add("active");
+    }
   }
 </script>
 
