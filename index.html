@@ -3,178 +3,107 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Proyecto Empresa Javi</title>
+<title>Talento España</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
 body {
-    margin: 0;
+    margin:0;
     font-family: Arial;
-    background: #f4f4f4;
 }
 
-header {
-    background: #111;
-    color: white;
-    padding: 20px;
-    text-align: center;
+.hero {
+    background-image: url("https://images.unsplash.com/photo-1504674900247-0877df9cc836");
+    height:250px;
+    background-size: cover;
+    filter: brightness(0.6);
 }
 
-h1 {
-    margin: 0;
+.card {
+    background:white;
+    width:80%;
+    margin:-80px auto;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 5px 20px rgba(0,0,0,0.2);
 }
 
-.container {
-    text-align: center;
-    padding: 40px;
+.kpis {
+    display:flex;
+    justify-content:center;
+    gap:50px;
+    margin:20px 0;
 }
 
-.buttons button {
-    padding: 15px 25px;
-    margin: 15px;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+.kpis div {
+    font-size:20px;
 }
 
-.empresa {
-    background: #0066ff;
-    color: white;
+.kpis strong {
+    display:block;
+    font-size:30px;
+    color:#4f46e5;
 }
 
-.trabajador {
-    background: #00aa55;
-    color: white;
-}
-
-.mapa {
-    margin: 40px auto;
-    width: 300px;
-}
-
-.region {
-    padding: 15px;
-    margin: 5px;
-    background: #ddd;
-    cursor: pointer;
-    border-radius: 6px;
-}
-
-.region:hover {
-    background: #bbb;
-}
-
-form {
-    display: none;
-    margin-top: 30px;
-}
-
-input, textarea {
-    display: block;
-    margin: 10px auto;
-    padding: 10px;
-    width: 300px;
-}
-
-.active {
-    display: block;
-}
-
-.perfil {
-    display: none;
+#map {
+    height:500px;
+    margin-top:20px;
+    border-radius:15px;
 }
 </style>
-
 </head>
 
 <body>
 
-<header>
-    <h1>Plataforma de Talento - España</h1>
-    <p>Conecta empresas con trabajadores</p>
-</header>
+<div class="hero"></div>
 
-<div class="container">
+<div class="card">
 
-    <h2>Selecciona qué quieres hacer</h2>
+<h2>Talento disponible en España</h2>
+<p>Zoom general: provincias · Zoom detallado: poblaciones</p>
 
-    <div class="buttons">
-        <button class="empresa" onclick="mostrarPerfil('empresa')">Soy Empresa</button>
-        <button class="trabajador" onclick="mostrarPerfil('trabajador')">Busco Trabajo</button>
-    </div>
+<div class="kpis">
+    <div><strong>12.438</strong>Trabajadores</div>
+    <div><strong>47</strong>Provincias</div>
+    <div><strong>962</strong>Empresas</div>
+</div>
 
-    <!-- MAPA -->
-    <div class="mapa">
-        <h3>Selecciona zona</h3>
-
-        <div class="region" onclick="seleccionarZona('Norte')">Norte</div>
-        <div class="region" onclick="seleccionarZona('Centro')">Centro</div>
-        <div class="region" onclick="seleccionarZona('Sur')">Sur</div>
-        <div class="region" onclick="seleccionarZona('Levante')">Levante</div>
-        <div class="region" onclick="seleccionarZona('Cataluña')">Cataluña</div>
-
-        <p id="zonaSeleccionada"></p>
-    </div>
-
-    <!-- FORM EMPRESA -->
-    <div class="perfil" id="empresaBox">
-        <form id="empresaForm">
-            <h3>Registro Empresa</h3>
-            <input type="text" placeholder="Empresa" required>
-            <input type="text" id="zonaEmpresa" placeholder="Zona">
-            <input type="text" placeholder="Puesto buscado">
-            <textarea placeholder="Descripción"></textarea>
-            <button type="submit">Registrar Empresa</button>
-        </form>
-    </div>
-
-    <!-- FORM TRABAJADOR -->
-    <div class="perfil" id="trabajadorBox">
-        <form id="trabajadorForm">
-            <h3>Registro Trabajador</h3>
-            <input type="text" placeholder="Nombre" required>
-            <input type="text" id="zonaTrabajador" placeholder="Zona">
-            <input type="text" placeholder="Experiencia">
-            <textarea placeholder="Descripción"></textarea>
-            <button type="submit">Registrarme</button>
-        </form>
-    </div>
+<div id="map"></div>
 
 </div>
 
 <script>
 
-let zonaGlobal = "";
+var map = L.map('map').setView([40.4168, -3.7038], 6);
 
-function seleccionarZona(zona) {
-    zonaGlobal = zona;
-    document.getElementById("zonaSeleccionada").innerText = "Zona seleccionada: " + zona;
+// Mapa base
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+}).addTo(map);
 
-    document.getElementById("zonaEmpresa").value = zona;
-    document.getElementById("zonaTrabajador").value = zona;
-}
+// Ejemplo burbujas
+L.circle([40.4168, -3.7038], {
+    radius: 30000,
+    color:"blue"
+}).addTo(map).bindPopup("Madrid: 1210 trabajadores");
 
-function mostrarPerfil(tipo) {
-    document.getElementById("empresaBox").style.display = "none";
-    document.getElementById("trabajadorBox").style.display = "none";
+L.circle([41.3851, 2.1734], {
+    radius: 30000,
+    color:"blue"
+}).addTo(map).bindPopup("Barcelona: 1340 trabajadores");
 
-    if (tipo === "empresa") {
-        document.getElementById("empresaBox").style.display = "block";
-    } else {
-        document.getElementById("trabajadorBox").style.display = "block";
-    }
-}
+L.circle([37.3891, -5.9845], {
+    radius: 30000,
+    color:"blue"
+}).addTo(map).bindPopup("Sevilla: 970 trabajadores");
 
-// Simulación envío formulario
-document.getElementById("empresaForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    alert("Empresa registrada correctamente 🚀");
-});
-
-document.getElementById("trabajadorForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    alert("Perfil registrado correctamente ✅");
-});
+L.circle([39.4699, -0.3763], {
+    radius: 20000,
+    color:"blue"
+}).addTo(map).bindPopup("Valencia: 650 trabajadores");
 
 </script>
 
