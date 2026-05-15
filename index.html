@@ -10,6 +10,7 @@ body {
   padding: 20px;
 }
 
+/* SECCIONES */
 .seccion {
   background: #ffffff;
   padding: 20px;
@@ -39,38 +40,65 @@ body {
   margin-bottom: 6px;
 }
 
-.form-group input, .form-group select {
-  padding: 10px;
+.form-group input {
+  padding: 12px;
   border-radius: 10px;
   border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* AUTOCOMPLETE LISTA */
+.lista {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+  display: none;
+  background: white;
+  position: absolute;
+  z-index: 10;
+}
+
+.lista div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.lista div:hover {
+  background: #e2e8f0;
 }
 
 /* DISPONIBILIDAD */
 .semana {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .dia-card {
   background: #e0e7ff;
-  border-radius: 12px;
-  padding: 10px;
-  width: 120px;
+  border-radius: 14px;
+  padding: 12px;
+  width: 150px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.dia-card strong {
+  text-align: center;
 }
 
 .horas {
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 
 .horas input {
   width: 100%;
+  padding: 8px;
 }
 
-/* partida oculta por defecto */
+/* partida oculta */
 .partida-horas {
   display: none;
 }
@@ -96,11 +124,12 @@ body {
 
 <body>
 
-<!-- DATOS PERSONALES -->
+<!-- DATOS -->
 <div class="seccion">
   <h2>Datos personales</h2>
 
   <div class="grid-form">
+
     <div class="form-group">
       <label>Nombre *</label>
       <input type="text" required>
@@ -126,38 +155,35 @@ body {
       <input type="email" id="email" required>
     </div>
 
-    <div class="form-group">
+    <!-- PROVINCIA AUTOCOMPLETE -->
+    <div class="form-group" style="position: relative;">
       <label>Provincia *</label>
-      <select required>
-        <option>Madrid</option>
-        <option>Barcelona</option>
-      </select>
+      <input type="text" id="provincia">
+      <div class="lista" id="listaProvincia"></div>
     </div>
 
-    <div class="form-group">
+    <!-- POBLACIÓN AUTOCOMPLETE -->
+    <div class="form-group" style="position: relative;">
       <label>Población *</label>
-      <select required>
-        <option>Getafe</option>
-        <option>Badalona</option>
-      </select>
+      <input type="text" id="poblacion">
+      <div class="lista" id="listaPoblacion"></div>
     </div>
 
     <div class="form-group">
       <label>€/hora *</label>
       <input type="number" required>
     </div>
+
   </div>
 </div>
 
 <!-- DISPONIBILIDAD -->
 <div class="seccion">
   <h2>Disponibilidad</h2>
-
   <div class="semana" id="semana"></div>
-
 </div>
 
-<!-- INFO ADICIONAL -->
+<!-- INFO -->
 <div class="seccion">
   <h2>Información adicional</h2>
 
@@ -172,7 +198,7 @@ body {
 </div>
 
 <script>
-// EMAIL validación mínima
+// EMAIL
 document.getElementById('email').addEventListener('input', function () {
   if (!this.value.includes('@')) {
     this.setCustomValidity('Email inválido');
@@ -181,8 +207,48 @@ document.getElementById('email').addEventListener('input', function () {
   }
 });
 
-// CREAR DÍAS
-const dias = ["L","M","X","J","V","S","D"];
+// AUTOCOMPLETE
+const provincias = ["Barcelona","Madrid","Valencia"];
+const poblaciones = ["Badalona","Getafe","Mataró"];
+
+function activarAutocomplete(inputId, listaId, datos) {
+  const input = document.getElementById(inputId);
+  const lista = document.getElementById(listaId);
+
+  input.addEventListener("input", () => {
+    const valor = input.value.toLowerCase();
+    lista.innerHTML = "";
+
+    const filtrados = datos.filter(d => d.toLowerCase().includes(valor));
+
+    if (valor && filtrados.length) {
+      lista.style.display = "block";
+      filtrados.forEach(item => {
+        const div = document.createElement("div");
+        div.textContent = item;
+        div.onclick = () => {
+          input.value = item;
+          lista.style.display = "none";
+        };
+        lista.appendChild(div);
+      });
+    } else {
+      lista.style.display = "none";
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target)) {
+      lista.style.display = "none";
+    }
+  });
+}
+
+activarAutocomplete("provincia", "listaProvincia", provincias);
+activarAutocomplete("poblacion", "listaPoblacion", poblaciones);
+
+// DÍAS COMPLETOS
+const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 const semana = document.getElementById("semana");
 
 dias.forEach(dia => {
@@ -193,7 +259,7 @@ dias.forEach(dia => {
   card.innerHTML = `
     <strong>${dia}</strong>
 
-    <div class="horas base-horas">
+    <div class="horas base">
       <input type="time">
       <input type="time">
     </div>
@@ -214,30 +280,21 @@ dias.forEach(dia => {
   const partida = card.querySelector(".partida");
   const todo = card.querySelector(".todo");
   const partidaHoras = card.querySelector(".partida-horas");
-  const baseHoras = card.querySelector(".base-horas");
+  const base = card.querySelector(".base");
 
-  // PARTIDA -> muestra 4 inputs
   partida.addEventListener("change", () => {
-    if (partida.checked) {
-      partidaHoras.style.display = "flex";
-    } else {
-      partidaHoras.style.display = "none";
-    }
+    partidaHoras.style.display = partida.checked ? "flex" : "none";
   });
 
-  // TODO EL DÍA
   todo.addEventListener("change", () => {
     if (todo.checked) {
-      baseHoras.style.display = "none";
+      base.style.display = "none";
       partidaHoras.style.display = "none";
-      card.querySelector('.partida').closest('label').style.display = "none";
+      partida.closest('label').style.display = "none";
     } else {
-      baseHoras.style.display = "flex";
-      card.querySelector('.partida').closest('label').style.display = "block";
-
-      if (partida.checked) {
-        partidaHoras.style.display = "flex";
-      }
+      base.style.display = "flex";
+      partida.closest('label').style.display = "block";
+      if (partida.checked) partidaHoras.style.display = "flex";
     }
   });
 
@@ -246,3 +303,4 @@ dias.forEach(dia => {
 
 </body>
 </html>
+``
