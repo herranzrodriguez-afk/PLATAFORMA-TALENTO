@@ -35,40 +35,21 @@ body {
   grid-column: span 4;
 }
 
-.form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
 .form-group input {
   padding: 12px;
   border-radius: 10px;
   border: 1px solid #ccc;
 }
 
-/* AUTOCOMPLETE ABAJO */
+/* AUTOCOMPLETE */
 .lista {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  max-height: 140px;
-  overflow-y: auto;
-  display: none;
   position: absolute;
-  top: 100%; /* ✅ clave */
-  left: 0;
+  top: 100%;
   width: 100%;
   background: white;
+  border: 1px solid #ccc;
+  display: none;
   z-index: 10;
-}
-
-.lista div {
-  padding: 8px;
-  cursor: pointer;
-}
-
-.lista div:hover {
-  background: #e2e8f0;
 }
 
 /* DISPONIBILIDAD */
@@ -80,28 +61,22 @@ body {
 .dia-card {
   background: #e0e7ff;
   border-radius: 16px;
-  padding: 14px;
-  width: 160px;
+  padding: 16px;
+  width: 170px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: stretch;
 }
 
 .dia-card strong {
   text-align: center;
 }
 
-/* HORAS VERTICAL (SOLUCIÓN) */
-.horas {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
+/* BLOQUES HORAS */
 .horas input {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
+  margin-bottom: 4px;
 }
 
 /* partida oculta */
@@ -109,20 +84,17 @@ body {
   display: none;
 }
 
-.opciones-dia {
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* CHECKS */
+.check {
+  font-size: 13px;
 }
 
 /* CV */
 .upload-btn {
-  display: inline-block;
   padding: 12px;
-  border-radius: 10px;
   background: #f1f5f9;
   border: 1px dashed #94a3b8;
+  border-radius: 10px;
   cursor: pointer;
 }
 </style>
@@ -137,47 +109,37 @@ body {
   <div class="grid-form">
 
     <div class="form-group">
-      <label>Nombre *</label>
-      <input type="text" required>
+      <input placeholder="Nombre" required>
     </div>
 
     <div class="form-group">
-      <label>Apellidos *</label>
-      <input type="text" required>
+      <input placeholder="Apellidos" required>
     </div>
 
     <div class="form-group">
-      <label>Teléfono *</label>
-      <input type="tel" required>
+      <input placeholder="Teléfono" required>
     </div>
 
     <div class="form-group">
-      <label>Teléfono 2</label>
-      <input type="tel">
+      <input placeholder="Teléfono 2">
     </div>
 
     <div class="form-group full">
-      <label>Email *</label>
-      <input type="email" id="email" required>
+      <input id="email" placeholder="Email" required>
     </div>
 
-    <!-- PROVINCIA -->
     <div class="form-group">
-      <label>Provincia *</label>
-      <input type="text" id="provincia">
+      <input id="provincia" placeholder="Provincia">
       <div class="lista" id="listaProvincia"></div>
     </div>
 
-    <!-- POBLACIÓN -->
     <div class="form-group">
-      <label>Población *</label>
-      <input type="text" id="poblacion">
+      <input id="poblacion" placeholder="Población">
       <div class="lista" id="listaPoblacion"></div>
     </div>
 
     <div class="form-group">
-      <label>€/hora *</label>
-      <input type="number" required>
+      <input placeholder="€/hora" type="number">
     </div>
 
   </div>
@@ -204,7 +166,7 @@ body {
 </div>
 
 <script>
-// EMAIL
+// EMAIL validación
 document.getElementById('email').addEventListener('input', function () {
   if (!this.value.includes('@')) {
     this.setCustomValidity('Email inválido');
@@ -247,8 +209,8 @@ function activarAutocomplete(inputId, listaId, datos) {
   });
 }
 
-activarAutocomplete("provincia", "listaProvincia", ["Barcelona","Madrid"]);
-activarAutocomplete("poblacion", "listaPoblacion", ["Badalona","Getafe"]);
+activarAutocomplete("provincia","listaProvincia",["Barcelona","Madrid"]);
+activarAutocomplete("poblacion","listaPoblacion",["Badalona","Getafe"]);
 
 // DÍAS
 const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
@@ -263,19 +225,22 @@ dias.forEach(dia => {
     <strong>${dia}</strong>
 
     <div class="horas base">
-      <input type="time">
-      <input type="time">
+      <input type="time" placeholder="Entrada">
+      <input type="time" placeholder="Salida">
     </div>
+
+    <label class="check">
+      <input type="checkbox" class="partida"> Jornada partida
+    </label>
 
     <div class="horas partida-horas">
-      <input type="time">
-      <input type="time">
+      <input type="time" placeholder="Entrada tarde">
+      <input type="time" placeholder="Salida tarde">
     </div>
 
-    <div class="opciones-dia">
-      <label><input type="checkbox" class="partida"> Partida</label>
-      <label><input type="checkbox" class="todo"> Todo el día</label>
-    </div>
+    <label class="check">
+      <input type="checkbox" class="todo"> Todo el día
+    </label>
   `;
 
   semana.appendChild(card);
@@ -286,7 +251,7 @@ dias.forEach(dia => {
   const base = card.querySelector(".base");
 
   partida.addEventListener("change", () => {
-    partidaHoras.style.display = partida.checked ? "flex" : "none";
+    partidaHoras.style.display = partida.checked ? "block" : "none";
   });
 
   todo.addEventListener("change", () => {
@@ -295,9 +260,9 @@ dias.forEach(dia => {
       partidaHoras.style.display = "none";
       partida.closest('label').style.display = "none";
     } else {
-      base.style.display = "flex";
+      base.style.display = "block";
       partida.closest('label').style.display = "block";
-      if (partida.checked) partidaHoras.style.display = "flex";
+      if (partida.checked) partidaHoras.style.display = "block";
     }
   });
 
