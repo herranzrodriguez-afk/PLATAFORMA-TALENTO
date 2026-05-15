@@ -4,146 +4,27 @@
 <meta charset="UTF-8">
 <title>Proyecto empresa Javi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-body {
-  margin: 0;
-  font-family: system-ui;
-  background: #f9fafb;
-  color: #111827;
-}
-
-/* HERO */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(rgba(15,23,42,.8), rgba(15,23,42,.9));
-}
-
-.btn-worker {
-  padding:16px 30px;
-  border-radius:14px;
-  border:none;
-  background:#6366f1;
-  color:white;
-  cursor:pointer;
-}
-
-/* MODAL BASE */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal.active {
-  display:flex;
-}
-
-.modal-content {
-  background:white;
-  width:95%;
-  max-width:1200px;
-  max-height:90vh;
-  overflow:auto;
-  border-radius:20px;
-  padding:30px;
-  position:relative;
-}
-  .close {
-  position:absolute;
-  right:20px;
-  top:15px;
-  font-size:22px;
-  cursor:pointer;
-}
-
-.card {
-  background:#f9fafb;
-  padding:20px;
-  border-radius:16px;
-  margin-bottom:25px;
-}
-
-.grid {
-  display:grid;
-  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-  gap:15px;
-}
-
-input, textarea {
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  width:100%;
-}
-
-/* AUTOCOMPLETE */
-.autocomplete {
-  position:relative;
-}
-
-.list {
-  position:absolute;
-  background:white;
-  border:1px solid #ddd;
-  width:100%;
-  max-height:120px;
-  overflow:auto;
-  z-index:10;
-}
-
-.item {
-  padding:6px;
-  cursor:pointer;
-}
-
-.item:hover {
-  background:#eee;
-}
-
-/* DISPONIBILIDAD */
-.schedule {
-  display:grid;
-  grid-template-columns: repeat(7,1fr);
-  gap:10px;
-}
-
-.day {
-  background:#eef2ff;
-  padding:10px;
-  border-radius:10px;
-  font-size:12px;
-}
-
-.day strong {
-  display:block;
-  margin-bottom:6px;
-  background:#6366f1;
-  color:white;
-  text-align:center;
-  border-radius:6px;
-}
-
-/* BOTON */
-.submit {
-  width:100%;
-  padding:16px;
-  background:#6366f1;
-  color:white;
-  border:none;
-  border-radius:12px;
-  font-weight:bold;
-}
+body{-align:center;border-radius:6px}body{margin:0;font-family:system-ui;background:#f9fafb;color:#111827}
+.submit{width:100%;padding:16px;background:#6366f1;color:white;border:none;border-radius:12px;font-weight:bold}
 </style>
-
 </head>
-
+``
+.hero{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(15,23,42,.8),rgba(15,23,42,.9))}
+.btn-worker{padding:16px 30px;border-radius:14px;border:none;background:#6366f1;color:white;cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;justify-content:center;align-items:center}
+.modal.active{display:flex}
+.modal-content{background:white;width:95%;max-width:1200px;max-height:90vh;overflow:auto;border-radius:20px;padding:30px;position:relative}
+.close{position:absolute;right:20px;top:15px;font-size:22px;cursor:pointer}
+.card{background:#f9fafb;padding:20px;border-radius:16px;margin-bottom:25px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px}
+input,textarea{padding:10px;border-radius:10px;border:1px solid #ddd;width:100%}
+.autocomplete{position:relative}
+.list{position:absolute;background:white;border:1px solid #ddd;width:100%;max-height:120px;overflow:auto;z-index:10}
+.item{padding:6px;cursor:pointer}
+.item:hover{background:#eee}
+.schedule{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.day{background:#eef2ff;padding:10px;border-radius:10px;font-size:12px}
 <body>
 
 <section class="hero">
@@ -157,12 +38,11 @@ input, textarea {
 
 <div class="card">
 <h2>Datos personales</h2>
-
 <div class="grid">
 <input placeholder="Nombre">
 <input placeholder="Apellidos">
 <input placeholder="Teléfono">
-<input placeholder="Teléfono 2 (opcional)">
+<input placeholder="Teléfono 2">
 <input placeholder="Email">
 
 <div class="autocomplete">
@@ -184,102 +64,88 @@ input, textarea {
 <div id="schedule" class="schedule"></div>
 </div>
 
+<div class="card">
+<h2>Información adicional</h2>
+<label>Adjuntar CV</label>
+<input type="file">
+<label>Descripción personal</label>
+<textarea rows="4"></textarea>
+</div>
+
 <button class="submit">Enviar inscripción</button>
 
 </div>
 </div>
 <script>
-function openModal() {
-  document.getElementById("workerModal").classList.add("active");
-}
+function openModal(){document.getElementById("workerModal").classList.add("active")}
+function closeModal(){document.getElementById("workerModal").classList.remove("active")}
 
-function closeModal() {
-  document.getElementById("workerModal").classList.remove("active");
-}
-
-/* AUTOCOMPLETE */
 const provincias=["Madrid","Barcelona","Valencia","Sevilla","Málaga"];
 
-function setupAuto(inputId,listId,data){
- const input=document.getElementById(inputId);
- const list=document.getElementById(listId);
-
+function setupAuto(i,l,d){
+ const input=document.getElementById(i);
+ const list=document.getElementById(l);
  input.addEventListener("input",()=>{
   list.innerHTML="";
-  const val=input.value.toLowerCase();
-
-  data.filter(x=>x.toLowerCase().includes(val)).forEach(x=>{
-    const div=document.createElement("div");
+  let val=input.value.toLowerCase();
+  d.filter(x=>x.toLowerCase().includes(val)).forEach(x=>{
+    let div=document.createElement("div");
     div.className="item";
     div.textContent=x;
-
-    div.onclick=()=>{
-      input.value=x;
-      list.innerHTML="";
-    };
-
+    div.onclick=()=>{input.value=x;list.innerHTML=""};
     list.appendChild(div);
   });
  });
 }
-
 setupAuto("provincia","provList",provincias);
 setupAuto("poblacion","pobList",["Madrid","Getafe","Badalona"]);
 
-/* DISPONIBILIDAD */
 const days=["L","M","X","J","V","S","D"];
 const schedule=document.getElementById("schedule");
 
 days.forEach(d=>{
- const el=document.createElement("div");
+ let el=document.createElement("div");
  el.className="day";
 
  el.innerHTML=`
-   <strong>${d}</strong>
-   <input type="time" class="start">
-   <input type="time" class="end">
-
-   <label><input type="checkbox" class="split"> Jornada partida</label>
-
-   <input type="time" class="start2" style="display:none">
-   <input type="time" class="end2" style="display:none">
-
-   <label><input type="checkbox" class="full"> Todo el día</label>
+ <strong>${d}</strong>
+ <input type="time" class="start">
+ <input type="time" class="end">
+ <label><input type="checkbox" class="split"> Partida</label>
+ <input type="time" class="start2" style="display:none">
+ <input type="time" class="end2" style="display:none">
+ <label><input type="checkbox" class="full"> Todo el día</label>
  `;
 
  schedule.appendChild(el);
 
- const start=el.querySelector(".start");
- const end=el.querySelector(".end");
- const start2=el.querySelector(".start2");
- const end2=el.querySelector(".end2");
- const split=el.querySelector(".split");
- const full=el.querySelector(".full");
+ let start=el.querySelector(".start");
+ let end=el.querySelector(".end");
+ let start2=el.querySelector(".start2");
+ let end2=el.querySelector(".end2");
+ let split=el.querySelector(".split");
+ let full=el.querySelector(".full");
 
  split.onchange=()=>{
-   start2.style.display=split.checked?"block":"none";
-   end2.style.display=split.checked?"block":"none";
+  start2.style.display=split.checked?"block":"none";
+  end2.style.display=split.checked?"block":"none";
  };
 
  full.onchange=e=>{
-   const hide=e.target.checked;
-   [start,end,start2,end2].forEach(i=>{
-     i.style.display=hide?"none":"block";
-   });
+  let hide=e.target.checked;
+  [start,end,start2,end2].forEach(i=>i.style.display=hide?"none":"block");
  };
 
  end.onchange=()=>{
-   if(start.value && end.value && end.value<=start.value){
-     alert("Hora incorrecta");
-     end.value="";
-   }
+  if(start.value && end.value && end.value<=start.value){
+   alert("Hora incorrecta"); end.value="";
+  }
  };
 
  start2.onchange=()=>{
-   if(start2.value && end.value && start2.value<=end.value){
-     alert("La tarde debe empezar después");
-     start2.value="";
-   }
+  if(start2.value && end.value && start2.value<=end.value){
+   alert("La tarde debe comenzar después"); start2.value="";
+  }
  };
 });
 </script>
