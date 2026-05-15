@@ -1,16 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Proyecto empresa Javi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-  <!-- MarkerCluster -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     body {
@@ -20,15 +14,15 @@
       color: #111827;
     }
 
-    /* HERO */
+    /* ===== HOME ===== */
     .hero {
-      min-height: 90vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: white;
       padding: 40px 20px;
+      color: white;
       background:
         linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
         url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
@@ -37,69 +31,158 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.6rem, 5vw, 3.8rem);
-      font-weight: 800;
+      font-size: 3rem;
       margin-bottom: 16px;
     }
 
     .hero p {
       font-size: 1.2rem;
-      color: #e5e7eb;
-      max-width: 780px;
+      max-width: 720px;
       margin: 0 auto 32px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
     }
 
     .btn {
       padding: 16px 30px;
       border-radius: 14px;
       border: none;
-      font-weight: 600;
       cursor: pointer;
+      font-weight: 600;
       font-size: 1rem;
+      margin: 10px;
     }
 
-    .btn-worker { background:#6366f1; color:white; }
-    .btn-company { background:white; color:#111827; }
+    .btn-worker {
+      background: #6366f1;
+      color: white;
+    }
 
-    /* MAP */
-    .map-section {
-      max-width: 1200px;
-      margin: -80px auto 80px;
+    .btn-company {
       background: white;
+      color: #111827;
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      width: 95%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
       border-radius: 24px;
       padding: 40px;
-      box-shadow: 0 30px 60px rgba(0,0,0,.1);
+      position: relative;
     }
 
-    .map-title {
-      text-align: center;
+    .close {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    h2 {
       margin-bottom: 20px;
     }
 
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
+    h3 {
+      margin-top: 40px;
+      margin-bottom: 10px;
     }
 
-    .stat strong {
-      font-size: 2rem;
-      color: #4f46e5;
+    label {
+      font-weight: 600;
+      margin-top: 16px;
       display: block;
     }
 
-    #map {
-      height: 540px;
-      border-radius: 18px;
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    /* ===== DISPONIBILIDAD ===== */
+    .schedule {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .day {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      background: #f9fafb;
+    }
+
+    .day strong {
+      display: block;
+      margin-bottom: 10px;
+      background: #6366f1;
+      color: white;
+      padding: 6px;
+      border-radius: 6px;
+    }
+
+    .day input {
+      margin-bottom: 8px;
+    }
+
+    /* ===== CATEGORÍAS ===== */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .category {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px;
+      background: #f9fafb;
+    }
+
+    .category label {
+      font-weight: 500;
+    }
+
+    /* ===== SUBMIT ===== */
+    .submit {
+      margin-top: 40px;
+      width: 100%;
+      padding: 18px;
+      background: #6366f1;
+      color: white;
+      font-size: 1.1rem;
+      border-radius: 14px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     footer {
@@ -108,133 +191,106 @@
       color: #6b7280;
     }
 
-    /* Bubble style */
-    .bubble {
-      background: #6366f1;
-      color: white;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,.35);
-    }
-
-    .cluster-bubble {
-      background: #4338ca;
-      color: white;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 15px;
-      box-shadow: 0 6px 20px rgba(0,0,0,.4);
+    @media (max-width: 900px) {
+      .schedule {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
 
 <body>
 
+<!-- HOME -->
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
     <p>
-      Consulta cuántas personas hay disponibles por provincia y población en España.
+      Regístrate como trabajador y define tu disponibilidad,
+      experiencia y preferencias de forma clara y profesional.
     </p>
-    <div class="hero-buttons">
-      <button class="btn btn-worker">Soy trabajador</button>
-      <button class="btn btn-company">Soy empresa</button>
+    <button class="btn btn-worker" onclick="openModal()">Soy trabajador</button>
+    <button class="btn btn-company">Soy empresa</button>
+  </div>
+</section>
+
+<!-- MODAL TRABAJADOR -->
+<div class="modal" id="workerModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">✕</span>
+
+    <h2>Inscripción de trabajador</h2>
+
+    <!-- DATOS PERSONALES -->
+    <label>Nombre</label>
+    <input type="text">
+
+    <label>Apellidos</label>
+    <input type="text">
+
+    <label>Teléfono</label>
+    <input type="tel">
+
+    <label>Email</label>
+    <input type="email">
+
+    <!-- DISPONIBILIDAD -->
+    <h3>Disponibilidad semanal</h3>
+    <p>Indica tu horario habitual por día</p>
+
+    <div class="schedule">
+      <div class="day"><strong>L</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>M</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>X</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>J</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>V</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>S</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
+      <div class="day"><strong>D</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
     </div>
-  </div>
-</section>
 
-<section class="map-section">
-  <div class="map-title">
-    <h2>Talento disponible en España</h2>
-    <p>
-      Zoom general: provincias · Zoom detallado: poblaciones  
-      (las burbujas siempre muestran el total de personas)
-    </p>
-  </div>
+    <!-- CATEGORÍAS -->
+    <h3>Categorías de trabajo con experiencia</h3>
 
-  <div class="stats">
-    <div class="stat"><strong>12.438</strong>Trabajadores</div>
-    <div class="stat"><strong>47</strong>Provincias</div>
-    <div class="stat"><strong>962</strong>Empresas</div>
-  </div>
+    <div class="categories">
+      <div class="category"><label><input type="checkbox"> Hostelería (camarero/a)</label></div>
+      <div class="category"><label><input type="checkbox"> Cocina</label></div>
+      <div class="category"><label><input type="checkbox"> Eventos</label></div>
+      <div class="category"><label><input type="checkbox"> Promociones / Marketing</label></div>
+      <div class="category"><label><input type="checkbox"> Retail / tienda</label></div>
+      <div class="category"><label><input type="checkbox"> Logística / almacén</label></div>
+      <div class="category"><label><input type="checkbox"> Reposición</label></div>
+      <div class="category"><label><input type="checkbox"> Atención al cliente</label></div>
+      <div class="category"><label><input type="checkbox"> Imagen / azafato-a</label></div>
+      <div class="category"><label><input type="checkbox"> Montaje / desmontaje</label></div>
+      <div class="category"><label><input type="checkbox"> Comercial</label></div>
+      <div class="category"><label><input type="checkbox"> Otros</label></div>
+    </div>
 
-  <div id="map"></div>
-</section>
+    <!-- CV + DESCRIPCIÓN -->
+    <h3>Información adicional</h3>
+
+    <label>Adjuntar CV</label>
+    <input type="file" accept=".pdf,.doc,.docx,image/*">
+
+    <label>Cómo eres como persona</label>
+    <textarea rows="4" placeholder="Actitud, experiencia, disponibilidad extra, preferencias..."></textarea>
+
+    <button class="submit">Enviar inscripción</button>
+  </div>
+</div>
 
 <footer>
   © Proyecto empresa Javi · MVP
 </footer>
 
-<!-- JS (CORREGIDO ✅) -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
 <script>
-  const map = L.map("map").setView([40.4, -3.7], 6);
+  function openModal() {
+    document.getElementById("workerModal").classList.add("active");
+  }
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap"
-  }).addTo(map);
-
-  const populationLayer = L.markerClusterGroup({
-    maxClusterRadius: 60,
-    showCoverageOnHover: false,
-    iconCreateFunction: function (cluster) {
-      let total = 0;
-
-      cluster.getAllChildMarkers().forEach(marker => {
-        total += marker.options.personCount;
-      });
-
-      return L.divIcon({
-        html: `<div class="cluster-bubble">${total}</div>`,
-        className: "",
-        iconSize: [56, 56]
-      });
-    }
-  });
-
-  const populations = [
-    ["Madrid", 40.4168, -3.7038, 800],
-    ["Alcalá de Henares", 40.4818, -3.3641, 220],
-    ["Getafe", 40.3083, -3.7329, 190],
-
-    ["Barcelona", 41.3851, 2.1734, 900],
-    ["Hospitalet", 41.3662, 2.1167, 260],
-    ["Badalona", 41.4469, 2.2450, 180],
-
-    ["Valencia", 39.4699, -0.3763, 650],
-
-    ["Sevilla", 37.3891, -5.9845, 540],
-    ["Málaga", 36.7213, -4.4214, 430]
-  ];
-
-  populations.forEach(p => {
-    const marker = L.marker([p[1], p[2]], {
-      personCount: p[3],
-      icon: L.divIcon({
-        html: `<div class="bubble">${p[3]}</div>`,
-        className: ""
-      })
-    }).bindPopup(
-      `<strong>${p[0]}</strong><br>${p[3]} personas disponibles`
-    );
-
-    populationLayer.addLayer(marker);
-  });
-
-  map.addLayer(populationLayer);
+  function closeModal() {
+    document.getElementById("workerModal").classList.remove("active");
+  }
 </script>
 
 </body>
