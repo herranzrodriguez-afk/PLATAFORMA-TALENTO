@@ -1,4 +1,143 @@
-<!DOCTYPE html>
+<!DOCTYPE html><:20px;
+  top:15px;
+  cursor:pointer;
+  font-size:22px;
+}
+
+/* CARDS */
+.card {
+  background:#f9fafb;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:25px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+}
+
+input, textarea {
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+/* DISPONIBILIDAD */
+.schedule {
+  display:grid;
+  grid-template-columns: repeat(7,1fr);
+  gap:10px;
+}
+
+.day {
+  background:#eef2ff;
+  padding:10px;
+  border-radius:10px;
+  font-size:12px;
+}
+
+.day strong {
+  display:block;
+  background:#6366f1;
+  color:white;
+  text-align:center;
+  border-radius:6px;
+  margin-bottom:6px;
+}
+
+/* CATEGORÍAS */
+.categories {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.category {
+  background:#e5e7eb;
+  padding:8px 12px;
+  border-radius:20px;
+  font-size:13px;
+}
+
+/* BOTÓN */
+.submit {
+  width:100%;
+  padding:18px;
+  background:#6366f1;
+  color:white;
+  border:none;
+  border-radius:12px;
+  font-weight:700;
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+  <button class="btn" onclick="openModal()">Soy trabajador</button>
+</section>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+
+    <span class="close" onclick="closeModal()">✕</span>
+
+    <!-- DATOS -->
+    <div class="card">
+      <h2>Datos personales</h2>
+      <div class="grid">
+        <input placeholder="Nombre">
+        <input placeholder="Apellidos">
+        <input placeholder="Teléfono">
+        <input placeholder="Teléfono 2 (opcional)">
+        <input placeholder="Email">
+        <input placeholder="Provincia">
+        <input placeholder="Población">
+        <input placeholder="€/hora (bruto)">
+      </div>
+    </div>
+
+    <!-- DISPONIBILIDAD -->
+    <div class="card">
+      <h2>Disponibilidad</h2>
+      <div class="schedule" id="schedule"></div>
+    </div>
+
+    <!-- CATEGORÍAS -->
+    <div class="card">
+      <h2>Categorías</h2>
+      <div class="categories">
+        <label class="category"><input type="checkbox"> Hostelería</label>
+        <label class="category"><input type="checkbox"> Cocina</label>
+        <label class="category"><input type="checkbox"> Eventos</label>
+        <label class="category"><input type="checkbox"> Marketing</label>
+        <label class="category"><input type="checkbox"> Retail</label>
+        <label class="category"><input type="checkbox"> Logística</label>
+        <label class="category"><input type="checkbox"> Atención cliente</label>
+        <label class="category"><input type="checkbox"> Reposición</label>
+      </div>
+    </div>
+
+    <!-- EXTRA -->
+    <div class="card">
+      <h2>Información adicional</h2>
+
+      <label>Adjuntar CV</label>
+      <input type="file">
+
+      <label style="margin-top:10px;">Descripción personal</label>
+      <textarea rows="4"></textarea>
+    </div>
+
+    <button class="submit">Enviar inscripción</button>
+
+  </div>
+</div>
+``
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -7,32 +146,28 @@
 
 <style>
 body {
-  margin: 0;
+  margin:0;
   font-family: system-ui;
-  background: #f9fafb;
+  background:#f9fafb;
 }
 
 /* HERO */
 .hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
-  background: linear-gradient(rgba(15,23,42,.8), rgba(15,23,42,.9));
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#0f172a;
 }
 
 .btn {
-  padding: 14px 26px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  margin: 10px;
-  font-weight: 600;
+  padding:16px 28px;
+  background:#6366f1;
+  color:white;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
 }
-
-.btn-worker { background:#6366f1; color:white; }
 
 /* MODAL */
 .modal {
@@ -49,233 +184,70 @@ body {
 .modal-content {
   background:white;
   width:95%;
-  max-width:1100px;
+  max-width:1200px;
   max-height:90vh;
   overflow:auto;
   border-radius:20px;
   padding:30px;
+  position:relative;
 }
 
 .close {
   position:absolute;
-  right:20px;
-  cursor:pointer;
-  font-size:20px;
-}
-
-/* GRID FORM */
-.form-grid {
-  display:grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  gap:14px;
-}
-
-input, textarea {
-  width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  margin-top:6px;
-}
-
-/* SCHEDULE */
-.schedule {
-  display:grid;
-  grid-template-columns: repeat(7,1fr);
-  gap:10px;
-}
-
-.day {
-  background:#f1f5f9;
-  padding:10px;
-  border-radius:12px;
-  font-size:12px;
-}
-
-.day strong {
-  display:block;
-  background:#6366f1;
-  color:white;
-  padding:4px;
-  border-radius:6px;
-  margin-bottom:6px;
-}
-
-/* CATEGORIES */
-.categories {
-  display:grid;
-  grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
-  gap:10px;
-}
-
-.category {
-  background:#f1f5f9;
-  padding:8px;
-  border-radius:8px;
-  font-size:13px;
-}
-
-/* BUTTON */
-.submit {
-  margin-top:30px;
-  padding:16px;
-  width:100%;
-  background:#6366f1;
-  color:white;
-  border:none;
-  border-radius:12px;
-}
-</style>
-</head>
-
-<body>
-
-<section class="hero">
-  <div>
-    <h1>Registro trabajador</h1>
-    <button class="btn btn-worker" onclick="openModal()">Soy trabajador</button>
-  </div>
-</section>
-
-<div class="modal" id="workerModal">
-<div class="modal-content">
-<span class="close" onclick="closeModal()">✕</span>
-
-<h2>Datos personales</h2>
-
-<div class="form-grid">
-
-<div>
-<label>Nombre</label>
-<input type="text">
-</div>
-
-<div>
-<label>Apellidos</label>
-<input type="text">
-</div>
-
-<div>
-<label>Teléfono</label>
-<input type="tel">
-</div>
-
-<div>
-<label>Teléfono 2 (opcional)</label>
-<input type="tel">
-</div>
-
-<div>
-<label>Email</label>
-<input type="email">
-</div>
-
-<div>
-<label>Provincia</label>
-<input list="provincias">
-<datalist id="provincias">
-<option>Madrid</option>
-<option>Barcelona</option>
-<option>Valencia</option>
-<option>Sevilla</option>
-<option>Málaga</option>
-</datalist>
-</div>
-
-<div>
-<label>Población</label>
-<input list="poblaciones">
-<datalist id="poblaciones">
-<option>Madrid</option>
-<option>Alcalá de Henares</option>
-<option>Barcelona</option>
-<option>Badalona</option>
-</datalist>
-</div>
-
-</div>
-
-<h3>Disponibilidad</h3>
-
-<div class="schedule">
-
-<!-- DÍA TEMPLATE -->
-<div class="day">
-<strong>L</strong>
-<input type="time" class="start">
-<input type="time" class="end">
-
-<label><input type="checkbox" class="split"> Partida</label>
-<input type="time" class="start2" style="display:none">
-<input type="time" class="end2" style="display:none">
-
-<label><input type="checkbox" class="fullday"> Todo el día</label>
-</div>
-
-<!-- DUPLICAR igual demás días -->
-</div>
-
-<h3>Categorías</h3>
-
-<div class="categories">
-<div class="category"><label><input type="checkbox"> Hostelería</label></div>
-<div class="category"><label><input type="checkbox"> Cocina</label></div>
-<div class="category"><label><input type="checkbox"> Eventos</label></div>
-<div class="category"><label><input type="checkbox"> Retail</label></div>
-<div class="category"><label><input type="checkbox"> Logística</label></div>
-</div>
-
-<h3>Extra</h3>
-
-<label>CV</label>
-<input type="file">
-
-<label>Descripción</label>
-<textarea></textarea>
-
-<button class="submit">Enviar</button>
-
-</div>
-</div>
-
 <script>
-function openModal(){
-  document.getElementById("workerModal").classList.add("active");
+function openModal() {
+  document.getElementById("modal").classList.add("active");
 }
 
-function closeModal(){
-  document.getElementById("workerModal").classList.remove("active");
+function closeModal() {
+  document.getElementById("modal").classList.remove("active");
 }
 
-/* LÓGICA DISPONIBILIDAD */
-document.querySelectorAll(".day").forEach(day=>{
-  const split = day.querySelector(".split");
-  const start2 = day.querySelector(".start2");
-  const end2 = day.querySelector(".end2");
+/* DISPONIBILIDAD COMPLETA */
+const days = ["L","M","X","J","V","S","D"];
+const schedule = document.getElementById("schedule");
 
-  const full = day.querySelector(".fullday");
-  const start = day.querySelector(".start");
-  const end = day.querySelector(".end");
+days.forEach(d => {
+  const div = document.createElement("div");
+  div.className = "day";
 
-  split.addEventListener("change",()=>{
-    start2.style.display = split.checked ? "block" : "none";
-    end2.style.display = split.checked ? "block" : "none";
-  });
+  div.innerHTML = `
+    <strong>${d}</strong>
+    <input type="time" class="start">
+    <input type="time" class="end">
 
-  full.addEventListener("change",()=>{
-    const hide = full.checked;
-    start.style.display = hide ? "none":"block";
-    end.style.display = hide ? "none":"block";
-    start2.style.display = hide ? "none":"block";
-    end2.style.display = hide ? "none":"block";
-  });
+    <label><input type="checkbox" class="split"> Partida</label>
+    <input type="time" class="start2" style="display:none">
+    <input type="time" class="end2" style="display:none">
 
-  start2.addEventListener("change",()=>{
-    if(start2.value <= end.value){
+    <label><input type="checkbox" class="full"> Todo el día</label>
+  `;
+
+  schedule.appendChild(div);
+
+  const split = div.querySelector(".split");
+  const full = div.querySelector(".full");
+  const end = div.querySelector(".end");
+  const start2 = div.querySelector(".start2");
+
+  split.onchange = () => {
+    div.querySelector(".start2").style.display = split.checked ? "block" : "none";
+    div.querySelector(".end2").style.display = split.checked ? "block" : "none";
+  };
+
+  full.onchange = (e) => {
+    const hide = e.target.checked;
+    div.querySelectorAll("input[type=time]").forEach(i => {
+      i.style.display = hide ? "none" : "block";
+    });
+  };
+
+  start2.onchange = () => {
+    if (start2.value && end.value && start2.value <= end.value) {
       alert("La tarde debe empezar después de la mañana");
-      start2.value="";
+      start2.value = "";
     }
-  });
+  };
 });
 </script>
 
