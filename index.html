@@ -28,6 +28,7 @@ body {
 .form-group {
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .form-group.full {
@@ -44,18 +45,20 @@ body {
   padding: 12px;
   border-radius: 10px;
   border: 1px solid #ccc;
-  font-size: 14px;
 }
 
-/* AUTOCOMPLETE LISTA */
+/* AUTOCOMPLETE ABAJO */
 .lista {
   border: 1px solid #ccc;
   border-radius: 8px;
-  max-height: 120px;
+  max-height: 140px;
   overflow-y: auto;
   display: none;
-  background: white;
   position: absolute;
+  top: 100%; /* ✅ clave */
+  left: 0;
+  width: 100%;
+  background: white;
   z-index: 10;
 }
 
@@ -71,25 +74,28 @@ body {
 /* DISPONIBILIDAD */
 .semana {
   display: flex;
-  gap: 12px;
+  gap: 14px;
 }
 
 .dia-card {
   background: #e0e7ff;
-  border-radius: 14px;
-  padding: 12px;
-  width: 150px;
+  border-radius: 16px;
+  padding: 14px;
+  width: 160px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  align-items: stretch;
 }
 
 .dia-card strong {
   text-align: center;
 }
 
+/* HORAS VERTICAL (SOLUCIÓN) */
 .horas {
   display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
@@ -155,15 +161,15 @@ body {
       <input type="email" id="email" required>
     </div>
 
-    <!-- PROVINCIA AUTOCOMPLETE -->
-    <div class="form-group" style="position: relative;">
+    <!-- PROVINCIA -->
+    <div class="form-group">
       <label>Provincia *</label>
       <input type="text" id="provincia">
       <div class="lista" id="listaProvincia"></div>
     </div>
 
-    <!-- POBLACIÓN AUTOCOMPLETE -->
-    <div class="form-group" style="position: relative;">
+    <!-- POBLACIÓN -->
+    <div class="form-group">
       <label>Población *</label>
       <input type="text" id="poblacion">
       <div class="lista" id="listaPoblacion"></div>
@@ -208,9 +214,6 @@ document.getElementById('email').addEventListener('input', function () {
 });
 
 // AUTOCOMPLETE
-const provincias = ["Barcelona","Madrid","Valencia"];
-const poblaciones = ["Badalona","Getafe","Mataró"];
-
 function activarAutocomplete(inputId, listaId, datos) {
   const input = document.getElementById(inputId);
   const lista = document.getElementById(listaId);
@@ -244,10 +247,10 @@ function activarAutocomplete(inputId, listaId, datos) {
   });
 }
 
-activarAutocomplete("provincia", "listaProvincia", provincias);
-activarAutocomplete("poblacion", "listaPoblacion", poblaciones);
+activarAutocomplete("provincia", "listaProvincia", ["Barcelona","Madrid"]);
+activarAutocomplete("poblacion", "listaPoblacion", ["Badalona","Getafe"]);
 
-// DÍAS COMPLETOS
+// DÍAS
 const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 const semana = document.getElementById("semana");
 
@@ -303,4 +306,3 @@ dias.forEach(dia => {
 
 </body>
 </html>
-``
