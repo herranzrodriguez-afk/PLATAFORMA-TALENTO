@@ -1,110 +1,16 @@
-<!DOCTYPE html><!DOCTYPE-size:12px;
-}
-
-/* CATEGORIAS */
-.categories {
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-
-.category {
-  background:#e5e7eb;
-  padding:6px 10px;
-  border-radius:20px;
-  font-size:13px;
-}
-
-/* BOTON */
-.submit {
-  width:100%;
-  padding:16px;
-  background:#6366f1;
-  color:white;
-  border:none;
-  border-radius:12px;
-  font-weight:bold;
-}
-</style>
-
-</head>
-
-<body>
-
-<section class="hero">
-  <button class="btn" onclick="openModal()">Soy trabajador</button>
-</section>
-
-<div class="modal" id="workerModal">
-<div class="modal-content">
-
-<span class="close" onclick="closeModal()">✕</span>
-
-<!-- DATOS -->
-<div class="card">
-<h2>Datos personales</h2>
-
-<div class="grid">
-<input placeholder="Nombre">
-<input placeholder="Apellidos">
-<input placeholder="Teléfono">
-<input placeholder="Teléfono 2 (opcional)">
-<input placeholder="Email">
-<input placeholder="Provincia">
-<input placeholder="Población">
-<input placeholder="€/hora (bruto)">
-</div>
-
-</div>
-
-<!-- DISPONIBILIDAD -->
-<div class="card">
-<h2>Disponibilidad</h2>
-<div class="schedule" id="schedule"></div>
-</div>
-
-<!-- CATEGORIAS -->
-<div class="card">
-<h2>Categorías</h2>
-
-<div class="categories">
-<label class="category"><input type="checkbox"> Hostelería</label>
-<label class="category"><input type="checkbox"> Cocina</label>
-<label class="category"><input type="checkbox"> Eventos</label>
-<label class="category"><input type="checkbox"> Retail</label>
-<label class="category"><input type="checkbox"> Logística</label>
-</div>
-
-</div>
-
-<!-- EXTRA -->
-<div class="card">
-<h2>Extra</h2>
-
-<label>CV</label>
-<input type="file">
-
-<label>Descripción</label>
-<textarea></textarea>
-
-</div>
-
-<button class="submit">Enviar inscripción</button>
-
-</div>
-</div>
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
 <title>Proyecto empresa Javi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
 body {
   margin: 0;
-  font-family: system-ui;
+  font-family: system-ui, -apple-system, sans-serif;
   background: #f9fafb;
+  color: #111827;
 }
 
 /* HERO */
@@ -113,16 +19,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  color: white;
   background: linear-gradient(rgba(15,23,42,.8), rgba(15,23,42,.9));
 }
 
-.btn {
-  padding:16px 28px;
-  border-radius:12px;
-  border:none;
-  background:#6366f1;
-  color:white;
-  cursor:pointer;
+.btn-worker {
+  padding: 16px 30px;
+  border-radius: 14px;
+  border: none;
+  background: #6366f1;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 /* MODAL */
@@ -133,6 +42,7 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 }
 
 .modal.active {
@@ -142,63 +52,158 @@ body {
 .modal-content {
   background: white;
   width: 95%;
-  max-width: 1100px;
+  max-width: 1200px;
   max-height: 90vh;
-  overflow: auto;
-  border-radius: 20px;
-  padding: 30px;
+  overflow-y: auto;
+  border-radius: 24px;
+  padding: 40px;
   position: relative;
 }
 
+/* CERRAR */
 .close {
   position: absolute;
-  right: 20px;
-  top: 15px;
+  top: 18px;
+  right: 22px;
+  font-size: 24px;
   cursor: pointer;
 }
 
-/* BLOQUES */
+/* SECCIONES */
 .card {
-  background:#f9fafb;
-  padding:20px;
-  border-radius:16px;
-  margin-bottom:25px;
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 30px;
 }
 
 .grid {
-  display:grid;
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
-  gap:15px;
+  gap: 16px;
 }
 
 input, textarea {
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  width:100%;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
 }
 
 /* DISPONIBILIDAD */
 .schedule {
-  display:grid;
+  display: grid;
   grid-template-columns: repeat(7,1fr);
-  gap:10px;
+  gap: 12px;
 }
 
 .day {
-  background:#eef2ff;
-  padding:10px;
-  border-radius:10px;
+  background: #eef2ff;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
 }
 
 .day strong {
-  display:block;
-  background:#6366f1;
-  color:white;
-  text-align:center;
-  border-radius:6px;
-  margin-bottom:6px;
-  
+  display: block;
+  margin-bottom: 6px;
+  background: #6366f1;
+  color: white;
+  padding: 4px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* CATEGORIAS */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category {
+  background: #e5e7eb;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+/* BOTON */
+.submit {
+  width: 100%;
+  padding: 18px;
+  background: #6366f1;
+  color: white;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+  <button class="btn-worker" onclick="openModal()">Soy trabajador</button>
+</section>
+
+<div class="modal" id="workerModal">
+  <div class="modal-content">
+
+    <span class="close" onclick="closeModal()">✕</span>
+
+    <!-- DATOS -->
+    <div class="card">
+      <h2>Datos personales</h2>
+
+      <div class="grid">
+        <input placeholder="Nombre">
+        <input placeholder="Apellidos">
+        <input placeholder="Teléfono">
+        <input placeholder="Teléfono 2 (opcional)">
+        <input placeholder="Email">
+        <input placeholder="Provincia">
+        <input placeholder="Población">
+        <input placeholder="€/hora (bruto)">
+      </div>
+    </div>
+
+    <!-- DISPONIBILIDAD -->
+    <div class="card">
+      <h2>Disponibilidad</h2>
+      <div class="schedule" id="schedule"></div>
+    </div>
+
+    <!-- CATEGORIAS -->
+    <div class="card">
+      <h2>Categorías</h2>
+
+      <div class="categories">
+        <label class="category"><input type="checkbox"> Hostelería</label>
+        <label class="category"><input type="checkbox"> Cocina</label>
+        <label class="category"><input type="checkbox"> Eventos</label>
+        <label class="category"><input type="checkbox"> Retail</label>
+        <label class="category"><input type="checkbox"> Logística</label>
+        <label class="category"><input type="checkbox"> Atención cliente</label>
+        <label class="category"><input type="checkbox"> Reposición</label>
+      </div>
+    </div>
+
+    <!-- EXTRA -->
+    <div class="card">
+      <h2>Información adicional</h2>
+
+      <label>Adjuntar CV</label>
+      <input type="file">
+
+      <label style="margin-top:10px;">Descripción</label>
+      <textarea rows="4"></textarea>
+    </div>
+
+    <button class="submit">Enviar inscripción</button>
+
+  </div>
+</div>
 <script>
 function openModal() {
   document.getElementById("workerModal").classList.add("active");
@@ -208,7 +213,7 @@ function closeModal() {
   document.getElementById("workerModal").classList.remove("active");
 }
 
-/* GENERAR 7 DÍAS AUTOMÁTICOS */
+/* GENERAR DISPONIBILIDAD */
 const days = ["L","M","X","J","V","S","D"];
 const schedule = document.getElementById("schedule");
 
@@ -220,7 +225,7 @@ days.forEach(d => {
     <strong>${d}</strong>
     <input type="time">
     <input type="time">
-    <label><input type="checkbox"> Partida</label>
+    <label><input type="checkbox"> Jornada partida</label>
     <label><input type="checkbox"> Todo el día</label>
   `;
 
