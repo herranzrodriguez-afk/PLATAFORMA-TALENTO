@@ -1,296 +1,282 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Proyecto empresa Javi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<title>Proyecto empresa Javi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f9fafb;
-      color: #111827;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: system-ui;
+  background: #f9fafb;
+}
 
-    /* ===== HOME ===== */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 20px;
-      color: white;
-      background:
-        linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
-        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
-      background-size: cover;
-      background-position: center;
-    }
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  background: linear-gradient(rgba(15,23,42,.8), rgba(15,23,42,.9));
+}
 
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
+.btn {
+  padding: 14px 26px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  margin: 10px;
+  font-weight: 600;
+}
 
-    .hero p {
-      font-size: 1.2rem;
-      max-width: 720px;
-      margin: 0 auto 32px;
-    }
+.btn-worker { background:#6366f1; color:white; }
 
-    .btn {
-      padding: 16px 30px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1rem;
-      margin: 10px;
-    }
+/* MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
 
-    .btn-worker {
-      background: #6366f1;
-      color: white;
-    }
+.modal.active { display:flex; }
 
-    .btn-company {
-      background: white;
-      color: #111827;
-    }
+.modal-content {
+  background:white;
+  width:95%;
+  max-width:1100px;
+  max-height:90vh;
+  overflow:auto;
+  border-radius:20px;
+  padding:30px;
+}
 
-    /* ===== MODAL ===== */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
+.close {
+  position:absolute;
+  right:20px;
+  cursor:pointer;
+  font-size:20px;
+}
 
-    .modal.active {
-      display: flex;
-    }
+/* GRID FORM */
+.form-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+}
 
-    .modal-content {
-      background: white;
-      width: 95%;
-      max-width: 1200px;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 24px;
-      padding: 40px;
-      position: relative;
-    }
+input, textarea {
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  margin-top:6px;
+}
 
-    .close {
-      position: absolute;
-      top: 18px;
-      right: 22px;
-      font-size: 24px;
-      cursor: pointer;
-    }
+/* SCHEDULE */
+.schedule {
+  display:grid;
+  grid-template-columns: repeat(7,1fr);
+  gap:10px;
+}
 
-    h2 {
-      margin-bottom: 20px;
-    }
+.day {
+  background:#f1f5f9;
+  padding:10px;
+  border-radius:12px;
+  font-size:12px;
+}
 
-    h3 {
-      margin-top: 40px;
-      margin-bottom: 10px;
-    }
+.day strong {
+  display:block;
+  background:#6366f1;
+  color:white;
+  padding:4px;
+  border-radius:6px;
+  margin-bottom:6px;
+}
 
-    label {
-      font-weight: 600;
-      margin-top: 16px;
-      display: block;
-    }
+/* CATEGORIES */
+.categories {
+  display:grid;
+  grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;
+}
 
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
-    }
+.category {
+  background:#f1f5f9;
+  padding:8px;
+  border-radius:8px;
+  font-size:13px;
+}
 
-    textarea {
-      resize: vertical;
-    }
-
-    /* ===== DISPONIBILIDAD ===== */
-    .schedule {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    .day {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      background: #f9fafb;
-    }
-
-    .day strong {
-      display: block;
-      margin-bottom: 10px;
-      background: #6366f1;
-      color: white;
-      padding: 6px;
-      border-radius: 6px;
-    }
-
-    .day input {
-      margin-bottom: 8px;
-    }
-
-    /* ===== CATEGORÍAS ===== */
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    .category {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 14px;
-      background: #f9fafb;
-    }
-
-    .category label {
-      font-weight: 500;
-    }
-
-    /* ===== SUBMIT ===== */
-    .submit {
-      margin-top: 40px;
-      width: 100%;
-      padding: 18px;
-      background: #6366f1;
-      color: white;
-      font-size: 1.1rem;
-      border-radius: 14px;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    footer {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
-    }
-
-    @media (max-width: 900px) {
-      .schedule {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
+/* BUTTON */
+.submit {
+  margin-top:30px;
+  padding:16px;
+  width:100%;
+  background:#6366f1;
+  color:white;
+  border:none;
+  border-radius:12px;
+}
+</style>
 </head>
 
 <body>
 
-<!-- HOME -->
 <section class="hero">
   <div>
-    <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>
-      Regístrate como trabajador y define tu disponibilidad,
-      experiencia y preferencias de forma clara y profesional.
-    </p>
+    <h1>Registro trabajador</h1>
     <button class="btn btn-worker" onclick="openModal()">Soy trabajador</button>
-    <button class="btn btn-company">Soy empresa</button>
   </div>
 </section>
 
-<!-- MODAL TRABAJADOR -->
 <div class="modal" id="workerModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">✕</span>
+<div class="modal-content">
+<span class="close" onclick="closeModal()">✕</span>
 
-    <h2>Inscripción de trabajador</h2>
+<h2>Datos personales</h2>
 
-    <!-- DATOS PERSONALES -->
-    <label>Nombre</label>
-    <input type="text">
+<div class="form-grid">
 
-    <label>Apellidos</label>
-    <input type="text">
-
-    <label>Teléfono</label>
-    <input type="tel">
-
-    <label>Email</label>
-    <input type="email">
-
-    <!-- DISPONIBILIDAD -->
-    <h3>Disponibilidad semanal</h3>
-    <p>Indica tu horario habitual por día</p>
-
-    <div class="schedule">
-      <div class="day"><strong>L</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>M</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>X</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>J</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>V</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>S</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-      <div class="day"><strong>D</strong><input type="time"><input type="time"><label><input type="checkbox"> Jornada partida</label></div>
-    </div>
-
-    <!-- CATEGORÍAS -->
-    <h3>Categorías de trabajo con experiencia</h3>
-
-    <div class="categories">
-      <div class="category"><label><input type="checkbox"> Hostelería (camarero/a)</label></div>
-      <div class="category"><label><input type="checkbox"> Cocina</label></div>
-      <div class="category"><label><input type="checkbox"> Eventos</label></div>
-      <div class="category"><label><input type="checkbox"> Promociones / Marketing</label></div>
-      <div class="category"><label><input type="checkbox"> Retail / tienda</label></div>
-      <div class="category"><label><input type="checkbox"> Logística / almacén</label></div>
-      <div class="category"><label><input type="checkbox"> Reposición</label></div>
-      <div class="category"><label><input type="checkbox"> Atención al cliente</label></div>
-      <div class="category"><label><input type="checkbox"> Imagen / azafato-a</label></div>
-      <div class="category"><label><input type="checkbox"> Montaje / desmontaje</label></div>
-      <div class="category"><label><input type="checkbox"> Comercial</label></div>
-      <div class="category"><label><input type="checkbox"> Otros</label></div>
-    </div>
-
-    <!-- CV + DESCRIPCIÓN -->
-    <h3>Información adicional</h3>
-
-    <label>Adjuntar CV</label>
-    <input type="file" accept=".pdf,.doc,.docx,image/*">
-
-    <label>Cómo eres como persona</label>
-    <textarea rows="4" placeholder="Actitud, experiencia, disponibilidad extra, preferencias..."></textarea>
-
-    <button class="submit">Enviar inscripción</button>
-  </div>
+<div>
+<label>Nombre</label>
+<input type="text">
 </div>
 
-<footer>
-  © Proyecto empresa Javi · MVP
-</footer>
+<div>
+<label>Apellidos</label>
+<input type="text">
+</div>
+
+<div>
+<label>Teléfono</label>
+<input type="tel">
+</div>
+
+<div>
+<label>Teléfono 2 (opcional)</label>
+<input type="tel">
+</div>
+
+<div>
+<label>Email</label>
+<input type="email">
+</div>
+
+<div>
+<label>Provincia</label>
+<input list="provincias">
+<datalist id="provincias">
+<option>Madrid</option>
+<option>Barcelona</option>
+<option>Valencia</option>
+<option>Sevilla</option>
+<option>Málaga</option>
+</datalist>
+</div>
+
+<div>
+<label>Población</label>
+<input list="poblaciones">
+<datalist id="poblaciones">
+<option>Madrid</option>
+<option>Alcalá de Henares</option>
+<option>Barcelona</option>
+<option>Badalona</option>
+</datalist>
+</div>
+
+</div>
+
+<h3>Disponibilidad</h3>
+
+<div class="schedule">
+
+<!-- DÍA TEMPLATE -->
+<div class="day">
+<strong>L</strong>
+<input type="time" class="start">
+<input type="time" class="end">
+
+<label><input type="checkbox" class="split"> Partida</label>
+<input type="time" class="start2" style="display:none">
+<input type="time" class="end2" style="display:none">
+
+<label><input type="checkbox" class="fullday"> Todo el día</label>
+</div>
+
+<!-- DUPLICAR igual demás días -->
+</div>
+
+<h3>Categorías</h3>
+
+<div class="categories">
+<div class="category"><label><input type="checkbox"> Hostelería</label></div>
+<div class="category"><label><input type="checkbox"> Cocina</label></div>
+<div class="category"><label><input type="checkbox"> Eventos</label></div>
+<div class="category"><label><input type="checkbox"> Retail</label></div>
+<div class="category"><label><input type="checkbox"> Logística</label></div>
+</div>
+
+<h3>Extra</h3>
+
+<label>CV</label>
+<input type="file">
+
+<label>Descripción</label>
+<textarea></textarea>
+
+<button class="submit">Enviar</button>
+
+</div>
+</div>
 
 <script>
-  function openModal() {
-    document.getElementById("workerModal").classList.add("active");
-  }
+function openModal(){
+  document.getElementById("workerModal").classList.add("active");
+}
 
-  function closeModal() {
-    document.getElementById("workerModal").classList.remove("active");
-  }
+function closeModal(){
+  document.getElementById("workerModal").classList.remove("active");
+}
+
+/* LÓGICA DISPONIBILIDAD */
+document.querySelectorAll(".day").forEach(day=>{
+  const split = day.querySelector(".split");
+  const start2 = day.querySelector(".start2");
+  const end2 = day.querySelector(".end2");
+
+  const full = day.querySelector(".fullday");
+  const start = day.querySelector(".start");
+  const end = day.querySelector(".end");
+
+  split.addEventListener("change",()=>{
+    start2.style.display = split.checked ? "block" : "none";
+    end2.style.display = split.checked ? "block" : "none";
+  });
+
+  full.addEventListener("change",()=>{
+    const hide = full.checked;
+    start.style.display = hide ? "none":"block";
+    end.style.display = hide ? "none":"block";
+    start2.style.display = hide ? "none":"block";
+    end2.style.display = hide ? "none":"block";
+  });
+
+  start2.addEventListener("change",()=>{
+    if(start2.value <= end.value){
+      alert("La tarde debe empezar después de la mañana");
+      start2.value="";
+    }
+  });
+});
 </script>
 
 </body>
