@@ -1,10 +1,163 @@
-<!DOCTYPE html><:20px;
-  top:15px;
-  cursor:pointer;
-  font-size:22px;
+<!DOCTYPE html><!DOCTYPE-size:12px;
 }
 
-/* CARDS */
+/* CATEGORIAS */
+.categories {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.category {
+  background:#e5e7eb;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:13px;
+}
+
+/* BOTON */
+.submit {
+  width:100%;
+  padding:16px;
+  background:#6366f1;
+  color:white;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<section class="hero">
+  <button class="btn" onclick="openModal()">Soy trabajador</button>
+</section>
+
+<div class="modal" id="workerModal">
+<div class="modal-content">
+
+<span class="close" onclick="closeModal()">✕</span>
+
+<!-- DATOS -->
+<div class="card">
+<h2>Datos personales</h2>
+
+<div class="grid">
+<input placeholder="Nombre">
+<input placeholder="Apellidos">
+<input placeholder="Teléfono">
+<input placeholder="Teléfono 2 (opcional)">
+<input placeholder="Email">
+<input placeholder="Provincia">
+<input placeholder="Población">
+<input placeholder="€/hora (bruto)">
+</div>
+
+</div>
+
+<!-- DISPONIBILIDAD -->
+<div class="card">
+<h2>Disponibilidad</h2>
+<div class="schedule" id="schedule"></div>
+</div>
+
+<!-- CATEGORIAS -->
+<div class="card">
+<h2>Categorías</h2>
+
+<div class="categories">
+<label class="category"><input type="checkbox"> Hostelería</label>
+<label class="category"><input type="checkbox"> Cocina</label>
+<label class="category"><input type="checkbox"> Eventos</label>
+<label class="category"><input type="checkbox"> Retail</label>
+<label class="category"><input type="checkbox"> Logística</label>
+</div>
+
+</div>
+
+<!-- EXTRA -->
+<div class="card">
+<h2>Extra</h2>
+
+<label>CV</label>
+<input type="file">
+
+<label>Descripción</label>
+<textarea></textarea>
+
+</div>
+
+<button class="submit">Enviar inscripción</button>
+
+</div>
+</div>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto empresa Javi</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: system-ui;
+  background: #f9fafb;
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(15,23,42,.8), rgba(15,23,42,.9));
+}
+
+.btn {
+  padding:16px 28px;
+  border-radius:12px;
+  border:none;
+  background:#6366f1;
+  color:white;
+  cursor:pointer;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  width: 95%;
+  max-width: 1100px;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  cursor: pointer;
+}
+
+/* BLOQUES */
 .card {
   background:#f9fafb;
   padding:20px;
@@ -14,15 +167,15 @@
 
 .grid {
   display:grid;
-  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-  gap:16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+  gap:15px;
 }
 
 input, textarea {
-  width:100%;
   padding:10px;
   border-radius:10px;
   border:1px solid #ddd;
+  width:100%;
 }
 
 /* DISPONIBILIDAD */
@@ -36,7 +189,6 @@ input, textarea {
   background:#eef2ff;
   padding:10px;
   border-radius:10px;
-  font-size:12px;
 }
 
 .day strong {
@@ -46,164 +198,17 @@ input, textarea {
   text-align:center;
   border-radius:6px;
   margin-bottom:6px;
-}
-
-/* CATEGORÍAS */
-.categories {
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-
-.category {
-  background:#e5e7eb;
-  padding:8px 12px;
-  border-radius:20px;
-  font-size:13px;
-}
-
-/* BOTÓN */
-.submit {
-  width:100%;
-  padding:18px;
-  background:#6366f1;
-  color:white;
-  border:none;
-  border-radius:12px;
-  font-weight:700;
-}
-</style>
-</head>
-
-<body>
-
-<section class="hero">
-  <button class="btn" onclick="openModal()">Soy trabajador</button>
-</section>
-
-<div class="modal" id="modal">
-  <div class="modal-content">
-
-    <span class="close" onclick="closeModal()">✕</span>
-
-    <!-- DATOS -->
-    <div class="card">
-      <h2>Datos personales</h2>
-      <div class="grid">
-        <input placeholder="Nombre">
-        <input placeholder="Apellidos">
-        <input placeholder="Teléfono">
-        <input placeholder="Teléfono 2 (opcional)">
-        <input placeholder="Email">
-        <input placeholder="Provincia">
-        <input placeholder="Población">
-        <input placeholder="€/hora (bruto)">
-      </div>
-    </div>
-
-    <!-- DISPONIBILIDAD -->
-    <div class="card">
-      <h2>Disponibilidad</h2>
-      <div class="schedule" id="schedule"></div>
-    </div>
-
-    <!-- CATEGORÍAS -->
-    <div class="card">
-      <h2>Categorías</h2>
-      <div class="categories">
-        <label class="category"><input type="checkbox"> Hostelería</label>
-        <label class="category"><input type="checkbox"> Cocina</label>
-        <label class="category"><input type="checkbox"> Eventos</label>
-        <label class="category"><input type="checkbox"> Marketing</label>
-        <label class="category"><input type="checkbox"> Retail</label>
-        <label class="category"><input type="checkbox"> Logística</label>
-        <label class="category"><input type="checkbox"> Atención cliente</label>
-        <label class="category"><input type="checkbox"> Reposición</label>
-      </div>
-    </div>
-
-    <!-- EXTRA -->
-    <div class="card">
-      <h2>Información adicional</h2>
-
-      <label>Adjuntar CV</label>
-      <input type="file">
-
-      <label style="margin-top:10px;">Descripción personal</label>
-      <textarea rows="4"></textarea>
-    </div>
-
-    <button class="submit">Enviar inscripción</button>
-
-  </div>
-</div>
-``
-<html lang="es">
-<head>
-<meta charset="UTF-8" />
-<title>Proyecto empresa Javi</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<style>
-body {
-  margin:0;
-  font-family: system-ui;
-  background:#f9fafb;
-}
-
-/* HERO */
-.hero {
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:#0f172a;
-}
-
-.btn {
-  padding:16px 28px;
-  background:#6366f1;
-  color:white;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-}
-
-/* MODAL */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.7);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal.active { display:flex; }
-
-.modal-content {
-  background:white;
-  width:95%;
-  max-width:1200px;
-  max-height:90vh;
-  overflow:auto;
-  border-radius:20px;
-  padding:30px;
-  position:relative;
-}
-
-.close {
-  position:absolute;
+  
 <script>
 function openModal() {
-  document.getElementById("modal").classList.add("active");
+  document.getElementById("workerModal").classList.add("active");
 }
 
 function closeModal() {
-  document.getElementById("modal").classList.remove("active");
+  document.getElementById("workerModal").classList.remove("active");
 }
 
-/* DISPONIBILIDAD COMPLETA */
+/* GENERAR 7 DÍAS AUTOMÁTICOS */
 const days = ["L","M","X","J","V","S","D"];
 const schedule = document.getElementById("schedule");
 
@@ -213,41 +218,13 @@ days.forEach(d => {
 
   div.innerHTML = `
     <strong>${d}</strong>
-    <input type="time" class="start">
-    <input type="time" class="end">
-
-    <label><input type="checkbox" class="split"> Partida</label>
-    <input type="time" class="start2" style="display:none">
-    <input type="time" class="end2" style="display:none">
-
-    <label><input type="checkbox" class="full"> Todo el día</label>
+    <input type="time">
+    <input type="time">
+    <label><input type="checkbox"> Partida</label>
+    <label><input type="checkbox"> Todo el día</label>
   `;
 
   schedule.appendChild(div);
-
-  const split = div.querySelector(".split");
-  const full = div.querySelector(".full");
-  const end = div.querySelector(".end");
-  const start2 = div.querySelector(".start2");
-
-  split.onchange = () => {
-    div.querySelector(".start2").style.display = split.checked ? "block" : "none";
-    div.querySelector(".end2").style.display = split.checked ? "block" : "none";
-  };
-
-  full.onchange = (e) => {
-    const hide = e.target.checked;
-    div.querySelectorAll("input[type=time]").forEach(i => {
-      i.style.display = hide ? "none" : "block";
-    });
-  };
-
-  start2.onchange = () => {
-    if (start2.value && end.value && start2.value <= end.value) {
-      alert("La tarde debe empezar después de la mañana");
-      start2.value = "";
-    }
-  };
 });
 </script>
 
