@@ -118,7 +118,6 @@
       color: #6b7280;
     }
 
-    /* Bubble style */
     .bubble {
       background: #6366f1;
       color: white;
@@ -187,7 +186,7 @@
 </footer>
 
 <!-- JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+https://unpkg.com/leaflet@1.9.4/dist/leaflet.js
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
@@ -197,9 +196,6 @@
     attribution: "&copy; OpenStreetMap"
   }).addTo(map);
 
-  /**
-   * CLUSTER QUE SUMA PERSONAS (NO MARCADORES)
-   */
   const populationLayer = L.markerClusterGroup({
     maxClusterRadius: 60,
     showCoverageOnHover: false,
@@ -218,24 +214,17 @@
     }
   });
 
-  /**
-   * DATOS SIMULADOS POR POBLACIÓN
-   */
   const populations = [
-    // Madrid provincia
     ["Madrid", 40.4168, -3.7038, 800],
     ["Alcalá de Henares", 40.4818, -3.3641, 220],
     ["Getafe", 40.3083, -3.7329, 190],
 
-    // Barcelona provincia
     ["Barcelona", 41.3851, 2.1734, 900],
     ["Hospitalet", 41.3662, 2.1167, 260],
     ["Badalona", 41.4469, 2.2450, 180],
 
-    // Valencia
     ["Valencia", 39.4699, -0.3763, 650],
 
-    // Andalucía
     ["Sevilla", 37.3891, -5.9845, 540],
     ["Málaga", 36.7213, -4.4214, 430]
   ];
