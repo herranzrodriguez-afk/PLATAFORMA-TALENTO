@@ -1,153 +1,245 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Proyecto empresa Javi</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 2 - Registro trabajador</title>
+
 <style>
-body{-align:center;border-radius:6px}body{margin:0;font-family:system-ui;background:#f9fafb;color:#111827}
-.submit{width:100%;padding:16px;background:#6366f1;color:white;border:none;border-radius:12px;font-weight:bold}
-`
-.hero{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(15,23,42,.8),rgba(15,23,42,.9))}
-.btn-worker{padding:16px 30px;border-radius:14px;border:none;background:#6366f1;color:white;cursor:pointer}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;justify-content:center;align-items:center}
-.modal.active{display:flex}
-.modal-content{background:white;width:95%;max-width:1200px;max-height:90vh;overflow:auto;border-radius:20px;padding:30px;position:relative}
-.close{position:absolute;right:20px;top:15px;font-size:22px;cursor:pointer}
-.card{background:#f9fafb;padding:20px;border-radius:16px;margin-bottom:25px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px}
-input,textarea{padding:10px;border-radius:10px;border:1px solid #ddd;width:100%}
-.autocomplete{position:relative}
-.list{position:absolute;background:white;border:1px solid #ddd;width:100%;max-height:120px;overflow:auto;z-index:10}
-.item{padding:6px;cursor:pointer}
-.item:hover{background:#eee}
-.schedule{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
-.day{background:#eef2ff;padding:10px;border-radius:10px;font-size:12px}
- </style>
+body {
+  font-family: Arial;
+  background: #f1f5f9;
+  padding: 20px;
+}
+
+/* SECCIONES */
+.seccion {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+/* FORMULARIO */
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full {
+  grid-column: span 4;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.form-group input:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+/* ERROR */
+.error-msg {
+  display: none;
+  color: red;
+  font-size: 12px;
+}
+
+input:invalid + .error-msg {
+  display: block;
+}
+
+/* DISPONIBILIDAD */
+.semana {
+  display: flex;
+  gap: 10px;
+}
+
+.dia-card {
+  background: #e0e7ff;
+  border-radius: 12px;
+  padding: 10px;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.horas {
+  display: flex;
+  gap: 5px;
+}
+
+.horas input {
+  width: 50%;
+}
+
+.opciones-dia {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* CV */
+.upload-btn {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  border: 1px dashed #94a3b8;
+  cursor: pointer;
+}
+
+.upload-btn:hover {
+  background: #e2e8f0;
+}
+</style>
 </head>
+
 <body>
 
-<section class="hero">
-<button class="btn-worker" onclick="openModal()">Soy trabajador</button>
-</section>
+<!-- DATOS PERSONALES -->
+<div class="seccion">
+  <h2>Datos personales</h2>
 
-<div class="modal" id="workerModal">
-<div class="modal-content">
+  <div class="grid-form">
+    <div class="form-group">
+      <label>Nombre *</label>
+      <input type="text" required>
+    </div>
 
-<span class="close" onclick="closeModal()">✕</span>
+    <div class="form-group">
+      <label>Apellidos *</label>
+      <input type="text" required>
+    </div>
 
-<div class="card">
-<h2>Datos personales</h2>
-<div class="grid">
-<input placeholder="Nombre">
-<input placeholder="Apellidos">
-<input placeholder="Teléfono">
-<input placeholder="Teléfono 2">
-<input placeholder="Email">
+    <div class="form-group">
+      <label>Teléfono *</label>
+      <input type="tel" required>
+    </div>
 
-<div class="autocomplete">
-<input id="provincia" placeholder="Provincia">
-<div id="provList" class="list"></div>
+    <div class="form-group">
+      <label>Teléfono 2</label>
+      <input type="tel">
+    </div>
+
+    <div class="form-group full">
+      <label>Email *</label>
+      <input type="email" id="email" required>
+      <small class="error-msg">Introduce un email válido</small>
+    </div>
+
+    <div class="form-group">
+      <label>Provincia *</label>
+      <input type="text" required>
+    </div>
+
+    <div class="form-group">
+      <label>Población *</label>
+      <input type="text" required>
+    </div>
+
+    <div class="form-group">
+      <label>€/hora *</label>
+      <input type="number" required>
+    </div>
+  </div>
 </div>
 
-<div class="autocomplete">
-<input id="poblacion" placeholder="Población">
-<div id="pobList" class="list"></div>
+<!-- DISPONIBILIDAD -->
+<div class="seccion">
+  <h2>Disponibilidad</h2>
+
+  <div class="semana">
+
+    <!-- DÍAS -->
+    <script>
+      const dias = ["L","M","X","J","V","S","D"];
+      document.write(dias.map(d => `
+        <div class="dia-card">
+          <strong>${d}</strong>
+
+          <div class="horas">
+            <input type="time">
+            <input type="time">
+          </div>
+
+          <div class="horas partida-container">
+            <input type="time">
+            <input type="time">
+          </div>
+
+          <div class="opciones-dia">
+            <label><input type="checkbox" class="partida"> Partida</label>
+            <label><input type="checkbox" class="todo-dia"> Todo el día</label>
+          </div>
+        </div>
+      `).join(""));
+    </script>
+
+  </div>
 </div>
 
-<input placeholder="€/hora (bruto)">
-</div>
+<!-- INFO ADICIONAL -->
+<div class="seccion">
+  <h2>Información adicional</h2>
+
+  <label class="upload-btn">
+    <input type="file" hidden>
+    📎 Adjuntar CV
+  </label>
+
+  <br><br>
+
+  <textarea style="width:100%; height:100px; border-radius:10px; padding:10px;" placeholder="Descripción personal"></textarea>
 </div>
 
-<div class="card">
-<h2>Disponibilidad</h2>
-<div id="schedule" class="schedule"></div>
-</div>
-
-<div class="card">
-<h2>Información adicional</h2>
-<label>Adjuntar CV</label>
-<input type="file">
-<label>Descripción personal</label>
-<textarea rows="4"></textarea>
-</div>
-
-<button class="submit">Enviar inscripción</button>
-
-</div>
-</div>
 <script>
-function openModal(){document.getElementById("workerModal").classList.add("active")}
-function closeModal(){document.getElementById("workerModal").classList.remove("active")}
-
-const provincias=["Madrid","Barcelona","Valencia","Sevilla","Málaga"];
-
-function setupAuto(i,l,d){
- const input=document.getElementById(i);
- const list=document.getElementById(l);
- input.addEventListener("input",()=>{
-  list.innerHTML="";
-  let val=input.value.toLowerCase();
-  d.filter(x=>x.toLowerCase().includes(val)).forEach(x=>{
-    let div=document.createElement("div");
-    div.className="item";
-    div.textContent=x;
-    div.onclick=()=>{input.value=x;list.innerHTML=""};
-    list.appendChild(div);
-  });
- });
-}
-setupAuto("provincia","provList",provincias);
-setupAuto("poblacion","pobList",["Madrid","Getafe","Badalona"]);
-
-const days=["L","M","X","J","V","S","D"];
-const schedule=document.getElementById("schedule");
-
-days.forEach(d=>{
- let el=document.createElement("div");
- el.className="day";
-
- el.innerHTML=`
- <strong>${d}</strong>
- <input type="time" class="start">
- <input type="time" class="end">
- <label><input type="checkbox" class="split"> Partida</label>
- <input type="time" class="start2" style="display:none">
- <input type="time" class="end2" style="display:none">
- <label><input type="checkbox" class="full"> Todo el día</label>
- `;
-
- schedule.appendChild(el);
-
- let start=el.querySelector(".start");
- let end=el.querySelector(".end");
- let start2=el.querySelector(".start2");
- let end2=el.querySelector(".end2");
- let split=el.querySelector(".split");
- let full=el.querySelector(".full");
-
- split.onchange=()=>{
-  start2.style.display=split.checked?"block":"none";
-  end2.style.display=split.checked?"block":"none";
- };
-
- full.onchange=e=>{
-  let hide=e.target.checked;
-  [start,end,start2,end2].forEach(i=>i.style.display=hide?"none":"block");
- };
-
- end.onchange=()=>{
-  if(start.value && end.value && end.value<=start.value){
-   alert("Hora incorrecta"); end.value="";
+// VALIDACIÓN EMAIL
+document.getElementById('email').addEventListener('input', function () {
+  if (!this.value.includes('@')) {
+    this.setCustomValidity('Email inválido');
+  } else {
+    this.setCustomValidity('');
   }
- };
-
- start2.onchange=()=>{
-  if(start2.value && end.value && start2.value<=end.value){
-   alert("La tarde debe comenzar después"); start2.value="";
-  }
- };
 });
+
+// LÓGICA DISPONIBILIDAD
+setTimeout(() => {
+  document.querySelectorAll('.dia-card').forEach(card => {
+
+    const todoDia = card.querySelector('.todo-dia');
+    const partida = card.querySelector('.partida');
+    const horas = card.querySelectorAll('.horas');
+
+    todoDia.addEventListener('change', () => {
+      if (todoDia.checked) {
+        horas.forEach(h => h.style.display = 'none');
+        partida.closest('label').style.display = 'none';
+      } else {
+        horas.forEach(h => h.style.display = 'flex');
+        partida.closest('label').style.display = 'block';
+      }
+    });
+
+  });
+}, 100);
 </script>
 
 </body>
