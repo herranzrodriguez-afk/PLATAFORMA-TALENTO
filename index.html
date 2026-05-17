@@ -1,169 +1,240 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Pantalla Principal V2</title>
+  <meta charset="UTF-8">
+  <title>Proyecto empresa Javi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-<style>
-body {
-  font-family: Arial;
-}
+  <!-- MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
-.hero {
-  text-align: center;
-  padding: 40px;
-  background: #f5f5f5;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+    }
 
-.botones button {
-  margin: 10px;
-  padding: 12px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
+    /* HERO */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 40px 20px;
+      background:
+        linear-gradient(rgba(15,23,42,.75), rgba(15,23,42,.85)),
+        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+    }
 
-.filtros {
-  padding: 20px;
-  background: #fafafa;
-}
+    .hero h1 {
+      font-size: clamp(2.6rem, 5vw, 3.8rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
 
-.filtros input, .filtros select {
-  margin: 5px;
-  padding: 5px;
-}
+    .hero p {
+      font-size: 1.2rem;
+      color: #e5e7eb;
+      max-width: 780px;
+      margin: 0 auto 32px;
+    }
 
-#map {
-  height: 400px;
-  margin-top: 20px;
-}
-</style>
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 16px 30px;
+      border-radius: 14px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-worker { background:#6366f1; color:white; }
+    .btn-company { background:white; color:#111827; }
+
+    /* MAP */
+    .map-section {
+      max-width: 1200px;
+      margin: -80px auto 80px;
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 60px rgba(0,0,0,.1);
+    }
+
+    .map-title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat strong {
+      font-size: 2rem;
+      color: #4f46e5;
+      display: block;
+    }
+
+    #map {
+      height: 540px;
+      border-radius: 18px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    /* Bubble style */
+    .bubble {
+      background: #6366f1;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.35);
+    }
+
+    .cluster-bubble {
+      background: #4338ca;
+      color: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4);
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="hero">
-  <h1>Plataforma Gestión de Trabajadores</h1>
-
-  <div class="botones">
-    <button onclick="irRegistro()">Quiero inscribirme</button>
-    <button>Ya soy trabajador</button>
-    <button>Soy empresa</button>
+<section class="hero">
+  <div>
+    <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+    <p>
+      Consulta cuántas personas hay disponibles por provincia y población en España.
+    </p>
+    <div class="hero-buttons">
+      <button class="btn btn-worker">Soy trabajador</button>
+      <button class="btn btn-company">Soy empresa</button>
+    </div>
   </div>
-</div>
+</section>
 
-<div class="filtros">
-  <h3>Filtros</h3>
-
-  <select id="categoria">
-    <option value="">Categoría profesional</option>
-    <option>Camarero</option>
-    <option>Cocinero</option>
-    <option>Limpieza</option>
-  </select>
-
-  <input type="text" id="provincia" placeholder="Provincia">
-  <input type="text" id="poblacion" placeholder="Población">
-
-  <br><br>
-
-  <strong>Disponibilidad semanal:</strong><br>
-
-  <div id="disponibilidad">
-    <!-- Se genera dinámicamente -->
+<section class="map-section">
+  <div class="map-title">
+    <h2>Talento disponible en España</h2>
+    <p>
+      Zoom general: provincias · Zoom detallado: poblaciones  
+      (las burbujas siempre muestran el total de personas)
+    </p>
   </div>
 
-  <br>
+  <div class="stats">
+    <div class="stat"><strong>12.438</strong>Trabajadores</div>
+    <div class="stat"><strong>47</strong>Provincias</div>
+    <div class="stat"><strong>962</strong>Empresas</div>
+  </div>
 
-  <input type="number" id="precioMin" placeholder="Precio €/h min">
-  <input type="number" id="precioMax" placeholder="Precio €/h max">
+  <div id="map"></div>
+</section>
 
-  <br><br>
+<footer>
+  © Proyecto empresa Javi · MVP
+</footer>
 
-  <button onclick="filtrar()">Buscar</button>
-</div>
-
-<div id="map"></div>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- JS (CORREGIDO ✅) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-// ---------- MAPA ----------
-var map = L.map('map').setView([40.4168, -3.7038], 6); // España
+  const map = L.map("map").setView([40.4, -3.7], 6);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-}).addTo(map);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap"
+  }).addTo(map);
 
-let marcadores = [];
+  const populationLayer = L.markerClusterGroup({
+    maxClusterRadius: 60,
+    showCoverageOnHover: false,
+    iconCreateFunction: function (cluster) {
+      let total = 0;
 
-// ---------- DISPONIBILIDAD ----------
-const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const contenedor = document.getElementById("disponibilidad");
+      cluster.getAllChildMarkers().forEach(marker => {
+        total += marker.options.personCount;
+      });
 
-dias.forEach(dia => {
-  const div = document.createElement("div");
-
-  div.innerHTML = `
-    ${dia}
-    <input type="time" id="${dia}-inicio">
-    <input type="time" id="${dia}-fin">
-  `;
-
-  contenedor.appendChild(div);
-});
-
-// ---------- BOTÓN BLOQUE 2 ----------
-function irRegistro() {
-  window.location.href = "bloque2.html"; // AJUSTAR ruta real
-}
-
-// ---------- FILTRADO ----------
-function filtrar() {
-  const categoria = document.getElementById("categoria").value;
-  const provincia = document.getElementById("provincia").value.toLowerCase();
-  const poblacion = document.getElementById("poblacion").value.toLowerCase();
-  const precioMin = document.getElementById("precioMin").value;
-  const precioMax = document.getElementById("precioMax").value;
-
-  const trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
-
-  // Limpiar mapa
-  marcadores.forEach(m => map.removeLayer(m));
-  marcadores = [];
-
-  const resultados = trabajadores.filter(t => {
-    let ok = true;
-
-    if (categoria && t.puesto !== categoria) ok = false;
-    if (provincia && !t.provincia?.toLowerCase().includes(provincia)) ok = false;
-    if (poblacion && !t.poblacion?.toLowerCase().includes(poblacion)) ok = false;
-
-    if (precioMin && t.precio < precioMin) ok = false;
-    if (precioMax && t.precio > precioMax) ok = false;
-
-    return ok;
-  });
-
-  resultados.forEach(t => {
-    if (t.lat && t.lng) {
-      const marker = L.marker([t.lat, t.lng])
-        .addTo(map)
-        .bindPopup(t.nombre);
-
-      marcadores.push(marker);
+      return L.divIcon({
+        html: `<div class="cluster-bubble">${total}</div>`,
+        className: "",
+        iconSize: [56, 56]
+      });
     }
   });
 
-  // -------- CENTRAR MAPA ----------
-  if (resultados.length > 0) {
-    const primero = resultados[0];
+  const populations = [
+    ["Madrid", 40.4168, -3.7038, 800],
+    ["Alcalá de Henares", 40.4818, -3.3641, 220],
+    ["Getafe", 40.3083, -3.7329, 190],
 
-    if (primero.lat && primero.lng) {
-      map.setView([primero.lat, primero.lng], 10);
-    }
-  }
-}
+    ["Barcelona", 41.3851, 2.1734, 900],
+    ["Hospitalet", 41.3662, 2.1167, 260],
+    ["Badalona", 41.4469, 2.2450, 180],
+
+    ["Valencia", 39.4699, -0.3763, 650],
+
+    ["Sevilla", 37.3891, -5.9845, 540],
+    ["Málaga", 36.7213, -4.4214, 430]
+  ];
+
+  populations.forEach(p => {
+    const marker = L.marker([p[1], p[2]], {
+      personCount: p[3],
+      icon: L.divIcon({
+        html: `<div class="bubble">${p[3]}</div>`,
+        className: ""
+      })
+    }).bindPopup(
+      `<strong>${p[0]}</strong><br>${p[3]} personas disponibles`
+    );
+
+    populationLayer.addLayer(marker);
+  });
+
+  map.addLayer(populationLayer);
 </script>
 
 </body>
