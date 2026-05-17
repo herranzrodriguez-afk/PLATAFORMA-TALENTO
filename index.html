@@ -6,11 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet -->
-  https://unpkg.com/leaflet@1.9.4/dist/leaflet.css
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <!-- MarkerCluster -->
-  /leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
   <style>
     body {
@@ -20,6 +20,7 @@
       color: #111827;
     }
 
+    /* HERO ORIGINAL */
     .hero {
       min-height: 90vh;
       display: flex;
@@ -61,15 +62,14 @@
       border: none;
       font-weight: 600;
       cursor: pointer;
-      font-size: 1rem;
     }
 
+    /* NUEVO BOTÓN (sin tocar originales) */
+    .btn-register { background:#10b981; color:white; }
     .btn-worker { background:#6366f1; color:white; }
     .btn-company { background:white; color:#111827; }
 
-    /* NUEVO botón */
-    .btn-register { background:#10b981; color:white; }
-
+    /* MAPA ORIGINAL */
     .map-section {
       max-width: 1200px;
       margin: -80px auto 80px;
@@ -119,7 +119,6 @@
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 14px;
     }
 
     .cluster-bubble {
@@ -132,74 +131,78 @@
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 15px;
     }
 
-    /* NUEVO: filtros */
+    /* FILTROS (AÑADIDO) */
     .filtros {
+      background: #f3f4f6;
+      padding: 20px;
+      border-radius: 16px;
       margin-bottom: 30px;
     }
 
+    .fila {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
     .filtros input, .filtros select {
-      padding: 6px;
-      margin: 5px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 
 <body>
 
+<!-- HERO ORIGINAL -->
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>
-      Consulta cuántas personas hay disponibles por provincia y población en España.
-    </p>
+    <p>Consulta cuántas personas hay disponibles por provincia y población en España.</p>
 
     <div class="hero-buttons">
-      <!-- NUEVO -->
-      bloque2.htmlQuiero inscribirme</button>
-
-      <!-- EXISTENTES (no se rompen) -->
-      <button class="btn btn-worker">Ya soy trabajador</button>
-      <button class="btn btn-company">Soy empresa</button>
+      <!-- AÑADIDO -->
+      <button class="btn btn-register" onclick="window.location.href='bloqueSoy empresa</button>
     </div>
   </div>
 </section>
 
+<!-- MAP SECTION ORIGINAL + FILTROS -->
 <section class="map-section">
 
-  <!-- NUEVO BLOQUE FILTROS -->
+  <!-- FILTROS (AÑADIDO) -->
   <div class="filtros">
     <h3>Filtros</h3>
 
-    <select id="categoria">
-      <option value="">Categoría profesional</option>
-      <option>Camarero</option>
-      <option>Cocinero</option>
-      <option>Limpieza</option>
-    </select>
+    <div class="fila">
+      <select id="categoria">
+        <option value="">Categoría profesional</option>
+        <option>Camarero</option>
+        <option>Cocinero</option>
+        <option>Limpieza</option>
+      </select>
 
-    <input type="text" id="provincia" placeholder="Provincia">
-    <input type="text" id="poblacion" placeholder="Población">
+      <input id="provincia" placeholder="Provincia">
+      <input id="poblacion" placeholder="Población">
+    </div>
 
-    <br>
+    <div id="dias"></div>
 
-    <strong>Disponibilidad:</strong>
-    <div id="disponibilidad"></div>
-
-    <input type="number" id="precioMin" placeholder="€/h min">
-    <input type="number" id="precioMax" placeholder="€/h max">
-
-    <button onclick="filtrar()">Buscar</button>
+    <div class="fila">
+      <input id="precioMin" placeholder="€/h min" type="number">
+      <input id="precioMax" placeholder="€/h max" type="number">
+      <button onclick="filtrar()">Buscar</button>
+    </div>
   </div>
 
+  <!-- CONTENIDO ORIGINAL -->
   <div class="map-title">
     <h2>Talento disponible en España</h2>
-    <p>
-      Zoom general: provincias · Zoom detallado: poblaciones  
-      (las burbujas siempre muestran el total de personas)
-    </p>
+    <p>Zoom general: provincias · Zoom detallado: poblaciones</p>
   </div>
 
   <div class="stats">
@@ -215,6 +218,7 @@
   © Proyecto empresa Javi · MVP
 </footer>
 
+<!-- JS ORIGINAL -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
@@ -240,49 +244,61 @@
     }
   });
 
+  /* DATOS ORIGINALES */
   const populations = [
     ["Madrid", 40.4168, -3.7038, 800],
     ["Barcelona", 41.3851, 2.1734, 900],
-    ["Valencia", 39.4699, -0.3763, 650]
+    ["Valencia", 39.4699, -0.3763, 650],
+    ["Sevilla", 37.3891, -5.9845, 540]
   ];
 
-  populations.forEach(p => {
-    const marker = L.marker([p[1], p[2]], {
-      personCount: p[3],
-      icon: L.divIcon({
-        html: `<div class="bubble">${p[3]}</div>`,
-        className: ""
-      })
+  function pintar(data) {
+    populationLayer.clearLayers();
+
+    data.forEach(p => {
+      const marker = L.marker([p[1], p[2]], {
+        personCount: p[3],
+        icon: L.divIcon({
+          html: `<div class="bubble">${p[3]}</div>`,
+          className: ""
+        })
+      });
+
+      populationLayer.addLayer(marker);
     });
-    populationLayer.addLayer(marker);
-  });
 
-  map.addLayer(populationLayer);
+    map.addLayer(populationLayer);
+  }
 
-  // DISPONIBILIDAD
+  pintar(populations);
+
+  /* DISPONIBILIDAD (AÑADIDO) */
   const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-  const cont = document.getElementById("disponibilidad");
+  const cont = document.getElementById("dias");
 
   dias.forEach(d => {
     cont.innerHTML += `${d} <input type="time"> <input type="time"><br>`;
   });
 
-  // FILTRAR SIN ROMPER EL SISTEMA EXISTENTE
-  function filtrar() {
-    const poblacion = document.getElementById("poblacion").value.toLowerCase();
+  /* FILTROS (AÑADIDO) */
+  function filtrar(){
     const provincia = document.getElementById("provincia").value.toLowerCase();
+    const poblacion = document.getElementById("poblacion").value.toLowerCase();
 
-    const trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+    let data = populations;
 
-    if (trabajadores.length === 0) return;
+    if(provincia){
+      data = data.filter(p => p[0].toLowerCase().includes(provincia));
+    }
 
-    const encontrado = trabajadores.find(t =>
-      (poblacion && t.poblacion?.toLowerCase().includes(poblacion)) ||
-      (provincia && t.provincia?.toLowerCase().includes(provincia))
-    );
+    if(poblacion){
+      data = data.filter(p => p[0].toLowerCase().includes(poblacion));
+    }
 
-    if (encontrado && encontrado.lat && encontrado.lng) {
-      map.setView([encontrado.lat, encontrado.lng], 10);
+    pintar(data);
+
+    if(data.length > 0){
+      map.setView([data[0][1], data[0][2]], 10);
     }
   }
 </script>
