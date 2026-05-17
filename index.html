@@ -2,272 +2,169 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<title>Pantalla Principal V2</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
 body {
   font-family: Arial;
-  background: #f1f5f9;
-  padding: 20px;
 }
 
-/* SECCIONES */
-.seccion {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
-}
-
-/* FORMULARIO */
-.grid-form {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.form-group.full {
-  grid-column: span 4;
-}
-
-.form-group input {
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
-
-/* AUTOCOMPLETE */
-.lista {
-  position: absolute;
-  top: 100%;
-  width: 100%;
-  background: white;
-  border: 1px solid #ccc;
-  display: none;
-  z-index: 10;
-}
-
-/* DISPONIBILIDAD */
-.semana {
-  display: flex;
-  gap: 12px;
-}
-
-.dia-card {
-  background: #c7d2fe; /* azul más sólido */
-  border-radius: 16px;
-  padding: 14px;
-  width: 150px; /* CLAVE: ancho fijo correcto */
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box; /* ✅ evita desbordes */
-}
-
-.dia-card strong {
+.hero {
   text-align: center;
-  margin-bottom: 8px;
+  padding: 40px;
+  background: #f5f5f5;
 }
 
-/* BLOQUES HORAS */
-.horas {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-}
-
-.horas input {
-  width: 100%;
-  box-sizing: border-box; /* ✅ CLAVE */
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #999;
-}
-
-/* PARTIDA */
-.partida-horas {
-  display: none;
-  margin-top: 6px;
-}
-
-/* CHECKS */
-.check {
-  margin: 6px 0;
-  font-size: 13px;
-}
-
-/* CV */
-.upload-btn {
-  padding: 12px;
-  background: #f1f5f9;
-  border: 1px dashed #94a3b8;
-  border-radius: 10px;
+.botones button {
+  margin: 10px;
+  padding: 12px 20px;
+  font-size: 16px;
   cursor: pointer;
+}
+
+.filtros {
+  padding: 20px;
+  background: #fafafa;
+}
+
+.filtros input, .filtros select {
+  margin: 5px;
+  padding: 5px;
+}
+
+#map {
+  height: 400px;
+  margin-top: 20px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- DATOS -->
-<div class="seccion">
-  <h2>Datos personales</h2>
+<div class="hero">
+  <h1>Plataforma Gestión de Trabajadores</h1>
 
-  <div class="grid-form">
-    <div class="form-group"><input placeholder="Nombre" required></div>
-    <div class="form-group"><input placeholder="Apellidos" required></div>
-    <div class="form-group"><input placeholder="Teléfono" required></div>
-    <div class="form-group"><input placeholder="Teléfono 2"></div>
-
-    <div class="form-group full">
-      <input id="email" placeholder="Email" required>
-    </div>
-
-    <div class="form-group">
-      <input id="provincia" placeholder="Provincia">
-      <div class="lista" id="listaProvincia"></div>
-    </div>
-
-    <div class="form-group">
-      <input id="poblacion" placeholder="Población">
-      <div class="lista" id="listaPoblacion"></div>
-    </div>
-
-    <div class="form-group">
-      <input placeholder="€/hora" type="number">
-    </div>
+  <div class="botones">
+    <button onclick="irRegistro()">Quiero inscribirme</button>
+    <button>Ya soy trabajador</button>
+    <button>Soy empresa</button>
   </div>
 </div>
 
-<!-- DISPONIBILIDAD -->
-<div class="seccion">
-  <h2>Disponibilidad</h2>
-  <div class="semana" id="semana"></div>
-</div>
+<div class="filtros">
+  <h3>Filtros</h3>
 
-<!-- INFO -->
-<div class="seccion">
-  <h2>Información adicional</h2>
+  <select id="categoria">
+    <option value="">Categoría profesional</option>
+    <option>Camarero</option>
+    <option>Cocinero</option>
+    <option>Limpieza</option>
+  </select>
 
-  <label class="upload-btn">
-    <input type="file" hidden>
-    📎 Adjuntar CV
-  </label>
+  <input type="text" id="provincia" placeholder="Provincia">
+  <input type="text" id="poblacion" placeholder="Población">
 
   <br><br>
 
-  <textarea style="width:100%; height:100px; border-radius:10px;"></textarea>
+  <strong>Disponibilidad semanal:</strong><br>
+
+  <div id="disponibilidad">
+    <!-- Se genera dinámicamente -->
+  </div>
+
+  <br>
+
+  <input type="number" id="precioMin" placeholder="Precio €/h min">
+  <input type="number" id="precioMax" placeholder="Precio €/h max">
+
+  <br><br>
+
+  <button onclick="filtrar()">Buscar</button>
 </div>
 
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
-// EMAIL
-document.getElementById('email').addEventListener('input', function () {
-  if (!this.value.includes('@')) {
-    this.setCustomValidity('Email inválido');
-  } else {
-    this.setCustomValidity('');
-  }
-});
+// ---------- MAPA ----------
+var map = L.map('map').setView([40.4168, -3.7038], 6); // España
 
-// AUTOCOMPLETE
-function activarAutocomplete(inputId, listaId, datos) {
-  const input = document.getElementById(inputId);
-  const lista = document.getElementById(listaId);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+}).addTo(map);
 
-  input.addEventListener("input", () => {
-    const valor = input.value.toLowerCase();
-    lista.innerHTML = "";
+let marcadores = [];
 
-    const filtrados = datos.filter(d => d.toLowerCase().includes(valor));
-
-    if (valor && filtrados.length) {
-      lista.style.display = "block";
-      filtrados.forEach(item => {
-        const div = document.createElement("div");
-        div.textContent = item;
-        div.onclick = () => {
-          input.value = item;
-          lista.style.display = "none";
-        };
-        lista.appendChild(div);
-      });
-    } else {
-      lista.style.display = "none";
-    }
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!input.contains(e.target)) {
-      lista.style.display = "none";
-    }
-  });
-}
-
-activarAutocomplete("provincia","listaProvincia",["Barcelona","Madrid"]);
-activarAutocomplete("poblacion","listaPoblacion",["Badalona","Getafe"]);
-
-// DÍAS
+// ---------- DISPONIBILIDAD ----------
 const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const semana = document.getElementById("semana");
+const contenedor = document.getElementById("disponibilidad");
 
 dias.forEach(dia => {
+  const div = document.createElement("div");
 
-  const card = document.createElement("div");
-  card.className = "dia-card";
-
-  card.innerHTML = `
-    <strong>${dia}</strong>
-
-    <div class="horas base">
-      <input type="time">
-      <input type="time">
-    </div>
-
-    <label class="check">
-      <input type="checkbox" class="partida"> Jornada partida
-    </label>
-
-    <div class="horas partida-horas">
-      <input type="time">
-      <input type="time">
-    </div>
-
-    <label class="check">
-      <input type="checkbox" class="todo"> Todo el día
-    </label>
+  div.innerHTML = `
+    ${dia}
+    <input type="time" id="${dia}-inicio">
+    <input type="time" id="${dia}-fin">
   `;
 
-  semana.appendChild(card);
+  contenedor.appendChild(div);
+});
 
-  const partida = card.querySelector(".partida");
-  const todo = card.querySelector(".todo");
-  const partidaHoras = card.querySelector(".partida-horas");
-  const base = card.querySelector(".base");
+// ---------- BOTÓN BLOQUE 2 ----------
+function irRegistro() {
+  window.location.href = "bloque2.html"; // AJUSTAR ruta real
+}
 
-  partida.addEventListener("change", () => {
-    partidaHoras.style.display = partida.checked ? "block" : "none";
+// ---------- FILTRADO ----------
+function filtrar() {
+  const categoria = document.getElementById("categoria").value;
+  const provincia = document.getElementById("provincia").value.toLowerCase();
+  const poblacion = document.getElementById("poblacion").value.toLowerCase();
+  const precioMin = document.getElementById("precioMin").value;
+  const precioMax = document.getElementById("precioMax").value;
+
+  const trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+
+  // Limpiar mapa
+  marcadores.forEach(m => map.removeLayer(m));
+  marcadores = [];
+
+  const resultados = trabajadores.filter(t => {
+    let ok = true;
+
+    if (categoria && t.puesto !== categoria) ok = false;
+    if (provincia && !t.provincia?.toLowerCase().includes(provincia)) ok = false;
+    if (poblacion && !t.poblacion?.toLowerCase().includes(poblacion)) ok = false;
+
+    if (precioMin && t.precio < precioMin) ok = false;
+    if (precioMax && t.precio > precioMax) ok = false;
+
+    return ok;
   });
 
-  todo.addEventListener("change", () => {
-    if (todo.checked) {
-      base.style.display = "none";
-      partidaHoras.style.display = "none";
-      partida.closest('label').style.display = "none";
-    } else {
-      base.style.display = "block";
-      partida.closest('label').style.display = "block";
-      if (partida.checked) partidaHoras.style.display = "block";
+  resultados.forEach(t => {
+    if (t.lat && t.lng) {
+      const marker = L.marker([t.lat, t.lng])
+        .addTo(map)
+        .bindPopup(t.nombre);
+
+      marcadores.push(marker);
     }
   });
 
-});
+  // -------- CENTRAR MAPA ----------
+  if (resultados.length > 0) {
+    const primero = resultados[0];
+
+    if (primero.lat && primero.lng) {
+      map.setView([primero.lat, primero.lng], 10);
+    }
+  }
+}
 </script>
 
 </body>
 </html>
-``
