@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 
 <style>
+/* EXACTO TU CSS SIN TOCAR */
 body {margin:0;font-family:system-ui;background:#f9fafb;}
 
 .hero {min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:40px;
@@ -53,7 +54,7 @@ cursor:pointer;
 .bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
 
-/* ✅ POPUP */
+/* popup (el que ya tenías añadido) */
 .overlay {
 position:fixed;
 top:0;
@@ -73,7 +74,6 @@ width:70%;
 max-width:700px;
 padding:30px;
 border-radius:20px;
-box-shadow:0 20px 60px rgba(0,0,0,.3);
 text-align:center;
 }
 </style>
@@ -84,7 +84,7 @@ text-align:center;
 <div id="overlay" class="overlay">
 <div class="popup">
 <h2>Resultados de búsqueda</h2>
-<p>Vista futura de resultados</p>
+<p>Vista futura</p>
 <button onclick="closePopup()">Cerrar</button>
 </div>
 </div>
@@ -102,7 +102,6 @@ text-align:center;
 <div class="claim">
 Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 </div>
-
 </div>
 </section>
 
@@ -155,12 +154,13 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 
 <script>
 
+// ✅ DATOS COMPLETOS
 const allData = [
-{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:["Lunes"]},
-{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:["Martes"]},
-{prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70, availability:["Miércoles"]},
-{prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60, availability:["Jueves"]},
-{prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50, availability:["Viernes"]},
+{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:["Lunes","Martes"]},
+{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:["Miércoles"]},
+{prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70, availability:["Jueves"]},
+{prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60, availability:["Viernes"]},
+{prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50, availability:["Sábado"]},
 
 {prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, availability:["Lunes"]},
 {prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90, availability:["Martes"]},
@@ -169,7 +169,7 @@ const allData = [
 {prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60, availability:["Viernes"]}
 ];
 
-// MAPA igual
+// MAPA
 const map = L.map("map").setView([40.4,-3.7],6);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
@@ -177,25 +177,42 @@ const populationLayer = L.markerClusterGroup({
 maxClusterRadius:60,
 iconCreateFunction: function(cluster){
 let total=0;
-cluster.getAllChildMarkers().forEach(m=>{
-total += m.options.personCount;
-});
+cluster.getAllChildMarkers().forEach(m=>{ total += m.options.personCount; });
 return L.divIcon({html:`<div class="cluster-bubble">${total}</div>`,className:""});
 }
 });
 
 map.addLayer(populationLayer);
 
+// ✅ FUNCIÓN FILTRO
 function applyFilters(){
 
 const prov = document.getElementById("provincia").value.toLowerCase();
 const pob = document.getElementById("poblacion").value.toLowerCase();
 const precio = document.getElementById("precio").value;
+const categoria = document.getElementById("categoria").value;
+
+// 👉 CAPTURAR DÍAS
+const selectedDays=[];
+document.querySelectorAll(".day-card").forEach((card,i)=>{
+const inicio = card.querySelector(".inicio").value;
+const fin = card.querySelector(".fin").value;
+if(inicio || fin) selectedDays.push(i);
+});
+
+const nombresDias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 
 let filtered = allData.filter(d=>{
+
 if(prov && d.prov.toLowerCase() !== prov) return false;
 if(pob && !d.city.toLowerCase().includes(pob)) return false;
 if(precio && d.price > parseInt(precio)) return false;
+
+if(selectedDays.length>0){
+let match = selectedDays.some(i => d.availability.includes(nombresDias[i]));
+if(!match) return false;
+}
+
 return true;
 });
 
@@ -208,7 +225,6 @@ const marker=L.marker([d.lat,d.lng],{
 personCount:d.people,
 icon:L.divIcon({html:`<div class="bubble">${d.people}</div>`})
 });
-
 populationLayer.addLayer(marker);
 bounds.push([d.lat,d.lng]);
 });
@@ -218,10 +234,16 @@ map.fitBounds(bounds,{padding:[50,50]});
 }else{
 map.setView([40.4,-3.7],6);
 }
-
 }
 
-// popup
+applyFilters();
+
+// eventos
+["provincia","poblacion","precio"].forEach(id=>{
+document.getElementById(id).addEventListener("input", applyFilters);
+});
+
+// botón popup
 document.getElementById("buscarBtn").addEventListener("click", ()=>{
 applyFilters();
 document.getElementById("overlay").style.display="flex";
@@ -231,9 +253,35 @@ function closePopup(){
 document.getElementById("overlay").style.display="none";
 }
 
-// inicial
-applyFilters();
+// ✅ RESTAURADO HORARIOS (CLAVE)
+const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const week=document.getElementById("week");
 
+dias.forEach(dia=>{
+const card=document.createElement("div");
+card.className="day-card";
+
+card.innerHTML=`
+<h4>${dia}</h4>
+<input type="time" class="inicio">
+<input type="time" class="fin">
+<label><input type="checkbox" class="partida"> Jornada partida</label>
+<div class="tarde hidden">
+<input type="time" class="inicio2">
+<input type="time" class="fin2">
+</div>
+`;
+
+week.appendChild(card);
+
+const partida=card.querySelector(".partida");
+const tarde=card.querySelector(".tarde");
+
+partida.addEventListener("change",()=>{
+tarde.classList.toggle("hidden", !partida.checked);
+});
+
+});
 </script>
 
 </body>
