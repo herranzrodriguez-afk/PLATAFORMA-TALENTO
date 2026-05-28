@@ -28,17 +28,20 @@ background-size:cover;}
 .filters {margin-bottom:25px;text-align:center;}
 .filters input,.filters select {margin:5px;padding:8px;border-radius:6px;}
 
-.week {display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin-top:20px;}
+.week {
+display:grid;
+grid-template-columns: repeat(7, 1fr);
+gap:15px;
+margin-top:20px;
+}
 
 .day-card {
 background:#a5b4fc;
 padding:15px;
 border-radius:14px;
-width:130px;
 text-align:center;
+min-height:260px;
 }
-
-.day-card h4 {margin-bottom:10px;}
 
 .day-card input {margin:5px 0;width:90%;padding:5px;border-radius:6px;border:none;}
 
@@ -66,7 +69,6 @@ text-align:center;
 
 <section class="map-section">
 
-<!-- ✅ FILTROS RESTAURADOS -->
 <div class="filters">
 <select>
 <option>Categoria profesional</option>
@@ -81,7 +83,6 @@ text-align:center;
 <input type="date">
 </div>
 
-<!-- ✅ HORARIOS BLOQUE 2 STYLE -->
 <div class="week" id="week"></div>
 
 <div id="map"></div>
@@ -93,19 +94,15 @@ text-align:center;
 
 <script>
 
-// MAPA (INTACTO)
+// MAPA (intacto)
 const map = L.map("map").setView([40.4,-3.7],6);
-
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 const populationLayer = L.markerClusterGroup();
 
-const populations = [
-["Madrid",40.41,-3.7,200],["Getafe",40.3,-3.7,150],
-["Barcelona",41.38,2.17,210],["Badalona",41.44,2.24,130]
-];
-
-populations.forEach(p=>{
+[
+["Madrid",40.4,-3.7,200],["Barcelona",41.38,2.17,210]
+].forEach(p=>{
 const marker=L.marker([p[1],p[2]],{
 personCount:p[3],
 icon:L.divIcon({html:`<div class="bubble">${p[3]}</div>`})
@@ -116,7 +113,7 @@ populationLayer.addLayer(marker);
 map.addLayer(populationLayer);
 
 
-// ✅ HORARIOS BLOQUE 2
+// HORARIOS
 const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 const week=document.getElementById("week");
 
@@ -143,24 +140,38 @@ card.innerHTML=`
 
 week.appendChild(card);
 
-// lógica checks
 const partida=card.querySelector(".partida");
 const completo=card.querySelector(".completo");
 const tarde=card.querySelector(".tarde");
+const inputs=card.querySelectorAll("input[type=time]");
 
+// ✅ lógica correcta
 partida.addEventListener("change",()=>{
-tarde.classList.toggle("hidden", !partida.checked);
+if(partida.checked){
+completo.checked=false;
+inputs.forEach(i=>i.disabled=false);
+tarde.classList.remove("hidden");
+}
+else{
+tarde.classList.add("hidden");
+}
 });
 
 completo.addEventListener("change",()=>{
-const inputs=card.querySelectorAll("input[type=time]");
-inputs.forEach(i=>i.disabled=completo.checked);
+if(completo.checked){
+partida.checked=false;
+tarde.classList.add("hidden");
+inputs.forEach(i=>i.disabled=true);
+}
+else{
+inputs.forEach(i=>i.disabled=false);
+}
 });
 
 // validación
 card.querySelector(".inicio2").addEventListener("change",(e)=>{
-let mañanaFin=card.querySelector(".fin").value;
-if(mañanaFin && e.target.value < mañanaFin){
+let finMañana=card.querySelector(".fin").value;
+if(finMañana && e.target.value < finMañana){
 alert("Horario tarde incorrecto");
 e.target.value="";
 }
