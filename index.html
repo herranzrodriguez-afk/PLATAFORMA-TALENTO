@@ -6,11 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
   <!-- MarkerCluster -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+  />
 
   <style>
     body {
@@ -20,7 +29,7 @@
       color: #111827;
     }
 
-    /* HERO ORIGINAL */
+    /* HERO */
     .hero {
       min-height: 90vh;
       display: flex;
@@ -62,14 +71,13 @@
       border: none;
       font-weight: 600;
       cursor: pointer;
+      font-size: 1rem;
     }
 
-    /* NUEVO BOTÓN (sin tocar originales) */
-    .btn-register { background:#10b981; color:white; }
     .btn-worker { background:#6366f1; color:white; }
     .btn-company { background:white; color:#111827; }
 
-    /* MAPA ORIGINAL */
+    /* MAP */
     .map-section {
       max-width: 1200px;
       margin: -80px auto 80px;
@@ -119,6 +127,8 @@
       align-items: center;
       justify-content: center;
       font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.35);
     }
 
     .cluster-bubble {
@@ -131,78 +141,35 @@
       align-items: center;
       justify-content: center;
       font-weight: 800;
-    }
-
-    /* FILTROS (AÑADIDO) */
-    .filtros {
-      background: #f3f4f6;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 30px;
-    }
-
-    .fila {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
-    .filtros input, .filtros select {
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      font-size: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4);
     }
   </style>
 </head>
 
 <body>
 
-<!-- HERO ORIGINAL -->
 <section class="hero">
   <div>
     <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-    <p>Consulta cuántas personas hay disponibles por provincia y población en España.</p>
-
+    <p>
+      Consulta cuántas personas hay disponibles por provincia y población en España.
+    </p>
     <div class="hero-buttons">
-      <!-- AÑADIDO -->
-      <button class="btn btn-register" onclick="window.location.href='bloqueSoy empresa</button>
+      <button class="btn btn-worker">Registrarme</button>
+      <button class="btn btn-worker">Ya estoy inscrito</button>
+      <button class="btn btn-company">Soy empresa</button>
     </div>
   </div>
 </section>
 
-<!-- MAP SECTION ORIGINAL + FILTROS -->
 <section class="map-section">
-
-  <!-- FILTROS (AÑADIDO) -->
-  <div class="filtros">
-    <h3>Filtros</h3>
-
-    <div class="fila">
-      <select id="categoria">
-        <option value="">Categoría profesional</option>
-        <option>Camarero</option>
-        <option>Cocinero</option>
-        <option>Limpieza</option>
-      </select>
-
-      <input id="provincia" placeholder="Provincia">
-      <input id="poblacion" placeholder="Población">
-    </div>
-
-    <div id="dias"></div>
-
-    <div class="fila">
-      <input id="precioMin" placeholder="€/h min" type="number">
-      <input id="precioMax" placeholder="€/h max" type="number">
-      <button onclick="filtrar()">Buscar</button>
-    </div>
-  </div>
-
-  <!-- CONTENIDO ORIGINAL -->
   <div class="map-title">
     <h2>Talento disponible en España</h2>
-    <p>Zoom general: provincias · Zoom detallado: poblaciones</p>
+    <p>
+      Zoom general: provincias · Zoom detallado: poblaciones  
+      (las burbujas siempre muestran el total de personas)
+    </p>
   </div>
 
   <div class="stats">
@@ -218,20 +185,23 @@
   © Proyecto empresa Javi · MVP
 </footer>
 
-<!-- JS ORIGINAL -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- JS -->
+https://unpkg.com/leaflet@1.9.4/dist/leaflet.js
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
   const map = L.map("map").setView([40.4, -3.7], 6);
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap"
+  }).addTo(map);
 
   const populationLayer = L.markerClusterGroup({
     maxClusterRadius: 60,
     showCoverageOnHover: false,
     iconCreateFunction: function (cluster) {
       let total = 0;
+
       cluster.getAllChildMarkers().forEach(marker => {
         total += marker.options.personCount;
       });
@@ -244,63 +214,36 @@
     }
   });
 
-  /* DATOS ORIGINALES */
   const populations = [
     ["Madrid", 40.4168, -3.7038, 800],
+    ["Alcalá de Henares", 40.4818, -3.3641, 220],
+    ["Getafe", 40.3083, -3.7329, 190],
+
     ["Barcelona", 41.3851, 2.1734, 900],
+    ["Hospitalet", 41.3662, 2.1167, 260],
+    ["Badalona", 41.4469, 2.2450, 180],
+
     ["Valencia", 39.4699, -0.3763, 650],
-    ["Sevilla", 37.3891, -5.9845, 540]
+
+    ["Sevilla", 37.3891, -5.9845, 540],
+    ["Málaga", 36.7213, -4.4214, 430]
   ];
 
-  function pintar(data) {
-    populationLayer.clearLayers();
+  populations.forEach(p => {
+    const marker = L.marker([p[1], p[2]], {
+      personCount: p[3],
+      icon: L.divIcon({
+        html: `<div class="bubble">${p[3]}</div>`,
+        className: ""
+      })
+    }).bindPopup(
+      `<strong>${p[0]}</strong><br>${p[3]} personas disponibles`
+    );
 
-    data.forEach(p => {
-      const marker = L.marker([p[1], p[2]], {
-        personCount: p[3],
-        icon: L.divIcon({
-          html: `<div class="bubble">${p[3]}</div>`,
-          className: ""
-        })
-      });
-
-      populationLayer.addLayer(marker);
-    });
-
-    map.addLayer(populationLayer);
-  }
-
-  pintar(populations);
-
-  /* DISPONIBILIDAD (AÑADIDO) */
-  const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-  const cont = document.getElementById("dias");
-
-  dias.forEach(d => {
-    cont.innerHTML += `${d} <input type="time"> <input type="time"><br>`;
+    populationLayer.addLayer(marker);
   });
 
-  /* FILTROS (AÑADIDO) */
-  function filtrar(){
-    const provincia = document.getElementById("provincia").value.toLowerCase();
-    const poblacion = document.getElementById("poblacion").value.toLowerCase();
-
-    let data = populations;
-
-    if(provincia){
-      data = data.filter(p => p[0].toLowerCase().includes(provincia));
-    }
-
-    if(poblacion){
-      data = data.filter(p => p[0].toLowerCase().includes(poblacion));
-    }
-
-    pintar(data);
-
-    if(data.length > 0){
-      map.setView([data[0][1], data[0][2]], 10);
-    }
-  }
+  map.addLayer(populationLayer);
 </script>
 
 </body>
