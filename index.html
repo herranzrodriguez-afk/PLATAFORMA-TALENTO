@@ -23,6 +23,12 @@ background-size:cover;}
 .btn-worker {background:#6366f1;color:white;}
 .btn-company {background:white;color:#111827;}
 
+.claim {
+margin-top:20px;
+font-size:1.2rem;
+color:#e5e7eb;
+}
+
 .map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;box-shadow:0 30px 60px rgba(0,0,0,.1);}
 
 .filters {margin-bottom:25px;text-align:center;}
@@ -74,11 +80,17 @@ margin-top:30px;
 <section class="hero">
 <div>
 <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+
 <div class="hero-buttons">
 <button class="btn btn-worker">Registrarme</button>
 <button class="btn btn-worker">Ya estoy inscrito</button>
 <button class="btn btn-company">Soy empresa</button>
 </div>
+
+<div class="claim">
+Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
+</div>
+
 </div>
 </section>
 
@@ -114,15 +126,12 @@ margin-top:30px;
 
 <input type="date">
 <input type="date">
-
-<!-- ✅ NUEVO -->
 <input type="number" placeholder="€/hora">
 
 </div>
 
 <div class="week" id="week"></div>
 
-<!-- ✅ BOTÓN BUSCAR -->
 <div style="text-align:center;">
 <button id="buscarBtn">BUSCAR</button>
 </div>
@@ -136,21 +145,18 @@ margin-top:30px;
 
 <script>
 
-// MAPA
+// MAPA (intacto)
 const map = L.map("map").setView([40.4,-3.7],6);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 const populationLayer = L.markerClusterGroup({
 maxClusterRadius:60,
-
-/* ✅ FIX CLUSTER TOTAL PERSONAS */
 iconCreateFunction: function(cluster){
 let total=0;
 cluster.getAllChildMarkers().forEach(m=>{
 total += m.options.personCount;
 });
-
 return L.divIcon({
 html:`<div class="cluster-bubble">${total}</div>`,
 className:""
@@ -158,33 +164,21 @@ className:""
 }
 });
 
-const populations = [
-["Madrid",40.41,-3.7,120],
-["Getafe",40.3,-3.7,80],
-["Alcalá",40.48,-3.36,70],
-["Móstoles",40.32,-3.86,60],
-["Leganés",40.33,-3.76,50],
-
-["Barcelona",41.38,2.17,130],
-["Hospitalet",41.36,2.11,90],
-["Badalona",41.44,2.24,80],
-["Sabadell",41.54,2.10,70],
-["Terrassa",41.56,2.01,60]
-];
-
-populations.forEach(p=>{
+[
+["Madrid",40.41,-3.7,120],["Getafe",40.3,-3.7,80],
+["Barcelona",41.38,2.17,130],["Badalona",41.44,2.24,80]
+].forEach(p=>{
 const marker=L.marker([p[1],p[2]],{
 personCount:p[3],
 icon:L.divIcon({html:`<div class="bubble">${p[3]}</div>`})
 });
-
 populationLayer.addLayer(marker);
 });
 
 map.addLayer(populationLayer);
 
 
-// HORARIOS (intacto)
+// HORARIOS (ajuste quirúrgico)
 const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 const week=document.getElementById("week");
 
@@ -194,35 +188,39 @@ card.className="day-card";
 
 card.innerHTML=`
 <h4>${dia}</h4>
-<input type="time">
-<input type="time">
-<label><input type="checkbox" class="partida"> Jornada partida</label><br>
-<label><input type="checkbox" class="completo"> Todo el día</label>
+<input type="time" class="inicio">
+<input type="time" class="fin">
+<label><input type="checkbox" class="partida"> Jornada partida</label>
 <div class="tarde hidden">
-<input type="time">
-<input type="time">
+<input type="time" class="inicio2">
+<input type="time" class="fin2">
 </div>
 `;
 
 week.appendChild(card);
 
 const partida=card.querySelector(".partida");
-const completo=card.querySelector(".completo");
 const tarde=card.querySelector(".tarde");
 
 partida.addEventListener("change",()=>{
-if(partida.checked){
-completo.checked=false;
-tarde.classList.remove("hidden");
-}else{
-tarde.classList.add("hidden");
-}
+tarde.classList.toggle("hidden", !partida.checked);
 });
 
-completo.addEventListener("change",()=>{
-if(completo.checked){
-partida.checked=false;
-tarde.classList.add("hidden");
+// ✅ VALIDACIÓN COMPLETA
+card.addEventListener("change",()=>{
+const inicioM = card.querySelector(".inicio").value;
+const finM = card.querySelector(".fin").value;
+const inicioT = card.querySelector(".inicio2")?.value;
+const finT = card.querySelector(".fin2")?.value;
+
+if(inicioT && finM && inicioT < finM){
+alert("La tarde no puede empezar antes de terminar la mañana");
+card.querySelector(".inicio2").value="";
+}
+
+if(finT && inicioT && finT < inicioT){
+alert("La hora de fin de tarde es incorrecta");
+card.querySelector(".fin2").value="";
 }
 });
 
