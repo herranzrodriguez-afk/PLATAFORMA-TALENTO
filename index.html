@@ -11,47 +11,24 @@
 
 <style>
 body {margin:0;font-family:system-ui;background:#f9fafb;}
-
 .hero {min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:40px;
 background:linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.85)),
-url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
-background-size:cover;}
-
+url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");background-size:cover;}
 .hero-buttons {display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
-
 .btn {padding:16px 30px;border-radius:14px;border:none;font-weight:600;cursor:pointer;}
 .btn-worker {background:#6366f1;color:white;}
 .btn-company {background:white;color:#111827;}
-
 .claim {margin-top:20px;font-size:1.2rem;color:#e5e7eb;}
-
-.map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;box-shadow:0 30px 60px rgba(0,0,0,.1);}
-
+.map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;}
 .filters {margin-bottom:25px;text-align:center;}
 .filters input,.filters select {margin:5px;padding:8px;border-radius:6px;}
-
-#buscarBtn{
-margin-top:15px;
-padding:12px 25px;
-border:none;
-border-radius:10px;
-background:#4f46e5;
-color:white;
-font-weight:600;
-cursor:pointer;
-}
-
+#buscarBtn {margin-top:15px;padding:12px 25px;border:none;border-radius:10px;background:#4f46e5;color:white;font-weight:600;cursor:pointer;}
 .week {display:grid;grid-template-columns:repeat(7,1fr);gap:15px;margin-top:20px;}
-
 .day-card {background:#a5b4fc;padding:15px;border-radius:14px;text-align:center;min-height:260px;}
-.day-card input {margin:5px 0;width:90%;padding:5px;border-radius:6px;border:none;}
-
 .hidden {display:none;}
-
 #map {height:540px;border-radius:18px;margin-top:30px;}
-
 .bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
+.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 
@@ -67,17 +44,13 @@ cursor:pointer;
 <button class="btn btn-company">Soy empresa</button>
 </div>
 
-<div class="claim">
-Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
-</div>
-
+<div class="claim">Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.</div>
 </div>
 </section>
 
 <section class="map-section">
 
 <div class="filters">
-
 <select>
 <option value="">Categoría profesional</option>
 <option value="camarero">Camarero</option>
@@ -91,23 +64,11 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 </datalist>
 
 <input id="poblacion" list="poblaciones" placeholder="Población">
-<datalist id="poblaciones">
-<option value="Madrid">
-<option value="Getafe">
-<option value="Alcalá de Henares">
-<option value="Móstoles">
-<option value="Leganés">
-<option value="Barcelona">
-<option value="Hospitalet">
-<option value="Badalona">
-<option value="Sabadell">
-<option value="Terrassa">
-</datalist>
+<datalist id="poblaciones"></datalist>
 
 <input type="date">
 <input type="date">
 <input id="precio" type="number" placeholder="€/hora">
-
 </div>
 
 <div class="week" id="week"></div>
@@ -125,43 +86,41 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 
 <script>
 
-// DATOS BASE
 const allData = [
-{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120},
-{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80},
-{prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70},
-{prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60},
-{prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50},
-
-{prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130},
-{prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90},
-{prov:"Barcelona", city:"Badalona", lat:41.44, lng:2.24, price:9, people:80},
-{prov:"Barcelona", city:"Sabadell", lat:41.54, lng:2.10, price:11, people:70},
-{prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60}
+{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:{Lunes:{start:"08:00",end:"16:00"}}},
+{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:{Lunes:{start:"10:00",end:"18:00"}}},
+{prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, availability:{Lunes:{start:"09:00",end:"17:00"}}}
 ];
 
-// MAPA
 const map = L.map("map").setView([40.4,-3.7],6);
-
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 const populationLayer = L.markerClusterGroup({
-maxClusterRadius:60,
 iconCreateFunction: function(cluster){
 let total=0;
-cluster.getAllChildMarkers().forEach(m=>{
-total += m.options.personCount;
-});
-return L.divIcon({
-html:`<div class="cluster-bubble">${total}</div>`,
-className:""
-});
+cluster.getAllChildMarkers().forEach(m=> total += m.options.personCount);
+return L.divIcon({html:`<div class="cluster-bubble">${total}</div>`});
 }
 });
-
 map.addLayer(populationLayer);
 
-// ✅ FUNCIÓN CENTRAL (MODIFICADA)
+
+// ✅ AUTOCOMPLETE DINÁMICO
+document.getElementById("provincia").addEventListener("input",()=>{
+const prov = document.getElementById("provincia").value.toLowerCase();
+const list = document.getElementById("poblaciones");
+list.innerHTML="";
+
+const ciudades=[...new Set(allData.filter(d=>d.prov.toLowerCase().includes(prov)).map(d=>d.city))];
+
+ciudades.forEach(c=>{
+let opt=document.createElement("option");
+opt.value=c;
+list.appendChild(opt);
+});
+});
+
+
 function applyFilters(){
 
 const prov = document.getElementById("provincia").value.toLowerCase();
@@ -176,86 +135,30 @@ return true;
 });
 
 populationLayer.clearLayers();
-
-const bounds = [];
+const bounds=[];
 
 filtered.forEach(d=>{
 const marker=L.marker([d.lat,d.lng],{
 personCount:d.people,
 icon:L.divIcon({html:`<div class="bubble">${d.people}</div>`})
-}).bindPopup(`<b>${d.city}</b><br>${d.people} personas<br>${d.price}€/h`);
-
+});
 populationLayer.addLayer(marker);
 bounds.push([d.lat,d.lng]);
 });
 
-// ✅ ZOOM AUTOMÁTICO
-if(bounds.length > 0){
+if(bounds.length>0){
 map.fitBounds(bounds,{padding:[50,50]});
 }else{
 map.setView([40.4,-3.7],6);
 }
-
 }
 
-// inicial
 applyFilters();
 
-// ✅ AUTO FILTROS (NUEVO SIN ROMPER)
 document.getElementById("provincia").addEventListener("input", applyFilters);
 document.getElementById("poblacion").addEventListener("input", applyFilters);
 document.getElementById("precio").addEventListener("input", applyFilters);
-
-// ✅ BOTÓN (igual que antes)
 document.getElementById("buscarBtn").addEventListener("click", applyFilters);
-
-
-// HORARIOS (INTACTO)
-const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const week=document.getElementById("week");
-
-dias.forEach(dia=>{
-const card=document.createElement("div");
-card.className="day-card";
-
-card.innerHTML=`
-<h4>${dia}</h4>
-<input type="time" class="inicio">
-<input type="time" class="fin">
-<label><input type="checkbox" class="partida"> Jornada partida</label>
-<div class="tarde hidden">
-<input type="time" class="inicio2">
-<input type="time" class="fin2">
-</div>
-`;
-
-week.appendChild(card);
-
-const partida=card.querySelector(".partida");
-const tarde=card.querySelector(".tarde");
-
-partida.addEventListener("change",()=>{
-tarde.classList.toggle("hidden", !partida.checked);
-});
-
-card.addEventListener("change",()=>{
-const inicioM = card.querySelector(".inicio").value;
-const finM = card.querySelector(".fin").value;
-const inicioT = card.querySelector(".inicio2")?.value;
-const finT = card.querySelector(".fin2")?.value;
-
-if(inicioT && finM && inicioT < finM){
-alert("La tarde no puede empezar antes de la mañana");
-card.querySelector(".inicio2").value="";
-}
-
-if(finT && inicioT && finT < inicioT){
-alert("Fin tarde incorrecto");
-card.querySelector(".fin2").value="";
-}
-});
-
-});
 
 </script>
 
