@@ -11,24 +11,61 @@
 
 <style>
 body {margin:0;font-family:system-ui;background:#f9fafb;}
+
 .hero {min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:40px;
 background:linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.85)),
-url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");background-size:cover;}
+url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
+background-size:cover;}
+
 .hero-buttons {display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+
 .btn {padding:16px 30px;border-radius:14px;border:none;font-weight:600;cursor:pointer;}
 .btn-worker {background:#6366f1;color:white;}
 .btn-company {background:white;color:#111827;}
-.claim {margin-top:20px;font-size:1.2rem;color:#e5e7eb;}
-.map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;}
+
+.map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;box-shadow:0 30px 60px rgba(0,0,0,.1);}
+
 .filters {margin-bottom:25px;text-align:center;}
 .filters input,.filters select {margin:5px;padding:8px;border-radius:6px;}
-#buscarBtn {margin-top:15px;padding:12px 25px;border:none;border-radius:10px;background:#4f46e5;color:white;font-weight:600;cursor:pointer;}
-.week {display:grid;grid-template-columns:repeat(7,1fr);gap:15px;margin-top:20px;}
-.day-card {background:#a5b4fc;padding:15px;border-radius:14px;text-align:center;min-height:260px;}
+
+#buscarBtn{
+margin-top:15px;
+padding:12px 25px;
+border:none;
+border-radius:10px;
+background:#4f46e5;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+.week {
+display:grid;
+grid-template-columns: repeat(7, 1fr);
+gap:15px;
+margin-top:20px;
+}
+
+.day-card {
+background:#a5b4fc;
+padding:15px;
+border-radius:14px;
+text-align:center;
+min-height:260px;
+}
+
+.day-card input {margin:5px 0;width:90%;padding:5px;border-radius:6px;border:none;}
+
 .hidden {display:none;}
-#map {height:540px;border-radius:18px;margin-top:30px;}
+
+#map {
+height:540px;
+border-radius:18px;
+margin-top:30px;
+}
+
 .bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
 </style>
 </head>
 
@@ -37,42 +74,55 @@ url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fi
 <section class="hero">
 <div>
 <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-
 <div class="hero-buttons">
 <button class="btn btn-worker">Registrarme</button>
 <button class="btn btn-worker">Ya estoy inscrito</button>
 <button class="btn btn-company">Soy empresa</button>
 </div>
-
-<div class="claim">Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.</div>
 </div>
 </section>
 
 <section class="map-section">
 
 <div class="filters">
+
 <select>
-<option value="">Categoría profesional</option>
-<option value="camarero">Camarero</option>
-<option value="cocinero">Cocinero</option>
+<option>Categoria profesional</option>
+<option>Camarero</option>
+<option>Cocinero</option>
 </select>
 
-<input id="provincia" list="provincias" placeholder="Provincia">
+<input list="provincias" placeholder="Provincia">
 <datalist id="provincias">
 <option value="Madrid">
 <option value="Barcelona">
 </datalist>
 
-<input id="poblacion" list="poblaciones" placeholder="Población">
-<datalist id="poblaciones"></datalist>
+<input list="poblaciones" placeholder="Población">
+<datalist id="poblaciones">
+<option value="Madrid">
+<option value="Getafe">
+<option value="Alcalá de Henares">
+<option value="Móstoles">
+<option value="Leganés">
+<option value="Barcelona">
+<option value="Hospitalet">
+<option value="Badalona">
+<option value="Sabadell">
+<option value="Terrassa">
+</datalist>
 
 <input type="date">
 <input type="date">
-<input id="precio" type="number" placeholder="€/hora">
+
+<!-- ✅ NUEVO FILTRO -->
+<input type="number" placeholder="€/hora">
+
 </div>
 
 <div class="week" id="week"></div>
 
+<!-- ✅ BOTÓN BUSCAR -->
 <div style="text-align:center;">
 <button id="buscarBtn">BUSCAR</button>
 </div>
@@ -86,79 +136,110 @@ url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fi
 
 <script>
 
-const allData = [
-{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:{Lunes:{start:"08:00",end:"16:00"}}},
-{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:{Lunes:{start:"10:00",end:"18:00"}}},
-{prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, availability:{Lunes:{start:"09:00",end:"17:00"}}}
-];
-
+// MAPA
 const map = L.map("map").setView([40.4,-3.7],6);
+
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 const populationLayer = L.markerClusterGroup({
+
+maxClusterRadius:60,
+
+// ✅ FIX CLUSTER → TOTAL PERSONAS
 iconCreateFunction: function(cluster){
 let total=0;
-cluster.getAllChildMarkers().forEach(m=> total += m.options.personCount);
-return L.divIcon({html:`<div class="cluster-bubble">${total}</div>`});
-}
+
+cluster.getAllChildMarkers().forEach(marker=>{
+total += marker.options.personCount;
 });
+
+return L.divIcon({
+html:`<div class="cluster-bubble">${total}</div>`,
+className:"",
+iconSize:[56,56]
+});
+}
+
+});
+
+const populations = [
+
+["Madrid",40.41,-3.7,120],
+["Getafe",40.3,-3.7,80],
+["Alcalá de Henares",40.48,-3.36,70],
+["Móstoles",40.32,-3.86,60],
+["Leganés",40.33,-3.76,50],
+
+["Barcelona",41.38,2.17,130],
+["Hospitalet",41.36,2.11,90],
+["Badalona",41.44,2.24,80],
+["Sabadell",41.54,2.10,70],
+["Terrassa",41.56,2.01,60]
+
+];
+
+populations.forEach(p=>{
+const marker=L.marker([p[1],p[2]],{
+personCount:p[3],
+icon:L.divIcon({
+html:`<div class="bubble">${p[3]}</div>`,
+className:"",
+iconSize:[48,48]
+})
+});
+
+populationLayer.addLayer(marker);
+});
+
 map.addLayer(populationLayer);
 
 
-// ✅ AUTOCOMPLETE DINÁMICO
-document.getElementById("provincia").addEventListener("input",()=>{
-const prov = document.getElementById("provincia").value.toLowerCase();
-const list = document.getElementById("poblaciones");
-list.innerHTML="";
+// HORARIOS (INTACTO)
+const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const week=document.getElementById("week");
 
-const ciudades=[...new Set(allData.filter(d=>d.prov.toLowerCase().includes(prov)).map(d=>d.city))];
+dias.forEach(dia=>{
+const card=document.createElement("div");
+card.className="day-card";
 
-ciudades.forEach(c=>{
-let opt=document.createElement("option");
-opt.value=c;
-list.appendChild(opt);
-});
-});
+card.innerHTML=`
+<h4>${dia}</h4>
 
+<input type="time">
+<input type="time">
 
-function applyFilters(){
+<label><input type="checkbox" class="partida"> Jornada partida</label><br>
+<label><input type="checkbox" class="completo"> Todo el día</label>
 
-const prov = document.getElementById("provincia").value.toLowerCase();
-const pob = document.getElementById("poblacion").value.toLowerCase();
-const precio = document.getElementById("precio").value;
+<div class="tarde hidden">
+<input type="time">
+<input type="time">
+</div>
+`;
 
-let filtered = allData.filter(d=>{
-if(prov && !d.prov.toLowerCase().includes(prov)) return false;
-if(pob && !d.city.toLowerCase().includes(pob)) return false;
-if(precio && d.price > parseInt(precio)) return false;
-return true;
-});
+week.appendChild(card);
 
-populationLayer.clearLayers();
-const bounds=[];
+const partida=card.querySelector(".partida");
+const completo=card.querySelector(".completo");
+const tarde=card.querySelector(".tarde");
 
-filtered.forEach(d=>{
-const marker=L.marker([d.lat,d.lng],{
-personCount:d.people,
-icon:L.divIcon({html:`<div class="bubble">${d.people}</div>`})
-});
-populationLayer.addLayer(marker);
-bounds.push([d.lat,d.lng]);
-});
-
-if(bounds.length>0){
-map.fitBounds(bounds,{padding:[50,50]});
+partida.addEventListener("change",()=>{
+if(partida.checked){
+completo.checked=false;
+tarde.classList.remove("hidden");
 }else{
-map.setView([40.4,-3.7],6);
+tarde.classList.add("hidden");
 }
+});
+
+completo.addEventListener("change",()=>{
+if(completo.checked){
+partida.checked=false;
+tarde.classList.add("hidden");
 }
+});
 
-applyFilters();
-
-document.getElementById("provincia").addEventListener("input", applyFilters);
-document.getElementById("poblacion").addEventListener("input", applyFilters);
-document.getElementById("precio").addEventListener("input", applyFilters);
-document.getElementById("buscarBtn").addEventListener("click", applyFilters);
+});
 
 </script>
 
