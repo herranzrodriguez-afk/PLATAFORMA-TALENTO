@@ -28,6 +28,17 @@ background-size:cover;}
 .filters {margin-bottom:25px;text-align:center;}
 .filters input,.filters select {margin:5px;padding:8px;border-radius:6px;}
 
+#buscarBtn{
+margin-top:15px;
+padding:12px 25px;
+border:none;
+border-radius:10px;
+background:#4f46e5;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
 .week {
 display:grid;
 grid-template-columns: repeat(7, 1fr);
@@ -50,11 +61,11 @@ min-height:260px;
 #map {
 height:540px;
 border-radius:18px;
-margin-top:30px; /* ✅ ESPACIO NUEVO */
+margin-top:30px;
 }
 
 .bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
 </style>
 </head>
 
@@ -81,14 +92,12 @@ margin-top:30px; /* ✅ ESPACIO NUEVO */
 <option>Cocinero</option>
 </select>
 
-<!-- ✅ AUTOCOMPLETE PROVINCIA -->
 <input list="provincias" placeholder="Provincia">
 <datalist id="provincias">
 <option value="Madrid">
 <option value="Barcelona">
 </datalist>
 
-<!-- ✅ AUTOCOMPLETE POBLACION -->
 <input list="poblaciones" placeholder="Población">
 <datalist id="poblaciones">
 <option value="Madrid">
@@ -106,9 +115,17 @@ margin-top:30px; /* ✅ ESPACIO NUEVO */
 <input type="date">
 <input type="date">
 
+<!-- ✅ NUEVO -->
+<input type="number" placeholder="€/hora">
+
 </div>
 
 <div class="week" id="week"></div>
+
+<!-- ✅ BOTÓN BUSCAR -->
+<div style="text-align:center;">
+<button id="buscarBtn">BUSCAR</button>
+</div>
 
 <div id="map"></div>
 
@@ -119,16 +136,28 @@ margin-top:30px; /* ✅ ESPACIO NUEVO */
 
 <script>
 
-// MAPA ✅
+// MAPA
 const map = L.map("map").setView([40.4,-3.7],6);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 const populationLayer = L.markerClusterGroup({
-maxClusterRadius:60
+maxClusterRadius:60,
+
+/* ✅ FIX CLUSTER TOTAL PERSONAS */
+iconCreateFunction: function(cluster){
+let total=0;
+cluster.getAllChildMarkers().forEach(m=>{
+total += m.options.personCount;
 });
 
-// ✅ DATOS DIVISIBLES
+return L.divIcon({
+html:`<div class="cluster-bubble">${total}</div>`,
+className:""
+});
+}
+});
+
 const populations = [
 ["Madrid",40.41,-3.7,120],
 ["Getafe",40.3,-3.7,80],
@@ -155,7 +184,7 @@ populationLayer.addLayer(marker);
 map.addLayer(populationLayer);
 
 
-// HORARIOS (sin tocar lógica anterior)
+// HORARIOS (intacto)
 const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 const week=document.getElementById("week");
 
@@ -180,14 +209,12 @@ week.appendChild(card);
 const partida=card.querySelector(".partida");
 const completo=card.querySelector(".completo");
 const tarde=card.querySelector(".tarde");
-const inputs=card.querySelectorAll("input[type=time]");
 
 partida.addEventListener("change",()=>{
 if(partida.checked){
 completo.checked=false;
 tarde.classList.remove("hidden");
-}
-else{
+}else{
 tarde.classList.add("hidden");
 }
 });
@@ -196,9 +223,6 @@ completo.addEventListener("change",()=>{
 if(completo.checked){
 partida.checked=false;
 tarde.classList.add("hidden");
-inputs.forEach(i=>i.disabled=true);
-}else{
-inputs.forEach(i=>i.disabled=false);
 }
 });
 
@@ -208,4 +232,3 @@ inputs.forEach(i=>i.disabled=false);
 
 </body>
 </html>
-``
