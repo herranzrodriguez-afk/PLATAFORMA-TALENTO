@@ -12,24 +12,75 @@
 <style>
 body {margin:0;font-family:system-ui;background:#f9fafb;}
 
-.hero {min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:40px;
+.hero {
+min-height:90vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+padding:40px;
 background:linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.85)),
 url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
-background-size:cover;}
+background-size:cover;
+}
 
-.btn {padding:16px 30px;border-radius:14px;border:none;font-weight:600;}
+.hero-buttons {display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+
+.btn {padding:16px 30px;border-radius:14px;border:none;font-weight:600;cursor:pointer;}
 .btn-worker {background:#6366f1;color:white;}
-.btn-company {background:white;}
+.btn-company {background:white;color:#111827;}
 
-.filters input,.filters select{margin:5px;padding:8px;border-radius:6px;}
-#map{height:540px;margin-top:30px;border-radius:18px;}
+.claim {margin-top:20px;color:#e5e7eb;font-size:1.2rem;}
+
+.map-section {
+max-width:1200px;
+margin:-80px auto 80px;
+background:white;
+border-radius:24px;
+padding:40px;
+}
+
+.filters {text-align:center;margin-bottom:25px;}
+.filters input,.filters select {margin:5px;padding:8px;border-radius:6px;}
+
+.week {display:grid;grid-template-columns:repeat(7,1fr);gap:15px;margin-top:20px;}
+
+.day-card {
+background:#a5b4fc;
+padding:15px;
+border-radius:14px;
+text-align:center;
+}
+
+.hidden {display:none;}
+
+#map {height:540px;border-radius:18px;margin-top:30px;}
+
+.bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 
 .cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 
 <body>
+
+<section class="hero">
+<div>
+<h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+
+<div class="hero-buttons">
+<button class="btn btn-worker">Registrarme</button>
+<button class="btn btn-worker">Ya estoy inscrito</button>
+<button class="btn btn-company">Soy empresa</button>
+</div>
+
+<div class="claim">
+Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
+</div>
+
+</div>
+</section>
 
 <section class="map-section">
 
@@ -70,7 +121,7 @@ background-size:cover;}
 
 <script>
 
-// ✅ DATA BASE
+// DATA
 const allData = [
 {prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120},
 {prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80},
@@ -85,7 +136,6 @@ const allData = [
 {prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60}
 ];
 
-// MAPA
 const map = L.map("map").setView([40.4,-3.7],6);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
@@ -105,7 +155,7 @@ html:`<div class="cluster-bubble">${total}</div>`
 map.addLayer(populationLayer);
 
 
-// 🔥 FUNCTION CENTRAL FILTRADO
+// ✅ FUNCIÓN FILTRO (MEJORADA PERO MISMA BASE)
 function applyFilters(){
 
 const prov = document.getElementById("provincia").value.toLowerCase();
@@ -119,13 +169,12 @@ if(precio && d.price > parseInt(precio)) return false;
 return true;
 });
 
-// limpiar mapa
 populationLayer.clearLayers();
 
 const bounds = [];
 
 filtered.forEach(d=>{
-const marker = L.marker([d.lat,d.lng],{
+const marker=L.marker([d.lat,d.lng],{
 personCount:d.people,
 icon:L.divIcon({html:`<div class="bubble">${d.people}</div>`})
 });
@@ -134,28 +183,26 @@ populationLayer.addLayer(marker);
 bounds.push([d.lat,d.lng]);
 });
 
-// ✅ ZOOM INTELIGENTE
+// ✅ ZOOM AUTOMÁTICO
 if(bounds.length > 0){
-map.fitBounds(bounds, {padding:[50,50]});
+map.fitBounds(bounds,{padding:[50,50]});
 }else{
 map.setView([40.4,-3.7],6);
 }
+
 }
 
-
-// ✅ INIT
+// INIT
 applyFilters();
 
-
-// ✅ AUTO FILTRO EN TIEMPO REAL
+// ✅ EVENTOS AÑADIDOS (sin quitar botón)
 document.getElementById("provincia").addEventListener("input", applyFilters);
 document.getElementById("poblacion").addEventListener("input", applyFilters);
 document.getElementById("precio").addEventListener("input", applyFilters);
-
-// ✅ BOTÓN (se mantiene)
 document.getElementById("buscarBtn").addEventListener("click", applyFilters);
 
 </script>
 
 </body>
 </html>
+``
