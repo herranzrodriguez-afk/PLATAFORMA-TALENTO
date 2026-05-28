@@ -23,11 +23,7 @@ background-size:cover;}
 .btn-worker {background:#6366f1;color:white;}
 .btn-company {background:white;color:#111827;}
 
-.claim {
-margin-top:20px;
-font-size:1.2rem;
-color:#e5e7eb;
-}
+.claim {margin-top:20px;font-size:1.2rem;color:#e5e7eb;}
 
 .map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;box-shadow:0 30px 60px rgba(0,0,0,.1);}
 
@@ -45,30 +41,14 @@ font-weight:600;
 cursor:pointer;
 }
 
-.week {
-display:grid;
-grid-template-columns: repeat(7, 1fr);
-gap:15px;
-margin-top:20px;
-}
+.week {display:grid;grid-template-columns:repeat(7,1fr);gap:15px;margin-top:20px;}
 
-.day-card {
-background:#a5b4fc;
-padding:15px;
-border-radius:14px;
-text-align:center;
-min-height:260px;
-}
-
+.day-card {background:#a5b4fc;padding:15px;border-radius:14px;text-align:center;min-height:260px;}
 .day-card input {margin:5px 0;width:90%;padding:5px;border-radius:6px;border:none;}
 
 .hidden {display:none;}
 
-#map {
-height:540px;
-border-radius:18px;
-margin-top:30px;
-}
+#map {height:540px;border-radius:18px;margin-top:30px;}
 
 .bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
@@ -99,18 +79,18 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 <div class="filters">
 
 <select>
-<option>Categoria profesional</option>
-<option>Camarero</option>
-<option>Cocinero</option>
+<option value="">Categoría profesional</option>
+<option value="camarero">Camarero</option>
+<option value="cocinero">Cocinero</option>
 </select>
 
-<input list="provincias" placeholder="Provincia">
+<input id="provincia" list="provincias" placeholder="Provincia">
 <datalist id="provincias">
 <option value="Madrid">
 <option value="Barcelona">
 </datalist>
 
-<input list="poblaciones" placeholder="Población">
+<input id="poblacion" list="poblaciones" placeholder="Población">
 <datalist id="poblaciones">
 <option value="Madrid">
 <option value="Getafe">
@@ -126,7 +106,7 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 
 <input type="date">
 <input type="date">
-<input type="number" placeholder="€/hora">
+<input id="precio" type="number" placeholder="€/hora">
 
 </div>
 
@@ -145,7 +125,22 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 
 <script>
 
-// MAPA (intacto)
+// DATOS BASE
+const allData = [
+{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120},
+{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80},
+{prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70},
+{prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60},
+{prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50},
+
+{prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130},
+{prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90},
+{prov:"Barcelona", city:"Badalona", lat:41.44, lng:2.24, price:9, people:80},
+{prov:"Barcelona", city:"Sabadell", lat:41.54, lng:2.10, price:11, people:70},
+{prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60}
+];
+
+// MAPA
 const map = L.map("map").setView([40.4,-3.7],6);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
@@ -164,21 +159,49 @@ className:""
 }
 });
 
-[
-["Madrid",40.41,-3.7,120],["Getafe",40.3,-3.7,80],
-["Barcelona",41.38,2.17,130],["Badalona",41.44,2.24,80]
-].forEach(p=>{
-const marker=L.marker([p[1],p[2]],{
-personCount:p[3],
-icon:L.divIcon({html:`<div class="bubble">${p[3]}</div>`})
-});
-populationLayer.addLayer(marker);
-});
-
 map.addLayer(populationLayer);
 
 
-// HORARIOS (ajuste quirúrgico)
+// 🔥 FUNCION PARA PINTAR MAPA
+function renderData(data){
+populationLayer.clearLayers();
+
+data.forEach(d=>{
+const marker=L.marker([d.lat,d.lng],{
+personCount:d.people,
+icon:L.divIcon({html:`<div class="bubble">${d.people}</div>`})
+}).bindPopup(`<b>${d.city}</b><br>${d.people} personas<br>${d.price}€/h`);
+
+populationLayer.addLayer(marker);
+});
+}
+
+// inicial
+renderData(allData);
+
+
+// 🔥 FILTROS
+document.getElementById("buscarBtn").addEventListener("click",()=>{
+
+const prov = document.getElementById("provincia").value.toLowerCase();
+const pob = document.getElementById("poblacion").value.toLowerCase();
+const precio = document.getElementById("precio").value;
+
+let filtered = allData.filter(d=>{
+
+if(prov && !d.prov.toLowerCase().includes(prov)) return false;
+if(pob && !d.city.toLowerCase().includes(pob)) return false;
+if(precio && d.price > parseInt(precio)) return false;
+
+return true;
+});
+
+renderData(filtered);
+
+});
+
+
+// HORARIOS (intacto)
 const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 const week=document.getElementById("week");
 
@@ -206,7 +229,6 @@ partida.addEventListener("change",()=>{
 tarde.classList.toggle("hidden", !partida.checked);
 });
 
-// ✅ VALIDACIÓN COMPLETA
 card.addEventListener("change",()=>{
 const inicioM = card.querySelector(".inicio").value;
 const finM = card.querySelector(".fin").value;
@@ -214,12 +236,12 @@ const inicioT = card.querySelector(".inicio2")?.value;
 const finT = card.querySelector(".fin2")?.value;
 
 if(inicioT && finM && inicioT < finM){
-alert("La tarde no puede empezar antes de terminar la mañana");
+alert("La tarde no puede empezar antes de la mañana");
 card.querySelector(".inicio2").value="";
 }
 
 if(finT && inicioT && finT < inicioT){
-alert("La hora de fin de tarde es incorrecta");
+alert("Fin tarde incorrecto");
 card.querySelector(".fin2").value="";
 }
 });
