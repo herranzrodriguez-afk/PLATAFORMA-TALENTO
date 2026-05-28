@@ -52,10 +52,42 @@ cursor:pointer;
 
 .bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
+
+/* ✅ POPUP */
+.overlay {
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+.popup {
+background:white;
+width:70%;
+max-width:700px;
+padding:30px;
+border-radius:20px;
+box-shadow:0 20px 60px rgba(0,0,0,.3);
+text-align:center;
+}
 </style>
 </head>
 
 <body>
+
+<div id="overlay" class="overlay">
+<div class="popup">
+<h2>Resultados de búsqueda</h2>
+<p>Vista futura de resultados</p>
+<button onclick="closePopup()">Cerrar</button>
+</div>
+</div>
 
 <section class="hero">
 <div>
@@ -77,7 +109,6 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 <section class="map-section">
 
 <div class="filters">
-
 <select id="categoria">
 <option value="">Categoría profesional</option>
 <option value="camarero">Camarero</option>
@@ -107,7 +138,6 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 <input type="date">
 <input type="date">
 <input id="precio" type="number" placeholder="€/hora">
-
 </div>
 
 <div class="week" id="week"></div>
@@ -125,16 +155,21 @@ Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
 
 <script>
 
-// ✅ DATOS CON CATEGORÍA + DISPONIBILIDAD (NO VISUAL)
 const allData = [
-{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, category:"camarero", availability:["Lunes","Martes"]},
-{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, category:"cocinero", availability:["Miércoles","Jueves"]},
-{prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70, category:"camarero", availability:["Viernes"]},
-{prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, category:"cocinero", availability:["Lunes","Viernes"]},
-{prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90, category:"camarero", availability:["Martes"]}
+{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:["Lunes"]},
+{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:["Martes"]},
+{prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70, availability:["Miércoles"]},
+{prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60, availability:["Jueves"]},
+{prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50, availability:["Viernes"]},
+
+{prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, availability:["Lunes"]},
+{prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90, availability:["Martes"]},
+{prov:"Barcelona", city:"Badalona", lat:41.44, lng:2.24, price:9, people:80, availability:["Miércoles"]},
+{prov:"Barcelona", city:"Sabadell", lat:41.54, lng:2.10, price:11, people:70, availability:["Jueves"]},
+{prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60, availability:["Viernes"]}
 ];
 
-// MAPA (INTACTO)
+// MAPA igual
 const map = L.map("map").setView([40.4,-3.7],6);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
@@ -151,35 +186,16 @@ return L.divIcon({html:`<div class="cluster-bubble">${total}</div>`,className:""
 
 map.addLayer(populationLayer);
 
-// ✅ AQUI ESTÁ EL CAMBIO REAL (QUIRÚRGICO)
 function applyFilters(){
 
 const prov = document.getElementById("provincia").value.toLowerCase();
 const pob = document.getElementById("poblacion").value.toLowerCase();
 const precio = document.getElementById("precio").value;
-const categoria = document.getElementById("categoria").value;
-
-// detectar días con horarios
-const selectedDays=[];
-document.querySelectorAll(".day-card").forEach((card,i)=>{
-const inicio = card.querySelector(".inicio").value;
-const fin = card.querySelector(".fin").value;
-if(inicio || fin) selectedDays.push(i);
-});
-
-const nombresDias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 
 let filtered = allData.filter(d=>{
-if(prov && !d.prov.toLowerCase().includes(prov)) return false;
+if(prov && d.prov.toLowerCase() !== prov) return false;
 if(pob && !d.city.toLowerCase().includes(pob)) return false;
 if(precio && d.price > parseInt(precio)) return false;
-if(categoria && d.category !== categoria) return false;
-
-if(selectedDays.length>0){
-let match = selectedDays.some(i => d.availability.includes(nombresDias[i]));
-if(!match) return false;
-}
-
 return true;
 });
 
@@ -191,7 +207,7 @@ filtered.forEach(d=>{
 const marker=L.marker([d.lat,d.lng],{
 personCount:d.people,
 icon:L.divIcon({html:`<div class="bubble">${d.people}</div>`})
-}).bindPopup(`<b>${d.city}</b><br>${d.people} personas<br>${d.price}€/h`);
+});
 
 populationLayer.addLayer(marker);
 bounds.push([d.lat,d.lng]);
@@ -205,44 +221,19 @@ map.setView([40.4,-3.7],6);
 
 }
 
+// popup
+document.getElementById("buscarBtn").addEventListener("click", ()=>{
+applyFilters();
+document.getElementById("overlay").style.display="flex";
+});
+
+function closePopup(){
+document.getElementById("overlay").style.display="none";
+}
+
+// inicial
 applyFilters();
 
-document.getElementById("provincia").addEventListener("input", applyFilters);
-document.getElementById("poblacion").addEventListener("input", applyFilters);
-document.getElementById("precio").addEventListener("input", applyFilters);
-document.getElementById("categoria").addEventListener("change", applyFilters);
-document.getElementById("buscarBtn").addEventListener("click", applyFilters);
-
-
-// HORARIOS (INTACTO)
-const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const week=document.getElementById("week");
-
-dias.forEach(dia=>{
-const card=document.createElement("div");
-card.className="day-card";
-
-card.innerHTML=`
-<h4>${dia}</h4>
-<input type="time" class="inicio">
-<input type="time" class="fin">
-<label><input type="checkbox" class="partida"> Jornada partida</label>
-<div class="tarde hidden">
-<input type="time" class="inicio2">
-<input type="time" class="fin2">
-</div>
-`;
-
-week.appendChild(card);
-
-const partida=card.querySelector(".partida");
-const tarde=card.querySelector(".tarde");
-
-partida.addEventListener("change",()=>{
-tarde.classList.toggle("hidden", !partida.checked);
-});
-
-});
 </script>
 
 </body>
