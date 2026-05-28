@@ -12,8 +12,8 @@
 <style>
 body {margin:0;font-family:system-ui;background:#f9fafb;}
 
-.hero {min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:40px;background:
-linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.85)),
+.hero {min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:40px;
+background:linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.85)),
 url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
 background-size:cover;}
 
@@ -25,15 +25,17 @@ background-size:cover;}
 
 .map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;box-shadow:0 30px 60px rgba(0,0,0,.1);}
 
-#map {height:540px;border-radius:18px;}
+.filters {margin-bottom:30px;text-align:center;}
+.filters input,.filters select {margin:5px;padding:8px;border-radius:6px;}
 
-.filters {margin-bottom:30px;display:flex;flex-wrap:wrap;gap:15px;justify-content:center;}
-.filters input,.filters select {padding:10px;border-radius:8px;border:1px solid #ddd;}
+.day-block {border:1px solid #ddd;padding:10px;margin:5px;border-radius:8px;}
 
 .hidden {display:none;}
 
-.bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;}
-.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;}
+#map {height:540px;border-radius:18px;}
+
+.bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 
@@ -42,7 +44,6 @@ background-size:cover;}
 <section class="hero">
 <div>
 <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-<p>Consulta cuántas personas hay disponibles por provincia y población</p>
 
 <div class="hero-buttons">
 <button class="btn btn-worker">Registrarme</button>
@@ -54,20 +55,7 @@ background-size:cover;}
 
 <section class="map-section">
 
-<!-- FILTROS -->
 <div class="filters">
-<select id="categoria">
-<option>Categoria profesional</option>
-<option>Camarero</option>
-<option>Cocinero</option>
-<option>Recepcionista</option>
-</select>
-
-<input type="text" placeholder="Provincia">
-<input type="text" placeholder="Población">
-
-<input type="date" id="fechaInicio">
-<input type="date" id="fechaFin">
 
 <select id="tipoJornada">
 <option value="">Tipo jornada</option>
@@ -76,82 +64,131 @@ background-size:cover;}
 <option value="partida">Partida</option>
 </select>
 
-<div id="horarios" class="hidden">
-<input type="time" id="horaInicio" placeholder="Inicio">
-<input type="time" id="horaFin" placeholder="Fin">
-
-<div id="horarioPartido" class="hidden">
-<input type="time" id="horaInicio2" placeholder="Inicio tarde">
-<input type="time" id="horaFin2" placeholder="Fin tarde">
-</div>
-</div>
+<div id="semana"></div>
 
 </div>
-
-<h2 style="text-align:center;">Talento disponible en España</h2>
 
 <div id="map"></div>
 
 </section>
 
+<!-- ✅ FIX SCRIPT -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-// MAPA (INTACTO)
+
+// MAPA
 const map = L.map("map").setView([40.4,-3.7],6);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-const populationLayer = L.markerClusterGroup();
+const populationLayer = L.markerClusterGroup({
+maxClusterRadius:60,
+iconCreateFunction: function(cluster){
+let total=0;
+cluster.getAllChildMarkers().forEach(m=> total+=m.options.personCount);
+return L.divIcon({
+html:`<div class="cluster-bubble">${total}</div>`,
+className:""
+});
+}
+});
 
+// 🔥 MUCHOS DATOS
 const populations = [
-["Madrid",40.4,-3.7,800],
-["Barcelona",41.3,2.1,900],
-["Valencia",39.4,-0.3,650]
+
+["Madrid",40.41,-3.7,200],
+["Getafe",40.3,-3.7,150],
+["Alcalá",40.48,-3.36,120],
+["Leganés",40.33,-3.76,90],
+["Móstoles",40.32,-3.86,110],
+["Fuenlabrada",40.28,-3.8,80],
+["Parla",40.23,-3.77,70],
+["Alcorcón",40.35,-3.82,95],
+["Coslada",40.42,-3.56,60],
+["Sanse",40.54,-3.63,75],
+
+["Barcelona",41.38,2.17,210],
+["Hospitalet",41.36,2.11,140],
+["Badalona",41.44,2.24,130],
+["Terrassa",41.56,2.01,100],
+["Sabadell",41.54,2.10,90],
+["Mataró",41.54,2.44,85],
+["Granollers",41.6,2.28,70],
+["Castelldefels",41.28,1.97,60],
+["Rubí",41.49,2.03,55],
+["Sant Cugat",41.47,2.09,65]
+
 ];
 
 populations.forEach(p=>{
 const marker=L.marker([p[1],p[2]],{
 personCount:p[3],
-icon:L.divIcon({html:`<div class="bubble">${p[3]}</div>`})
-});
+icon:L.divIcon({html:`<div class="bubble">${p[3]}</div>`,className:""})
+}).bindPopup(`<b>${p[0]}</b><br>${p[3]} personas`);
+
 populationLayer.addLayer(marker);
 });
 
 map.addLayer(populationLayer);
 
 
-// FILTROS LOGICA
+// 💥 FILTRO POR DÍAS
 const tipo = document.getElementById("tipoJornada");
-const horarios = document.getElementById("horarios");
-const horarioPartido = document.getElementById("horarioPartido");
+const semana = document.getElementById("semana");
+
+const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 
 tipo.addEventListener("change",()=>{
-horarios.classList.remove("hidden");
-horarioPartido.classList.add("hidden");
 
-if(tipo.value==="completa"){
-horarios.classList.add("hidden");
+semana.innerHTML = "";
+
+if(tipo.value==="completa") return;
+
+dias.forEach(dia=>{
+const div = document.createElement("div");
+div.className="day-block";
+
+let html = `<strong>${dia}</strong><br>`;
+
+if(tipo.value==="unica"){
+html += `Inicio <input type="time" class="inicio">
+Fin <input type="time" class="fin">`;
 }
 
 if(tipo.value==="partida"){
-horarioPartido.classList.remove("hidden");
+html += `
+Mañana <input type="time" class="inicio">
+<input type="time" class="fin"><br>
+Tarde <input type="time" class="inicio2">
+<input type="time" class="fin2">
+`;
 }
+
+div.innerHTML = html;
+semana.appendChild(div);
 });
 
-// VALIDACION PARTIDA
-document.getElementById("horaInicio2").addEventListener("change",()=>{
-let mañanaFin = document.getElementById("horaFin").value;
-let tardeInicio = document.getElementById("horaInicio2").value;
+// validación partida
+setTimeout(()=>{
+document.querySelectorAll(".inicio2").forEach(input=>{
+input.addEventListener("change",(e)=>{
+let block = e.target.closest(".day-block");
+let finMañana = block.querySelector(".fin")?.value;
+let inicioTarde = e.target.value;
 
-if(mañanaFin && tardeInicio && tardeInicio < mañanaFin){
-alert("❌ El horario de tarde no puede ser anterior al de mañana");
-document.getElementById("horaInicio2").value="";
+if(finMañana && inicioTarde && inicioTarde < finMañana){
+alert("❌ Tarde no puede empezar antes que termine la mañana");
+e.target.value="";
 }
 });
+});
+},100);
+
+});
+
 </script>
 
 </body>
 </html>
-``
