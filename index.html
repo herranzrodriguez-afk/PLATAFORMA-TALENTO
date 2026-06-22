@@ -5,284 +5,887 @@
 <title>Proyecto empresa Javi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 
 <style>
-/* EXACTO TU CSS SIN TOCAR */
-body {margin:0;font-family:system-ui;background:#f9fafb;}
-
-.hero {min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:40px;
-background:linear-gradient(rgba(15,23,42,.75),rgba(15,23,42,.85)),
-url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
-background-size:cover;}
-
-.hero-buttons {display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
-
-.btn {padding:16px 30px;border-radius:14px;border:none;font-weight:600;cursor:pointer;}
-.btn-worker {background:#6366f1;color:white;}
-.btn-company {background:white;color:#111827;}
-
-.claim {margin-top:20px;font-size:1.2rem;color:#e5e7eb;}
-
-.map-section {max-width:1200px;margin:-80px auto 80px;background:white;border-radius:24px;padding:40px;box-shadow:0 30px 60px rgba(0,0,0,.1);}
-
-.filters {margin-bottom:25px;text-align:center;}
-.filters input,.filters select {margin:5px;padding:8px;border-radius:6px;border:1px solid #d1d5db;}
-
-#buscarBtn{
-margin-top:15px;
-padding:12px 25px;
-border:none;
-border-radius:10px;
-background:#4f46e5;
-color:white;
-font-weight:600;
-cursor:pointer;
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #f8fafc;
+  color: #334155;
 }
 
-.week {display:grid;grid-template-columns:repeat(7,1fr);gap:15px;margin-top:20px;}
+.hero {
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 40px;
+  background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)),
+              url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
+  background-size: cover;
+  background-position: center;
+}
 
-.day-card {background:#a5b4fc;padding:15px;border-radius:14px;text-align:center;min-height:260px;}
-.day-card input {margin:5px 0;width:90%;padding:5px;border-radius:6px;border:none;}
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
 
-.hidden {display:none;}
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
 
-#map {height:540px;border-radius:18px;margin-top:30px;}
+.btn {
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-.bubble {background:#6366f1;color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.cluster-bubble {background:#4338ca;color:white;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
+.btn-worker {
+  background: #6366f1;
+  color: white;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
 
-/* popup (el que ya tenías añadido) */
+.btn-worker:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+}
+
+.btn-company {
+  background: white;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.btn-company:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.claim {
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.map-section {
+  max-width: 1200px;
+  margin: -100px auto 80px;
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.filters select, .filters input {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  font-family: inherit;
+  font-size: 14px;
+  background: white;
+  color: #334155;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.filters select:focus, .filters input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+#buscarBtn {
+  margin-top: 10px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+  transition: all 0.2s ease;
+}
+
+#buscarBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 20px -3px rgba(79, 70, 229, 0.4);
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.day-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 16px;
+  border-radius: 16px;
+  text-align: center;
+  min-height: 250px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.day-card:hover {
+  border-color: #6366f1;
+  box-shadow: 0 10px 20px -2px rgba(99, 102, 241, 0.12);
+  transform: translateY(-2px);
+}
+
+.day-card h4 {
+  margin: 0 0 12px 0;
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.day-card input[type="time"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  margin-bottom: 8px;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.day-card label {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  margin: 8px 0;
+}
+
+.day-card .tarde {
+  margin-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+#map {
+  height: 500px;
+  border-radius: 20px;
+  margin-top: 40px;
+  border: 1px solid #e2e8f0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Pins de candidatos */
+.bubble {
+  background: #6366f1;
+  color: white;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-weight: 700;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.bubble:hover {
+  background: #4f46e5;
+  transform: scale(1.1);
+}
+
+/* Cluster de candidatos */
+.cluster-bubble {
+  background: #4338ca;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 3px solid white;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  font-size: 14px;
+}
+
+/* Modal / Overlay */
 .overlay {
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
 }
 
 .popup {
-background:white;
-width:70%;
-max-width:700px;
-padding:30px;
-border-radius:20px;
-text-align:center;
+  background: white;
+  width: 90%;
+  max-width: 750px;
+  padding: 30px;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  box-sizing: border-box;
+  animation: slideUp 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #0f172a !important;
+}
+
+.candidates-list {
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-top: 20px;
+  padding-right: 8px;
+  text-align: left;
+}
+
+.candidates-list::-webkit-scrollbar {
+  width: 6px;
+}
+.candidates-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+.candidates-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.candidate-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.candidate-row:hover {
+  background: #ffffff;
+  border-color: #6366f1;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+}
+
+.candidate-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.candidate-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a5b4fc, #6366f1);
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+
+.candidate-details h4 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.candidate-details p {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.candidate-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #e0e7ff;
+  color: #4f46e5;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.candidate-match {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.match-percent {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.match-high {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.match-medium {
+  background: #fffbef;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+.match-low {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.candidate-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 </style>
 </head>
 
 <body>
 
+<!-- Popup de Resultados -->
 <div id="overlay" class="overlay">
-<div class="popup">
-<h2>Resultados de búsqueda</h2>
-<p>Vista futura</p>
-<button onclick="closePopup()">Cerrar</button>
-</div>
+  <div class="popup">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px;">
+      <h2 style="margin: 0; font-size: 22px; color: #0f172a; font-weight: 700;">Resultados de búsqueda</h2>
+      <button onclick="closePopup()" class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8; transition: color 0.2s;">&times;</button>
+    </div>
+    
+    <div id="resultsCount" style="text-align: left; font-size: 14px; color: #475569; font-weight: 500; background: #f1f5f9; padding: 12px 16px; border-radius: 12px;">
+      <!-- Rellenado dinámicamente -->
+    </div>
+    
+    <div class="candidates-list" id="candidatesList">
+      <!-- Rellenado dinámicamente -->
+    </div>
+  </div>
 </div>
 
+<!-- Hero Section -->
 <section class="hero">
-<div>
-<h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+  <div>
+    <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
 
-<div class="hero-buttons">
-<button class="btn btn-worker">Registrarme</button>
-<button class="btn btn-worker">Ya estoy inscrito</button>
-<button class="btn btn-company">Soy empresa</button>
-</div>
+    <div class="hero-buttons">
+      <button class="btn btn-worker">Registrarme</button>
+      <button class="btn btn-worker">Ya estoy inscrito</button>
+      <button class="btn btn-company">Soy empresa</button>
+    </div>
 
-<div class="claim">
-Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
-</div>
-</div>
+    <div class="claim">
+      Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
+    </div>
+  </div>
 </section>
 
+<!-- Sección de Mapa y Filtros -->
 <section class="map-section">
 
-<div class="filters">
-<select id="categoria">
-<option value="">Categoría profesional</option>
-<option value="camarero">Camarero</option>
-<option value="cocinero">Cocinero</option>
-</select>
+  <div class="filters">
+    <select id="categoria">
+      <option value="">Categoría profesional</option>
+      <option value="camarero">Camarero</option>
+      <option value="cocinero">Cocinero</option>
+    </select>
 
-<input id="provincia" list="provincias" placeholder="Provincia">
-<datalist id="provincias">
-<option value="Madrid">
-<option value="Barcelona">
-</datalist>
+    <input id="provincia" list="provincias" placeholder="Provincia">
+    <datalist id="provincias">
+      <option value="Madrid">
+      <option value="Barcelona">
+    </datalist>
 
-<input id="poblacion" list="poblaciones" placeholder="Población">
-<datalist id="poblaciones">
-<option value="Madrid">
-<option value="Getafe">
-<option value="Alcalá de Henares">
-<option value="Móstoles">
-<option value="Leganés">
-<option value="Barcelona">
-<option value="Hospitalet">
-<option value="Badalona">
-<option value="Sabadell">
-<option value="Terrassa">
-</datalist>
+    <input id="poblacion" list="poblaciones" placeholder="Población">
+    <datalist id="poblaciones">
+      <option value="Madrid">
+      <option value="Getafe">
+      <option value="Alcalá de Henares">
+      <option value="Móstoles">
+      <option value="Leganés">
+      <option value="Barcelona">
+      <option value="Hospitalet">
+      <option value="Badalona">
+      <option value="Sabadell">
+      <option value="Terrassa">
+    </datalist>
 
-<input type="date">
-<input type="date">
-<input id="precio" type="number" placeholder="€/hora">
-</div>
+    <input id="fechaInicio" type="date" placeholder="Fecha inicio">
+    <input id="fechaFin" type="date" placeholder="Fecha fin">
+    <input id="precio" type="number" placeholder="€/hora máx.">
+  </div>
 
-<div class="week" id="week"></div>
+  <!-- Calendario Semanal de Disponibilidad -->
+  <div class="week" id="week"></div>
 
-<div style="text-align:center;">
-<button id="buscarBtn">BUSCAR</button>
-</div>
+  <div style="text-align:center; margin-top: 30px;">
+    <button id="buscarBtn">BUSCAR CANDIDATOS</button>
+  </div>
 
-<div id="map"></div>
+  <div id="map"></div>
 
 </section>
 
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-
-// ✅ DATOS COMPLETOS
-const allData = [
-{prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:["Lunes","Martes"]},
-{prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:["Miércoles"]},
-{prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70, availability:["Jueves"]},
-{prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60, availability:["Viernes"]},
-{prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50, availability:["Sábado"]},
-
-{prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, availability:["Lunes"]},
-{prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90, availability:["Martes"]},
-{prov:"Barcelona", city:"Badalona", lat:41.44, lng:2.24, price:9, people:80, availability:["Miércoles"]},
-{prov:"Barcelona", city:"Sabadell", lat:41.54, lng:2.10, price:11, people:70, availability:["Jueves"]},
-{prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60, availability:["Viernes"]}
+// ✅ BASE DE DATOS DE CANDIDATOS REALISTAS
+const candidates = [
+  { name: "Alejandro Gómez", category: "camarero", prov: "Madrid", city: "Madrid", lat: 40.416, lng: -3.703, price: 10, availability: { "Lunes": { inicio: "08:00", fin: "16:00" }, "Martes": { inicio: "08:00", fin: "16:00" } } },
+  { name: "Lucía Fernández", category: "cocinero", prov: "Madrid", city: "Getafe", lat: 40.308, lng: -3.732, price: 12, availability: { "Miércoles": { inicio: "09:00", fin: "17:00" }, "Jueves": { inicio: "09:00", fin: "17:00" } } },
+  { name: "Carlos Soler", category: "camarero", prov: "Madrid", city: "Alcalá de Henares", lat: 40.481, lng: -3.363, price: 9, availability: { "Jueves": { inicio: "13:00", fin: "21:00" }, "Viernes": { inicio: "13:00", fin: "21:00" } } },
+  { name: "María Pedraza", category: "cocinero", prov: "Madrid", city: "Móstoles", lat: 40.323, lng: -3.864, price: 14, availability: { "Viernes": { inicio: "12:00", fin: "16:00", inicio2: "19:00", fin2: "23:00", partida: true } } },
+  { name: "David Bustos", category: "camarero", prov: "Madrid", city: "Leganés", lat: 40.327, lng: -3.763, price: 8, availability: { "Sábado": { inicio: "08:00", fin: "16:00" }, "Domingo": { inicio: "08:00", fin: "16:00" } } },
+  { name: "Laura Escanes", category: "camarero", prov: "Barcelona", city: "Barcelona", lat: 41.385, lng: 2.173, price: 11, availability: { "Lunes": { inicio: "09:00", fin: "15:00" }, "Martes": { inicio: "09:00", fin: "15:00" } } },
+  { name: "Jordi Cruz", category: "cocinero", prov: "Barcelona", city: "Hospitalet", lat: 41.359, lng: 2.115, price: 15, availability: { "Martes": { inicio: "12:00", fin: "16:00", inicio2: "20:00", fin2: "00:00", partida: true } } },
+  { name: "Marta Torné", category: "camarero", prov: "Barcelona", city: "Badalona", lat: 41.448, lng: 2.246, price: 10, availability: { "Miércoles": { inicio: "10:00", fin: "18:00" } } },
+  { name: "Albert Espinosa", category: "cocinero", prov: "Barcelona", city: "Sabadell", lat: 41.543, lng: 2.102, price: 13, availability: { "Jueves": { inicio: "08:00", fin: "16:00" }, "Viernes": { inicio: "08:00", fin: "16:00" } } },
+  { name: "Paula Echevarría", category: "camarero", prov: "Barcelona", city: "Terrassa", lat: 41.564, lng: 2.011, price: 10, availability: { "Viernes": { inicio: "16:00", fin: "22:00" }, "Sábado": { inicio: "16:00", fin: "22:00" } } },
+  { name: "Javier Cámara", category: "cocinero", prov: "Madrid", city: "Madrid", lat: 40.422, lng: -3.692, price: 13, availability: { "Lunes": { inicio: "10:00", fin: "18:00" }, "Martes": { inicio: "10:00", fin: "18:00" } } },
+  { name: "Sara Carbonero", category: "camarero", prov: "Madrid", city: "Getafe", lat: 40.312, lng: -3.722, price: 11, availability: { "Miércoles": { inicio: "08:00", fin: "14:00" } } },
+  { name: "Antonio Banderas", category: "cocinero", prov: "Madrid", city: "Móstoles", lat: 40.334, lng: -3.875, price: 18, availability: { "Sábado": { inicio: "12:00", fin: "17:00", inicio2: "20:00", fin2: "00:00", partida: true } } },
+  { name: "Rosalía Vila", category: "camarero", prov: "Barcelona", city: "Barcelona", lat: 41.392, lng: 2.184, price: 14, availability: { "Sábado": { inicio: "18:00", fin: "02:00" }, "Domingo": { inicio: "18:00", fin: "02:00" } } },
+  { name: "Gerard Piqué", category: "camarero", prov: "Barcelona", city: "Sabadell", lat: 41.551, lng: 2.115, price: 10, availability: { "Lunes": { inicio: "08:00", fin: "16:00" }, "Miércoles": { inicio: "08:00", fin: "16:00" } } }
 ];
 
 // MAPA
-const map = L.map("map").setView([40.4,-3.7],6);
+const map = L.map("map").setView([40.4, -3.7], 6);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 const populationLayer = L.markerClusterGroup({
-maxClusterRadius:60,
-iconCreateFunction: function(cluster){
-let total=0;
-cluster.getAllChildMarkers().forEach(m=>{ total += m.options.personCount; });
-return L.divIcon({html:`<div class="cluster-bubble">${total}</div>`,className:""});
-}
+  maxClusterRadius: 60,
+  iconCreateFunction: function(cluster) {
+    let total = 0;
+    cluster.getAllChildMarkers().forEach(m => { total += m.options.personCount; });
+    return L.divIcon({ html: `<div class="cluster-bubble">${total}</div>`, className: "" });
+  }
 });
-
 map.addLayer(populationLayer);
 
-// ✅ FUNCIÓN FILTRO
-function applyFilters(){
+// ✅ CARGAR PROVINCIAS Y MUNICIPIOS DE ESPAÑA (REALES)
+let allProvinces = [
+  { code: "28", label: "Madrid" },
+  { code: "08", label: "Barcelona" }
+];
+let allMunicipalities = [
+  { parent_code: "28", label: "Madrid" },
+  { parent_code: "28", label: "Getafe" },
+  { parent_code: "28", label: "Alcalá de Henares" },
+  { parent_code: "28", label: "Móstoles" },
+  { parent_code: "28", label: "Leganés" },
+  { parent_code: "08", label: "Barcelona" },
+  { parent_code: "08", label: "Hospitalet" },
+  { parent_code: "08", label: "Badalona" },
+  { parent_code: "08", label: "Sabadell" },
+  { parent_code: "08", label: "Terrassa" }
+];
 
-const prov = document.getElementById("provincia").value.toLowerCase();
-const pob = document.getElementById("poblacion").value.toLowerCase();
-const precio = document.getElementById("precio").value;
-const categoria = document.getElementById("categoria").value;
+async function loadGeographicData() {
+  try {
+    // Provincias
+    const provRes = await fetch("https://raw.githubusercontent.com/frontid/ComunidadesProvinciasPoblaciones/master/provincias.json");
+    if (provRes.ok) {
+      allProvinces = await provRes.json();
+      const provDatalist = document.getElementById("provincias");
+      provDatalist.innerHTML = "";
+      allProvinces.sort((a,b) => a.label.localeCompare(b.label)).forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.label;
+        provDatalist.appendChild(opt);
+      });
+    }
 
-// 👉 CAPTURAR DÍAS
-const selectedDays=[];
-document.querySelectorAll(".day-card").forEach((card,i)=>{
-const inicio = card.querySelector(".inicio").value;
-const fin = card.querySelector(".fin").value;
-if(inicio || fin) selectedDays.push(i);
-});
-
-const nombresDias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-
-let filtered = allData.filter(d=>{
-
-if(prov && d.prov.toLowerCase() !== prov) return false;
-if(pob && !d.city.toLowerCase().includes(pob)) return false;
-if(precio && d.price > parseInt(precio)) return false;
-
-if(selectedDays.length>0){
-let match = selectedDays.some(i => d.availability.includes(nombresDias[i]));
-if(!match) return false;
+    // Municipios
+    const pobRes = await fetch("https://raw.githubusercontent.com/frontid/ComunidadesProvinciasPoblaciones/master/poblaciones.json");
+    if (pobRes.ok) {
+      allMunicipalities = await pobRes.json();
+      updateMunicipalitiesDatalist();
+    }
+  } catch (err) {
+    console.warn("No se pudo cargar la base geográfica remota. Usando datos por defecto.", err);
+  }
 }
 
-return true;
-});
+function updateMunicipalitiesDatalist() {
+  const provValue = document.getElementById("provincia").value.trim().toLowerCase();
+  const pobDatalist = document.getElementById("poblaciones");
+  pobDatalist.innerHTML = "";
 
-populationLayer.clearLayers();
+  const matchedProv = allProvinces.find(p => p.label.toLowerCase() === provValue);
 
-const bounds=[];
+  let filteredMuns = allMunicipalities;
+  if (matchedProv) {
+    filteredMuns = allMunicipalities.filter(m => m.parent_code === matchedProv.code);
+  }
 
-filtered.forEach(d=>{
-const marker=L.marker([d.lat,d.lng],{
-personCount:d.people,
-icon:L.divIcon({html:`<div class="bubble">${d.people}</div>`})
-});
-populationLayer.addLayer(marker);
-bounds.push([d.lat,d.lng]);
-});
+  // Ordenar alfabéticamente y limitar a 200 para evitar congelamientos en el navegador
+  filteredMuns.sort((a, b) => a.label.localeCompare(b.label));
+  const limit = 200;
+  let count = 0;
 
-if(bounds.length>0){
-map.fitBounds(bounds,{padding:[50,50]});
-}else{
-map.setView([40.4,-3.7],6);
-}
-}
-
-applyFilters();
-
-// eventos
-["provincia","poblacion","precio"].forEach(id=>{
-document.getElementById(id).addEventListener("input", applyFilters);
-});
-
-// botón popup
-document.getElementById("buscarBtn").addEventListener("click", ()=>{
-applyFilters();
-document.getElementById("overlay").style.display="flex";
-});
-
-function closePopup(){
-document.getElementById("overlay").style.display="none";
+  filteredMuns.forEach(m => {
+    if (count < limit) {
+      const opt = document.createElement("option");
+      opt.value = m.label;
+      pobDatalist.appendChild(opt);
+      count++;
+    }
+  });
 }
 
-// ✅ RESTAURADO HORARIOS (CLAVE)
-const dias=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const week=document.getElementById("week");
-
-dias.forEach(dia=>{
-const card=document.createElement("div");
-card.className="day-card";
-
-card.innerHTML=`
-<h4>${dia}</h4>
-<input type="time" class="inicio">
-<input type="time" class="fin">
-<label><input type="checkbox" class="partida"> Jornada partida</label>
-<div class="tarde hidden">
-<input type="time" class="inicio2">
-<input type="time" class="fin2">
-</div>
-`;
-
-week.appendChild(card);
-
-const partida=card.querySelector(".partida");
-const tarde=card.querySelector(".tarde");
-
-partida.addEventListener("change",()=>{
-tarde.classList.toggle("hidden", !partida.checked);
+// Escuchar cambios de provincia para filtrar poblaciones
+document.getElementById("provincia").addEventListener("input", () => {
+  updateMunicipalitiesDatalist();
+  applyFilters();
 });
 
+// ✅ FUNCIÓN DE FILTRADO Y COMPATIBILIDAD
+let lastSearchResults = [];
+
+function applyFilters() {
+  const prov = document.getElementById("provincia").value.trim().toLowerCase();
+  const pob = document.getElementById("poblacion").value.trim().toLowerCase();
+  const precio = parseFloat(document.getElementById("precio").value);
+  const categoria = document.getElementById("categoria").value;
+
+  // Capturar disponibilidad requerida en el calendario semanal
+  const selectedDays = [];
+  const nombresDias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  
+  document.querySelectorAll(".day-card").forEach((card, i) => {
+    const inicio = card.querySelector(".inicio").value;
+    const fin = card.querySelector(".fin").value;
+    const partida = card.querySelector(".partida").checked;
+    const inicio2 = card.querySelector(".inicio2").value;
+    const fin2 = card.querySelector(".fin2").value;
+
+    if (inicio || fin || partida) {
+      selectedDays.push({
+        name: nombresDias[i],
+        inicio,
+        fin,
+        partida,
+        inicio2,
+        fin2
+      });
+    }
+  });
+
+  // Calcular porcentaje de coincidencia para cada candidato
+  let scoredCandidates = candidates.map(c => {
+    let totalCriteria = 0;
+    let matchedCriteria = 0;
+
+    // 1. Categoría
+    if (categoria) {
+      totalCriteria += 3;
+      if (c.category.toLowerCase() === categoria.toLowerCase()) {
+        matchedCriteria += 3;
+      }
+    }
+
+    // 2. Provincia y Población
+    if (prov && pob) {
+      totalCriteria += 3;
+      if (c.prov.toLowerCase() === prov && c.city.toLowerCase() === pob) {
+        matchedCriteria += 3;
+      } else if (c.prov.toLowerCase() === prov) {
+        matchedCriteria += 1.5; // Coincidencia parcial (misma provincia)
+      }
+    } else if (prov) {
+      totalCriteria += 3;
+      if (c.prov.toLowerCase() === prov) {
+        matchedCriteria += 3;
+      }
+    } else if (pob) {
+      totalCriteria += 3;
+      if (c.city.toLowerCase() === pob) {
+        matchedCriteria += 3;
+      }
+    }
+
+    // 3. Precio (€/hora)
+    if (!isNaN(precio) && precio > 0) {
+      totalCriteria += 2;
+      if (c.price <= precio) {
+        matchedCriteria += 2;
+      } else {
+        // Coincidencia parcial si el precio está dentro del 30% del presupuesto
+        let diff = (c.price - precio) / precio;
+        if (diff <= 0.3) {
+          matchedCriteria += 2 * (1 - diff / 0.3);
+        }
+      }
+    }
+
+    // 4. Disponibilidad
+    if (selectedDays.length > 0) {
+      totalCriteria += 2;
+      let dayScore = 0;
+      selectedDays.forEach(day => {
+        const cDay = c.availability[day.name];
+        if (cDay) {
+          let matchesHours = true;
+          // Validación de rangos de horas
+          if (day.inicio && cDay.inicio && cDay.inicio > day.inicio) matchesHours = false;
+          if (day.fin && cDay.fin && cDay.fin < day.fin) matchesHours = false;
+          
+          if (day.partida && !cDay.partida) {
+            matchesHours = false;
+          }
+          if (day.partida && cDay.partida) {
+            if (day.inicio2 && cDay.inicio2 && cDay.inicio2 > day.inicio2) matchesHours = false;
+            if (day.fin2 && cDay.fin2 && cDay.fin2 < day.fin2) matchesHours = false;
+          }
+
+          if (matchesHours) dayScore += 1;
+          else dayScore += 0.5; // Disponible ese día pero no en el horario perfecto
+        }
+      });
+      matchedCriteria += 2 * (dayScore / selectedDays.length);
+    }
+
+    // Si el usuario no filtra por nada, por defecto es 100% de coincidencia
+    let percentage = 100;
+    if (totalCriteria > 0) {
+      percentage = Math.round((matchedCriteria / totalCriteria) * 100);
+    }
+
+    return { ...c, matchPercentage: percentage };
+  });
+
+  // Filtrar candidatos con coincidencia > 0
+  lastSearchResults = scoredCandidates.filter(c => c.matchPercentage > 0);
+
+  // Ordenar: Coincidencia descendente, luego por menor precio por hora
+  lastSearchResults.sort((a, b) => b.matchPercentage - a.matchPercentage || a.price - b.price);
+
+  // Actualizar marcadores en el mapa
+  populationLayer.clearLayers();
+  const bounds = [];
+
+  lastSearchResults.forEach(c => {
+    const initials = c.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    const marker = L.marker([c.lat, c.lng], {
+      personCount: 1,
+      icon: L.divIcon({
+        html: `<div class="bubble" title="${c.name} (${c.matchPercentage}% coincidencia)">${initials}</div>`,
+        className: ""
+      })
+    });
+    
+    marker.bindPopup(`
+      <div style="font-family: 'Inter', sans-serif; min-width: 160px; line-height: 1.4;">
+        <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600;">${c.name}</h4>
+        <span style="font-size: 10px; padding: 2px 6px; background: #e0e7ff; color: #4f46e5; border-radius: 4px; font-weight: 700; text-transform: uppercase;">${c.category}</span>
+        <p style="margin: 8px 0 0 0; font-size: 12px; color: #475569;">
+          <strong>Precio:</strong> ${c.price} €/h<br>
+          <strong>Ciudad:</strong> ${c.city}<br>
+          <strong>Coincidencia:</strong> ${c.matchPercentage}%
+        </p>
+      </div>
+    `);
+
+    populationLayer.addLayer(marker);
+    bounds.push([c.lat, c.lng]);
+  });
+
+  if (bounds.length > 0) {
+    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+  } else {
+    map.setView([40.4, -3.7], 6);
+  }
+}
+
+// Iniciar carga de datos geográficos al arrancar
+loadGeographicData();
+
+// Eventos de filtros instantáneos
+["provincia", "poblacion", "precio", "categoria", "fechaInicio", "fechaFin"].forEach(id => {
+  document.getElementById(id).addEventListener("input", applyFilters);
+});
+
+// Botón buscar y renderizado de resultados en modal ordenado
+document.getElementById("buscarBtn").addEventListener("click", () => {
+  applyFilters();
+  
+  const listContainer = document.getElementById("candidatesList");
+  const countContainer = document.getElementById("resultsCount");
+  
+  // Mostrar total
+  countContainer.innerHTML = `Hemos encontrado <strong>${lastSearchResults.length}</strong> candidato${lastSearchResults.length === 1 ? '' : 's'} ordenados por nivel de ajuste.`;
+  
+  listContainer.innerHTML = "";
+  
+  if (lastSearchResults.length === 0) {
+    listContainer.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+        <svg style="width: 48px; height: 48px; margin: 0 auto 16px auto; display: block; color: #94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p style="margin: 0; font-weight: 600; font-size: 15px; color: #334155;">No se encontraron candidatos</p>
+        <p style="margin: 4px 0 0 0; font-size: 13px;">Prueba ampliando los rangos de precios o la disponibilidad horaria.</p>
+      </div>
+    `;
+  } else {
+    lastSearchResults.forEach(c => {
+      const initials = c.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      
+      let matchClass = "match-low";
+      if (c.matchPercentage >= 80) matchClass = "match-high";
+      else if (c.matchPercentage >= 50) matchClass = "match-medium";
+      
+      const row = document.createElement("div");
+      row.className = "candidate-row";
+      row.innerHTML = `
+        <div class="candidate-info">
+          <div class="candidate-avatar">${initials}</div>
+          <div class="candidate-details">
+            <h4>${c.name}</h4>
+            <span class="candidate-badge">${c.category}</span>
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">📍 ${c.city}, ${c.prov}</p>
+          </div>
+        </div>
+        <div class="candidate-match">
+          <span class="match-percent ${matchClass}">${c.matchPercentage}% Coincidencia</span>
+          <span class="candidate-price">${c.price} €/h</span>
+        </div>
+      `;
+      listContainer.appendChild(row);
+    });
+  }
+  
+  // Mostrar overlay
+  document.getElementById("overlay").style.display = "flex";
+});
+
+function closePopup() {
+  document.getElementById("overlay").style.display = "none";
+}
+
+// ✅ CONSTRUCCIÓN DE CALENDARIO DE DISPONIBILIDAD
+const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+const week = document.getElementById("week");
+
+dias.forEach(dia => {
+  const card = document.createElement("div");
+  card.className = "day-card";
+
+  card.innerHTML = `
+    <h4>${dia}</h4>
+    <input type="time" class="inicio" title="Hora de inicio">
+    <input type="time" class="fin" title="Hora de fin">
+    <label><input type="checkbox" class="partida"> Jornada partida</label>
+    <div class="tarde hidden">
+      <input type="time" class="inicio2" title="Inicio tarde">
+      <input type="time" class="fin2" title="Fin tarde">
+    </div>
+  `;
+
+  week.appendChild(card);
+
+  const partida = card.querySelector(".partida");
+  const tarde = card.querySelector(".tarde");
+
+  partida.addEventListener("change", () => {
+    tarde.classList.toggle("hidden", !partida.checked);
+    applyFilters();
+  });
+
+  card.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", applyFilters);
+  });
 });
 </script>
 
+</body>
+</html>
 </body>
 </html>
