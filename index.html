@@ -222,7 +222,7 @@ body {
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
-/* Pins de candidatos */
+/* Pins de candidatos y volumen */
 .bubble {
   background: #6366f1;
   color: white;
@@ -349,7 +349,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 18px;
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
 }
 
@@ -416,6 +416,32 @@ body {
   color: #334155;
 }
 
+/* Efecto difuminado de texto (Seguridad/Pago) */
+.blurred-text {
+  color: transparent !important;
+  text-shadow: 0 0 8px rgba(15, 23, 42, 0.75);
+  user-select: none;
+  pointer-events: none;
+}
+
+.pay-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: 1px solid #6366f1;
+  background: transparent;
+  color: #6366f1;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pay-btn:hover {
+  background: #6366f1;
+  color: white;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -445,6 +471,42 @@ body {
     <div class="candidates-list" id="candidatesList">
       <!-- Rellenado dinámicamente -->
     </div>
+  </div>
+</div>
+
+<!-- Modal de Pago Simulado -->
+<div id="paymentModal" class="overlay" style="z-index: 10000;">
+  <div class="popup" style="max-width: 420px; padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
+      <h3 style="margin: 0; font-size: 18px; color: #0f172a; font-weight: 700;">Pasarela de Pago Segura</h3>
+      <button onclick="closePayment()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #94a3b8;">&times;</button>
+    </div>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div style="font-size: 36px; margin-bottom: 8px;">💳</div>
+      <p style="margin: 0; font-size: 14px; color: #64748b;">Acceso a los datos de contacto del</p>
+      <h4 id="paymentCandidateName" style="margin: 4px 0 0 0; color: #0f172a; font-size: 16px; font-weight: 600;">Candidato #XXXX</h4>
+      <p style="margin: 12px 0 0 0; font-size: 22px; font-weight: 700; color: #6366f1;">9,99 € <span style="font-size: 12px; font-weight: 400; color: #64748b;">(pago único)</span></p>
+    </div>
+    
+    <form onsubmit="processSimulatedPayment(event)" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
+      <div>
+        <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">Número de tarjeta</label>
+        <input type="text" placeholder="4000 1234 5678 9010" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 4px; font-family: monospace;">
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <div style="flex: 1;">
+          <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">Caducidad</label>
+          <input type="text" placeholder="MM/AA" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 4px; font-family: monospace;">
+        </div>
+        <div style="flex: 1;">
+          <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">CVC</label>
+          <input type="text" placeholder="123" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 4px; font-family: monospace;">
+        </div>
+      </div>
+      <button type="submit" style="width: 100%; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+        PAGAR Y VER CONTACTO
+      </button>
+    </form>
   </div>
 </div>
 
@@ -516,7 +578,22 @@ body {
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-// ✅ BASE DE DATOS DE CANDIDATOS REALISTAS
+// ✅ DATOS DE VOLUMEN (CUANDO NO HAY SELECCIÓN)
+const allData = [
+  {prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:["Lunes","Martes"]},
+  {prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:["Miércoles"]},
+  {prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70, availability:["Jueves"]},
+  {prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60, availability:["Viernes"]},
+  {prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50, availability:["Sábado"]},
+
+  {prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, availability:["Lunes"]},
+  {prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90, availability:["Martes"]},
+  {prov:"Barcelona", city:"Badalona", lat:41.44, lng:2.24, price:9, people:80, availability:["Miércoles"]},
+  {prov:"Barcelona", city:"Sabadell", lat:41.54, lng:2.10, price:11, people:70, availability:["Jueves"]},
+  {prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60, availability:["Viernes"]}
+];
+
+// ✅ BASE DE DATOS DE CANDIDATOS INDIVIDUALES
 const candidates = [
   { name: "Alejandro Gómez", category: "camarero", prov: "Madrid", city: "Madrid", lat: 40.416, lng: -3.703, price: 10, availability: { "Lunes": { inicio: "08:00", fin: "16:00" }, "Martes": { inicio: "08:00", fin: "16:00" } } },
   { name: "Lucía Fernández", category: "cocinero", prov: "Madrid", city: "Getafe", lat: 40.308, lng: -3.732, price: 12, availability: { "Miércoles": { inicio: "09:00", fin: "17:00" }, "Jueves": { inicio: "09:00", fin: "17:00" } } },
@@ -658,124 +735,153 @@ function applyFilters() {
     }
   });
 
-  // Calcular porcentaje de coincidencia para cada candidato
-  let scoredCandidates = candidates.map(c => {
-    let totalCriteria = 0;
-    let matchedCriteria = 0;
+  const hasFilter = prov || pob || !isNaN(precio) || categoria || selectedDays.length > 0;
 
-    // 1. Categoría
-    if (categoria) {
-      totalCriteria += 3;
-      if (c.category.toLowerCase() === categoria.toLowerCase()) {
-        matchedCriteria += 3;
-      }
-    }
-
-    // 2. Provincia y Población
-    if (prov && pob) {
-      totalCriteria += 3;
-      if (c.prov.toLowerCase() === prov && c.city.toLowerCase() === pob) {
-        matchedCriteria += 3;
-      } else if (c.prov.toLowerCase() === prov) {
-        matchedCriteria += 1.5; // Coincidencia parcial (misma provincia)
-      }
-    } else if (prov) {
-      totalCriteria += 3;
-      if (c.prov.toLowerCase() === prov) {
-        matchedCriteria += 3;
-      }
-    } else if (pob) {
-      totalCriteria += 3;
-      if (c.city.toLowerCase() === pob) {
-        matchedCriteria += 3;
-      }
-    }
-
-    // 3. Precio (€/hora)
-    if (!isNaN(precio) && precio > 0) {
-      totalCriteria += 2;
-      if (c.price <= precio) {
-        matchedCriteria += 2;
-      } else {
-        // Coincidencia parcial si el precio está dentro del 30% del presupuesto
-        let diff = (c.price - precio) / precio;
-        if (diff <= 0.3) {
-          matchedCriteria += 2 * (1 - diff / 0.3);
-        }
-      }
-    }
-
-    // 4. Disponibilidad
-    if (selectedDays.length > 0) {
-      totalCriteria += 2;
-      let dayScore = 0;
-      selectedDays.forEach(day => {
-        const cDay = c.availability[day.name];
-        if (cDay) {
-          let matchesHours = true;
-          // Validación de rangos de horas
-          if (day.inicio && cDay.inicio && cDay.inicio > day.inicio) matchesHours = false;
-          if (day.fin && cDay.fin && cDay.fin < day.fin) matchesHours = false;
-          
-          if (day.partida && !cDay.partida) {
-            matchesHours = false;
-          }
-          if (day.partida && cDay.partida) {
-            if (day.inicio2 && cDay.inicio2 && cDay.inicio2 > day.inicio2) matchesHours = false;
-            if (day.fin2 && cDay.fin2 && cDay.fin2 < day.fin2) matchesHours = false;
-          }
-
-          if (matchesHours) dayScore += 1;
-          else dayScore += 0.5; // Disponible ese día pero no en el horario perfecto
-        }
-      });
-      matchedCriteria += 2 * (dayScore / selectedDays.length);
-    }
-
-    // Si el usuario no filtra por nada, por defecto es 100% de coincidencia
-    let percentage = 100;
-    if (totalCriteria > 0) {
-      percentage = Math.round((matchedCriteria / totalCriteria) * 100);
-    }
-
-    return { ...c, matchPercentage: percentage };
-  });
-
-  // Filtrar candidatos con coincidencia > 0
-  lastSearchResults = scoredCandidates.filter(c => c.matchPercentage > 0);
-
-  // Ordenar: Coincidencia descendente, luego por menor precio por hora
-  lastSearchResults.sort((a, b) => b.matchPercentage - a.matchPercentage || a.price - b.price);
-
-  // Actualizar marcadores en el mapa
   populationLayer.clearLayers();
   const bounds = [];
 
-  lastSearchResults.forEach(c => {
-    const initials = c.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-    const marker = L.marker([c.lat, c.lng], {
-      personCount: 1,
-      icon: L.divIcon({
-        html: `<div class="bubble" title="${c.name} (${c.matchPercentage}% coincidencia)">${initials}</div>`,
-        className: ""
-      })
+  if (!hasFilter) {
+    // 1. SIN SELECCIÓN: Mostrar los globos agregados con el volumen de personas (Lógica original)
+    allData.forEach(d => {
+      const marker = L.marker([d.lat, d.lng], {
+        personCount: d.people,
+        icon: L.divIcon({
+          html: `<div class="bubble" title="${d.city} (${d.people} personas disponibles)">${d.people}</div>`,
+          className: ""
+        })
+      });
+      
+      marker.bindPopup(`
+        <div style="font-family: 'Inter', sans-serif; min-width: 150px; line-height: 1.4;">
+          <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600;">${d.city}</h4>
+          <p style="margin: 0; font-size: 12px; color: #64748b;">
+            <strong>Provincia:</strong> ${d.prov}<br>
+            <strong>Talento disponible:</strong> ${d.people} personas
+          </p>
+        </div>
+      `);
+      
+      populationLayer.addLayer(marker);
+      bounds.push([d.lat, d.lng]);
     });
-    
-    marker.bindPopup(`
-      <div style="font-family: 'Inter', sans-serif; min-width: 160px; line-height: 1.4;">
-        <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600;">${c.name}</h4>
-        <span style="font-size: 10px; padding: 2px 6px; background: #e0e7ff; color: #4f46e5; border-radius: 4px; font-weight: 700; text-transform: uppercase;">${c.category}</span>
-        <p style="margin: 8px 0 0 0; font-size: 12px; color: #475569;">
-          <strong>Precio:</strong> ${c.price} €/h<br>
-          <strong>Ciudad:</strong> ${c.city}<br>
-          <strong>Coincidencia:</strong> ${c.matchPercentage}%
-        </p>
-      </div>
-    `);
 
-    populationLayer.addLayer(marker);
-    bounds.push([c.lat, c.lng]);
-  });
+    // Cargar todos los candidatos al 100% por defecto si abren el listado
+    lastSearchResults = candidates.map(c => ({ ...c, matchPercentage: 100 }));
+  } else {
+    // 2. CON SELECCIÓN: Calcular porcentaje de coincidencia para cada candidato
+    let scoredCandidates = candidates.map(c => {
+      let totalCriteria = 0;
+      let matchedCriteria = 0;
+
+      // 1. Categoría
+      if (categoria) {
+        totalCriteria += 3;
+        if (c.category.toLowerCase() === categoria.toLowerCase()) {
+          matchedCriteria += 3;
+        }
+      }
+
+      // 2. Provincia y Población
+      if (prov && pob) {
+        totalCriteria += 3;
+        if (c.prov.toLowerCase() === prov && c.city.toLowerCase() === pob) {
+          matchedCriteria += 3;
+        } else if (c.prov.toLowerCase() === prov) {
+          matchedCriteria += 1.5; // Coincidencia parcial (misma provincia)
+        }
+      } else if (prov) {
+        totalCriteria += 3;
+        if (c.prov.toLowerCase() === prov) {
+          matchedCriteria += 3;
+        }
+      } else if (pob) {
+        totalCriteria += 3;
+        if (c.city.toLowerCase() === pob) {
+          matchedCriteria += 3;
+        }
+      }
+
+      // 3. Precio (€/hora)
+      if (!isNaN(precio) && precio > 0) {
+        totalCriteria += 2;
+        if (c.price <= precio) {
+          matchedCriteria += 2;
+        } else {
+          // Coincidencia parcial si el precio está dentro del 30% del presupuesto
+          let diff = (c.price - precio) / precio;
+          if (diff <= 0.3) {
+            matchedCriteria += 2 * (1 - diff / 0.3);
+          }
+        }
+      }
+
+      // 4. Disponibilidad
+      if (selectedDays.length > 0) {
+        totalCriteria += 2;
+        let dayScore = 0;
+        selectedDays.forEach(day => {
+          const cDay = c.availability[day.name];
+          if (cDay) {
+            let matchesHours = true;
+            if (day.inicio && cDay.inicio && cDay.inicio > day.inicio) matchesHours = false;
+            if (day.fin && cDay.fin && cDay.fin < day.fin) matchesHours = false;
+            
+            if (day.partida && !cDay.partida) {
+              matchesHours = false;
+            }
+            if (day.partida && cDay.partida) {
+              if (day.inicio2 && cDay.inicio2 && cDay.inicio2 > day.inicio2) matchesHours = false;
+              if (day.fin2 && cDay.fin2 && cDay.fin2 < day.fin2) matchesHours = false;
+            }
+
+            if (matchesHours) dayScore += 1;
+            else dayScore += 0.5;
+          }
+        });
+        matchedCriteria += 2 * (dayScore / selectedDays.length);
+      }
+
+      let percentage = 100;
+      if (totalCriteria > 0) {
+        percentage = Math.round((matchedCriteria / totalCriteria) * 100);
+      }
+
+      return { ...c, matchPercentage: percentage };
+    });
+
+    // Filtrar candidatos con coincidencia > 0
+    lastSearchResults = scoredCandidates.filter(c => c.matchPercentage > 0);
+    lastSearchResults.sort((a, b) => b.matchPercentage - a.matchPercentage || a.price - b.price);
+
+    // Pintar los marcadores individuales con iniciales (difuminando el nombre del popup)
+    lastSearchResults.forEach(c => {
+      const initials = c.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      const marker = L.marker([c.lat, c.lng], {
+        personCount: 1,
+        icon: L.divIcon({
+          html: `<div class="bubble" title="Candidato oculto (${c.matchPercentage}% coincidencia)">${initials}</div>`,
+          className: ""
+        })
+      });
+      
+      marker.bindPopup(`
+        <div style="font-family: 'Inter', sans-serif; min-width: 170px; line-height: 1.4;">
+          <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+            <span>Candidato</span> <span class="blurred-text">${c.name}</span>
+          </h4>
+          <span style="font-size: 10px; padding: 2px 6px; background: #e0e7ff; color: #4f46e5; border-radius: 4px; font-weight: 700; text-transform: uppercase;">${c.category}</span>
+          <p style="margin: 8px 0 0 0; font-size: 12px; color: #475569;">
+            <strong>Precio:</strong> ${c.price} €/h<br>
+            <strong>Ciudad:</strong> ${c.city}<br>
+            <strong>Coincidencia:</strong> ${c.matchPercentage}%
+          </p>
+        </div>
+      `);
+
+      populationLayer.addLayer(marker);
+      bounds.push([c.lat, c.lng]);
+    });
+  }
 
   if (bounds.length > 0) {
     map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
@@ -792,16 +898,14 @@ loadGeographicData();
   document.getElementById(id).addEventListener("input", applyFilters);
 });
 
-// Botón buscar y renderizado de resultados en modal ordenado
+// Botón buscar y renderizado de resultados en modal ordenado (DATOS DIFUMINADOS + BOTÓN DE PAGO)
 document.getElementById("buscarBtn").addEventListener("click", () => {
   applyFilters();
   
   const listContainer = document.getElementById("candidatesList");
   const countContainer = document.getElementById("resultsCount");
   
-  // Mostrar total
   countContainer.innerHTML = `Hemos encontrado <strong>${lastSearchResults.length}</strong> candidato${lastSearchResults.length === 1 ? '' : 's'} ordenados por nivel de ajuste.`;
-  
   listContainer.innerHTML = "";
   
   if (lastSearchResults.length === 0) {
@@ -815,8 +919,8 @@ document.getElementById("buscarBtn").addEventListener("click", () => {
       </div>
     `;
   } else {
-    lastSearchResults.forEach(c => {
-      const initials = c.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    lastSearchResults.forEach((c, index) => {
+      const randomId = 1000 + index * 47 + Math.floor(Math.random() * 20); // Genera ID de candidato ficticio consistente
       
       let matchClass = "match-low";
       if (c.matchPercentage >= 80) matchClass = "match-high";
@@ -825,15 +929,22 @@ document.getElementById("buscarBtn").addEventListener("click", () => {
       const row = document.createElement("div");
       row.className = "candidate-row";
       row.innerHTML = `
-        <div class="candidate-info">
-          <div class="candidate-avatar">${initials}</div>
+        <div class="candidate-info" style="flex-grow: 1;">
+          <div class="candidate-avatar">👤</div>
           <div class="candidate-details">
-            <h4>${c.name}</h4>
+            <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Candidato #${randomId}</span> 
+              <span class="blurred-text">${c.name}</span>
+            </h4>
             <span class="candidate-badge">${c.category}</span>
             <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">📍 ${c.city}, ${c.prov}</p>
+            <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8;">
+              Contacto: <span class="blurred-text">+34 689 XX XX / info@candidato.com</span>
+            </p>
+            <button class="pay-btn" onclick="openPaymentGateway('${c.name}', ${randomId})">Ver datos de contacto (Pasarela de Pago)</button>
           </div>
         </div>
-        <div class="candidate-match">
+        <div class="candidate-match" style="flex-shrink: 0; margin-left: 20px;">
           <span class="match-percent ${matchClass}">${c.matchPercentage}% Coincidencia</span>
           <span class="candidate-price">${c.price} €/h</span>
         </div>
@@ -842,12 +953,27 @@ document.getElementById("buscarBtn").addEventListener("click", () => {
     });
   }
   
-  // Mostrar overlay
   document.getElementById("overlay").style.display = "flex";
 });
 
 function closePopup() {
   document.getElementById("overlay").style.display = "none";
+}
+
+// ✅ CONTROL DE PASARELA DE PAGO SIMULADA
+function openPaymentGateway(name, id) {
+  document.getElementById("paymentCandidateName").innerText = `Candidato #${id}`;
+  document.getElementById("paymentModal").style.display = "flex";
+}
+
+function closePayment() {
+  document.getElementById("paymentModal").style.display = "none";
+}
+
+function processSimulatedPayment(e) {
+  e.preventDefault();
+  alert("Pago simulado con éxito. En producción real, este proceso valida la tarjeta mediante Redsys/Stripe para desbloquear y mostrar la información de contacto del candidato.");
+  closePayment();
 }
 
 // ✅ CONSTRUCCIÓN DE CALENDARIO DE DISPONIBILIDAD
@@ -883,9 +1009,10 @@ dias.forEach(dia => {
     input.addEventListener("input", applyFilters);
   });
 });
+
+// Inicializar filtros al cargar la página por primera vez
+applyFilters();
 </script>
 
-</body>
-</html>
 </body>
 </html>
