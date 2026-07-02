@@ -296,9 +296,9 @@ body {
 }
 
 .candidates-list {
-  max-height: 50vh;
+  max-height: 45vh;
   overflow-y: auto;
-  margin-top: 20px;
+  margin-top: 15px;
   padding-right: 8px;
   text-align: left;
 }
@@ -424,24 +424,6 @@ body {
   pointer-events: none;
 }
 
-.pay-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  border: 1px solid #6366f1;
-  background: transparent;
-  color: #6366f1;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.pay-btn:hover {
-  background: #6366f1;
-  color: white;
-}
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -464,8 +446,18 @@ body {
       <button onclick="closePopup()" class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8; transition: color 0.2s;">&times;</button>
     </div>
     
-    <div id="resultsCount" style="text-align: left; font-size: 14px; color: #475569; font-weight: 500; background: #f1f5f9; padding: 12px 16px; border-radius: 12px;">
+    <div id="resultsCount" style="text-align: left; font-size: 14px; color: #475569; font-weight: 500; background: #f1f5f9; padding: 12px 16px; border-radius: 12px; margin-bottom: 15px;">
       <!-- Rellenado dinámicamente -->
+    </div>
+
+    <!-- Banner unificado de pasarela de pago para todo el lote -->
+    <div id="paymentPrompt" style="background: #e0e7ff; border: 1px solid #c7d2fe; padding: 16px; border-radius: 16px; margin-bottom: 15px; text-align: center;">
+      <p style="margin: 0 0 12px 0; font-size: 14px; color: #3730a3; font-weight: 600;">
+        🔒 Los nombres y datos de contacto de los candidatos están protegidos.
+      </p>
+      <button id="batchPayBtn" onclick="openBatchPaymentGateway()" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); transition: all 0.2s;">
+        Desbloquear todo el lote de candidatos por 29,99 €
+      </button>
     </div>
     
     <div class="candidates-list" id="candidatesList">
@@ -484,8 +476,8 @@ body {
     <div style="text-align: center; margin-bottom: 20px;">
       <div style="font-size: 36px; margin-bottom: 8px;">💳</div>
       <p style="margin: 0; font-size: 14px; color: #64748b;">Acceso a los datos de contacto del</p>
-      <h4 id="paymentCandidateName" style="margin: 4px 0 0 0; color: #0f172a; font-size: 16px; font-weight: 600;">Candidato #XXXX</h4>
-      <p style="margin: 12px 0 0 0; font-size: 22px; font-weight: 700; color: #6366f1;">9,99 € <span style="font-size: 12px; font-weight: 400; color: #64748b;">(pago único)</span></p>
+      <h4 id="paymentCandidateName" style="margin: 4px 0 0 0; color: #0f172a; font-size: 16px; font-weight: 600;">Lote de candidatos</h4>
+      <p style="margin: 12px 0 0 0; font-size: 22px; font-weight: 700; color: #6366f1;">29,99 € <span style="font-size: 12px; font-weight: 400; color: #64748b;">(pago único)</span></p>
     </div>
     
     <form onsubmit="processSimulatedPayment(event)" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
@@ -504,7 +496,7 @@ body {
         </div>
       </div>
       <button type="submit" style="width: 100%; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-        PAGAR Y VER CONTACTO
+        PAGAR Y VER CONTACTOS
       </button>
     </form>
   </div>
@@ -898,17 +890,19 @@ loadGeographicData();
   document.getElementById(id).addEventListener("input", applyFilters);
 });
 
-// Botón buscar y renderizado de resultados en modal ordenado (DATOS DIFUMINADOS + BOTÓN DE PAGO)
+// Botón buscar y renderizado de resultados en modal ordenado
 document.getElementById("buscarBtn").addEventListener("click", () => {
   applyFilters();
   
   const listContainer = document.getElementById("candidatesList");
   const countContainer = document.getElementById("resultsCount");
+  const paymentPrompt = document.getElementById("paymentPrompt");
   
   countContainer.innerHTML = `Hemos encontrado <strong>${lastSearchResults.length}</strong> candidato${lastSearchResults.length === 1 ? '' : 's'} ordenados por nivel de ajuste.`;
   listContainer.innerHTML = "";
   
   if (lastSearchResults.length === 0) {
+    paymentPrompt.style.display = "none";
     listContainer.innerHTML = `
       <div style="text-align: center; padding: 40px 20px; color: #64748b;">
         <svg style="width: 48px; height: 48px; margin: 0 auto 16px auto; display: block; color: #94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -919,6 +913,10 @@ document.getElementById("buscarBtn").addEventListener("click", () => {
       </div>
     `;
   } else {
+    // Si hay candidatos y el lote está bloqueado, se muestra el banner de pago
+    paymentPrompt.style.display = "block";
+    document.getElementById("batchPayBtn").innerText = `Desbloquear todo el lote (${lastSearchResults.length} candidatos) por 29,99 €`;
+
     lastSearchResults.forEach((c, index) => {
       const randomId = 1000 + index * 47 + Math.floor(Math.random() * 20); // Genera ID de candidato ficticio consistente
       
@@ -941,7 +939,6 @@ document.getElementById("buscarBtn").addEventListener("click", () => {
             <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8;">
               Contacto: <span class="blurred-text">+34 689 XX XX / info@candidato.com</span>
             </p>
-            <button class="pay-btn" onclick="openPaymentGateway('${c.name}', ${randomId})">Ver datos de contacto (Pasarela de Pago)</button>
           </div>
         </div>
         <div class="candidate-match" style="flex-shrink: 0; margin-left: 20px;">
@@ -961,8 +958,9 @@ function closePopup() {
 }
 
 // ✅ CONTROL DE PASARELA DE PAGO SIMULADA
-function openPaymentGateway(name, id) {
-  document.getElementById("paymentCandidateName").innerText = `Candidato #${id}`;
+function openBatchPaymentGateway() {
+  const count = lastSearchResults.length;
+  document.getElementById("paymentCandidateName").innerText = `Lote de ${count} candidatos`;
   document.getElementById("paymentModal").style.display = "flex";
 }
 
@@ -972,7 +970,16 @@ function closePayment() {
 
 function processSimulatedPayment(e) {
   e.preventDefault();
-  alert("Pago simulado con éxito. En producción real, este proceso valida la tarjeta mediante Redsys/Stripe para desbloquear y mostrar la información de contacto del candidato.");
+  alert("¡Pago simulado con éxito! Se han desbloqueado los nombres y datos de contacto de todos los candidatos de este lote.");
+  
+  // Desbloquear visualmente en la demostración quitando la clase difuminada
+  document.querySelectorAll(".blurred-text").forEach(el => {
+    el.classList.remove("blurred-text");
+  });
+  
+  // Ocultar el prompt de pago ya que ha sido adquirido
+  document.getElementById("paymentPrompt").style.display = "none";
+  
   closePayment();
 }
 
