@@ -2036,21 +2036,74 @@ return;
   showWorkerPortalView(newCandidate);
 }
 
-function handleWorkerLogin(e) {
-  e.preventDefault();
-  const idInput = document.getElementById("loginId").value.trim().toLowerCase();
-  const passInput = document.getElementById("loginPassword").value;
-
-  const found = candidates.find(c => (c.email.toLowerCase() === idInput || c.phone.includes(idInput)) && (c.password === passInput || passInput === "123"));
-
-  if (found) {
-    closeLoginModal();
-    showWorkerPortalView(found);
-  } else {
-    alert("Credenciales incorrectas. Comprueba tu correo/teléfono y contraseña.");
-  }
+async function handleWorkerLogin(e) {
+ 
+e.preventDefault();
+ 
+const idInput =
+document.getElementById("loginId")
+.value
+.trim()
+.toLowerCase();
+ 
+const passInput =
+document.getElementById("loginPassword")
+.value;
+ 
+try {
+ 
+const { data, error } = await supabaseClient
+.from("candidatos")
+.select("*");
+ 
+if (error) {
+console.error(error);
+alert("Error accediendo a Supabase");
+return;
 }
-
+ 
+const found = data.find(c =>
+(
+c.email.toLowerCase() === idInput ||
+c.telefono.includes(idInput)
+)
+&&
+c.password === passInput
+);
+ 
+if (found) {
+ 
+const workerObject = {
+name: found.nombre,
+email: found.email,
+phone: found.telefono,
+password: found.password,
+prov: found.provincia,
+city: found.municipio,
+price: found.precio,
+categories: ["camarero"],
+availability: {},
+customDates: {},
+experience: []
+};
+ 
+closeLoginModal();
+showWorkerPortalView(workerObject);
+ 
+} else {
+ 
+alert("Credenciales incorrectas");
+ 
+}
+ 
+} catch(err) {
+ 
+console.error(err);
+alert("Error de conexión");
+ 
+}
+ 
+}
 // ==========================================
 // 6. EDICIÓN DE DATOS DE USUARIO Y FOTOS
 // ==========================================
