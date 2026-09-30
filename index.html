@@ -1543,8 +1543,23 @@ body {
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+// ==========================================
+// SUPABASE
+// ==========================================
+ 
+const SUPABASE_URL = "https://aqkulibjdabcvsdtbwsi.supabase.co";
+ 
+const SUPABASE_KEY = "sb_publishable_Duk97cF1rT_bes6d0nG81Q_mYb4Uoiz";
+ 
+const supabaseClient = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+console.log("Supabase conectado");
+console.log(supabaseClient);
 // ==========================================
 // 1. CONSTANTES Y DATOS INICIALES
 // ==========================================
@@ -1899,7 +1914,7 @@ function handleCvSelect(input) {
   }
 }
 
-function handleWorkerRegistration(e) {
+async function handleWorkerRegistration(e) {
   e.preventDefault();
 
   const name = document.getElementById("regName").value.trim();
@@ -1985,7 +2000,34 @@ function handleWorkerRegistration(e) {
     reviews: [{ autor: "Empresa Talento", stars: 5, comentario: "Candidato verificado y recién registrado." }]
   };
 
-  candidates.unshift(newCandidate);
+  try {
+ 
+const { error } = await supabaseClient
+.from("candidatos")
+.insert([
+{
+nombre: name,
+telefono: phone,
+email: email,
+password: password,
+provincia: prov,
+municipio: city,
+precio: price
+}
+]);
+if (error) {
+console.error(error);
+alert("Error guardando candidato en Supabase");
+return;
+}
+ 
+} catch(err) {
+ 
+console.error(err);
+alert("Error conectando con Supabase");
+return;
+ 
+}
 
   closeRegisterModal();
   document.getElementById("registerWorkerForm").reset();
