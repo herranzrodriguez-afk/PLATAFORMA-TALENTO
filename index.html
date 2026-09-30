@@ -2,1520 +2,272 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Proyecto empresa Javi</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Google Fonts: Inter -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 
 <style>
 body {
-  margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: #f8fafc;
-  color: #334155;
+  font-family: Arial;
+  background: #f1f5f9;
+  padding: 20px;
 }
 
-.hero {
-  min-height: 75vh;
+/* SECCIONES */
+.seccion {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+/* FORMULARIO */
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.form-group {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
-  padding: 40px;
-  background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)),
-              url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
-  background-size: cover;
-  background-position: center;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 24px;
-  letter-spacing: -0.02em;
-}
-
-.hero-buttons {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-
-.btn {
-  padding: 14px 28px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-worker {
-  background: #6366f1;
-  color: white;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-}
-
-.btn-worker:hover {
-  background: #4f46e5;
-  transform: translateY(-1px);
-}
-
-.btn-company {
-  background: white;
-  color: #0f172a;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-}
-
-.btn-company:hover {
-  background: #f8fafc;
-  transform: translateY(-1px);
-}
-
-.claim {
-  font-size: 1.1rem;
-  color: #cbd5e1;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.map-section {
-  max-width: 1200px;
-  margin: -100px auto 80px;
-  background: white;
-  border-radius: 24px;
-  padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f1f5f9;
+  flex-direction: column;
   position: relative;
+}
+
+.form-group.full {
+  grid-column: span 4;
+}
+
+.form-group input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+/* AUTOCOMPLETE */
+.lista {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  display: none;
   z-index: 10;
-  box-sizing: border-box;
 }
 
-.filters {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+/* DISPONIBILIDAD */
+.semana {
+  display: flex;
+  gap: 12px;
 }
 
-.filters select, .filters input {
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  font-family: inherit;
-  font-size: 14px;
-  background: white;
-  color: #334155;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.filters select:focus, .filters input:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-}
-
-#buscarBtn {
-  margin-top: 10px;
-  padding: 14px 32px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: white;
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
-  transition: all 0.2s ease;
-}
-
-#buscarBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 20px -3px rgba(79, 70, 229, 0.4);
-}
-
-.week {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.day-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  padding: 16px;
+.dia-card {
+  background: #c7d2fe; /* azul más sólido */
   border-radius: 16px;
+  padding: 14px;
+  width: 150px; /* CLAVE: ancho fijo correcto */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box; /* ✅ evita desbordes */
+}
+
+.dia-card strong {
   text-align: center;
-  min-height: 250px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-  transition: all 0.2s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.day-card:hover {
-  border-color: #6366f1;
-  box-shadow: 0 10px 20px -2px rgba(99, 102, 241, 0.12);
-  transform: translateY(-2px);
-}
-
-.day-card h4 {
-  margin: 0 0 12px 0;
-  color: #0f172a;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.day-card input[type="time"] {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
   margin-bottom: 8px;
-  font-family: inherit;
-  font-size: 13px;
 }
 
-.day-card label {
-  font-size: 12px;
-  color: #64748b;
+/* BLOQUES HORAS */
+.horas {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   gap: 6px;
-  cursor: pointer;
-  margin: 8px 0;
-}
-
-.day-card .tarde {
-  margin-top: 8px;
-  border-top: 1px dashed #e2e8f0;
-  padding-top: 10px;
-}
-
-.hidden {
-  display: none;
-}
-
-#map {
-  height: 500px;
-  border-radius: 20px;
-  margin-top: 40px;
-  border: 1px solid #e2e8f0;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-}
-
-/* Pins de candidatos y volumen */
-.bubble {
-  background: #6366f1;
-  color: white;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  font-weight: 700;
-  font-size: 12px;
-  transition: all 0.2s ease;
-}
-
-.bubble:hover {
-  background: #4f46e5;
-  transform: scale(1.1);
-}
-
-/* Cluster de candidatos */
-.cluster-bubble {
-  background: #4338ca;
-  color: white;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  border: 3px solid white;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-  font-size: 14px;
-}
-
-/* Modal / Overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(8px);
+}
+
+.horas input {
+  width: 100%;
+  box-sizing: border-box; /* ✅ CLAVE */
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #999;
+}
+
+/* PARTIDA */
+.partida-horas {
   display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  animation: fadeIn 0.3s ease;
+  margin-top: 6px;
 }
 
-.popup {
-  background: white;
-  width: 90%;
-  max-width: 750px;
-  padding: 30px;
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  max-height: 85vh;
-  box-sizing: border-box;
-  animation: slideUp 0.3s ease;
+/* CHECKS */
+.check {
+  margin: 6px 0;
+  font-size: 13px;
 }
 
-.close-btn:hover {
-  color: #0f172a !important;
-}
-
-.candidates-list {
-  max-height: 45vh;
-  overflow-y: auto;
-  margin-top: 15px;
-  padding-right: 8px;
-  text-align: left;
-}
-
-.candidates-list::-webkit-scrollbar {
-  width: 6px;
-}
-.candidates-list::-webkit-scrollbar-track {
+/* CV */
+.upload-btn {
+  padding: 12px;
   background: #f1f5f9;
-  border-radius: 3px;
-}
-.candidates-list::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-.candidate-row {
-  display: flex;
-  padding: 16px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  margin-bottom: 12px;
-  transition: all 0.2s ease;
-}
-
-.candidate-row:hover {
-  background: #ffffff;
-  border-color: #6366f1;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
-}
-
-.candidate-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.candidate-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #a5b4fc, #6366f1);
-  color: white;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
-}
-
-.candidate-details h4 {
-  margin: 0;
-  color: #0f172a;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.candidate-details p {
-  margin: 4px 0 0 0;
-  font-size: 13px;
-  color: #64748b;
-}
-
-.candidate-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  background: #e0e7ff;
-  color: #4f46e5;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-top: 4px;
-}
-
-.candidate-match {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.match-percent {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 20px;
-}
-
-.match-high {
-  background: #ecfdf5;
-  color: #059669;
-  border: 1px solid #a7f3d0;
-}
-
-.match-medium {
-  background: #fffbef;
-  color: #d97706;
-  border: 1px solid #fde68a;
-}
-
-.match-low {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-
-.candidate-price {
-  font-size: 14px;
-  font-weight: 700;
-  color: #334155;
-}
-
-/* Botón Ver Experiencia */
-.btn-view-profile {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  border: 1px dashed #94a3b8;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-view-profile:hover {
-  background: #e2e8f0;
-  color: #0f172a;
-}
-
-/* Botón Desbloquear Individual */
-.btn-unlock-single {
-  background: #e0e7ff;
-  color: #4f46e5;
-  border: 1px solid #c7d2fe;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-unlock-single:hover {
-  background: #6366f1;
-  color: white;
-  border-color: #6366f1;
-}
-
-.unlocked-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #10b981;
-  font-weight: 700;
-  font-size: 13px;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  padding: 6px 12px;
-  border-radius: 8px;
-}
-
-/* Efecto difuminado de texto (Seguridad/Pago) */
-.blurred-text {
-  color: transparent !important;
-  text-shadow: 0 0 8px rgba(15, 23, 42, 0.75);
-  user-select: none;
-  pointer-events: none;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- Popup de Resultados -->
-<div id="overlay" class="overlay">
-  <div class="popup">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px;">
-      <h2 style="margin: 0; font-size: 22px; color: #0f172a; font-weight: 700;">Resultados de búsqueda</h2>
-      <button onclick="closePopup()" class="close-btn" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8; transition: color 0.2s;">&times;</button>
-    </div>
-    
-    <div id="resultsCount" style="text-align: left; font-size: 14px; color: #475569; font-weight: 500; background: #f1f5f9; padding: 12px 16px; border-radius: 12px; margin-bottom: 15px;">
-      <!-- Rellenado dinámicamente -->
+<!-- DATOS -->
+<div class="seccion">
+  <h2>Datos personales</h2>
+
+  <div class="grid-form">
+    <div class="form-group"><input placeholder="Nombre" required></div>
+    <div class="form-group"><input placeholder="Apellidos" required></div>
+    <div class="form-group"><input placeholder="Teléfono" required></div>
+    <div class="form-group"><input placeholder="Teléfono 2"></div>
+
+    <div class="form-group full">
+      <input id="email" placeholder="Email" required>
     </div>
 
-    <!-- Banner unificado de pasarela de pago para todo el lote -->
-    <div id="paymentPrompt" style="background: #e0e7ff; border: 1px solid #c7d2fe; padding: 16px; border-radius: 16px; margin-bottom: 15px; text-align: center;">
-      <p style="margin: 0 0 12px 0; font-size: 14px; color: #3730a3; font-weight: 600;">
-        🔒 Los nombres y datos de contacto de los candidatos están protegidos.
-      </p>
-      <button id="batchPayBtn" onclick="openBatchPaymentGateway()" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); transition: all 0.2s;">
-        Desbloquear todo el lote
-      </button>
+    <div class="form-group">
+      <input id="provincia" placeholder="Provincia">
+      <div class="lista" id="listaProvincia"></div>
     </div>
-    
-    <div class="candidates-list" id="candidatesList">
-      <!-- Rellenado dinámicamente -->
-    </div>
-  </div>
-</div>
 
-<!-- Modal de Perfil de Experiencia y Valoraciones -->
-<div id="experienceModal" class="overlay" style="z-index: 10005;">
-  <div class="popup" style="max-width: 600px; padding: 24px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
-      <h3 style="margin: 0; font-size: 18px; color: #0f172a; font-weight: 700;">Perfil Profesional</h3>
-      <button onclick="closeExperienceModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8;">&times;</button>
+    <div class="form-group">
+      <input id="poblacion" placeholder="Población">
+      <div class="lista" id="listaPoblacion"></div>
     </div>
-    
-    <div style="overflow-y: auto; max-height: 55vh; padding-right: 8px; text-align: left;">
-      <!-- Datos básicos en modal -->
-      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; background: #f8fafc; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0;">
-        <div class="candidate-avatar" style="width: 56px; height: 56px; font-size: 24px;">👤</div>
-        <div>
-          <h4 id="expModalCandName" style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 700;">Candidato</h4>
-          <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-            <span id="expModalCategory" class="candidate-badge" style="margin-top: 0;">Categoría</span>
-            <span id="expModalRating" style="font-size: 13px; font-weight: 600; color: #d97706;">⭐ 4.8</span>
-          </div>
-          <p id="expModalLocation" style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">📍 Madrid</p>
-        </div>
-      </div>
 
-      <!-- Experiencia Laboral -->
-      <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 700; border-left: 4px solid #6366f1; padding-left: 8px;">Experiencia Laboral</h4>
-      <div id="expModalExperienceList" style="margin-bottom: 24px;">
-        <!-- Rellenado dinámicamente -->
-      </div>
-
-      <!-- Valoraciones -->
-      <h4 style="margin: 0 0 12px 0; color: #0f172a; font-size: 15px; font-weight: 700; border-left: 4px solid #d97706; padding-left: 8px;">Valoraciones de Clientes</h4>
-      <div id="expModalReviewsList">
-        <!-- Rellenado dinámicamente -->
-      </div>
-    </div>
-    
-    <div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 16px; display: flex; justify-content: flex-end; gap: 12px; align-items: center;">
-      <button onclick="closeExperienceModal()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer;">Cerrar</button>
-      <div id="expModalUnlockContainer">
-        <!-- Botón dinámico -->
-      </div>
+    <div class="form-group">
+      <input placeholder="€/hora" type="number">
     </div>
   </div>
 </div>
 
-<!-- Modal de Pago Simulado -->
-<div id="paymentModal" class="overlay" style="z-index: 10010;">
-  <div class="popup" style="max-width: 420px; padding: 24px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
-      <h3 style="margin: 0; font-size: 18px; color: #0f172a; font-weight: 700;">Pasarela de Pago Segura</h3>
-      <button onclick="closePayment()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #94a3b8;">&times;</button>
-    </div>
-    <div style="text-align: center; margin-bottom: 20px;">
-      <div style="font-size: 36px; margin-bottom: 8px;">💳</div>
-      <p style="margin: 0; font-size: 14px; color: #64748b;">Acceso a los datos de contacto del</p>
-      <h4 id="paymentCandidateName" style="margin: 4px 0 0 0; color: #0f172a; font-size: 16px; font-weight: 600;">Lote de candidatos</h4>
-      <p style="margin: 12px 0 0 0; font-size: 24px; font-weight: 700; color: #6366f1;"><span id="paymentPriceDisplay">29,99 €</span> <span style="font-size: 12px; font-weight: 400; color: #64748b;">(pago único)</span></p>
-    </div>
-    
-    <form onsubmit="processSimulatedPayment(event)" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
-      <div>
-        <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">Número de tarjeta</label>
-        <input type="text" placeholder="4000 1234 5678 9010" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 4px; font-family: monospace;">
-      </div>
-      <div style="display: flex; gap: 12px;">
-        <div style="flex: 1;">
-          <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">Caducidad</label>
-          <input type="text" placeholder="MM/AA" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 4px; font-family: monospace;">
-        </div>
-        <div style="flex: 1;">
-          <label style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase;">CVC</label>
-          <input type="text" placeholder="123" required style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 4px; font-family: monospace;">
-        </div>
-      </div>
-      <button type="submit" style="width: 100%; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-        PAGAR Y ACTIVAR CONTACTO
-      </button>
-    </form>
-  </div>
+<!-- DISPONIBILIDAD -->
+<div class="seccion">
+  <h2>Disponibilidad</h2>
+  <div class="semana" id="semana"></div>
 </div>
 
-<!-- Hero Section -->
-<section class="hero">
-  <div>
-    <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
+<!-- INFO -->
+<div class="seccion">
+  <h2>Información adicional</h2>
 
-    <div class="hero-buttons">
-      <button class="btn btn-worker">Registrarme</button>
-      <button class="btn btn-worker">Ya estoy inscrito</button>
-      <button class="btn btn-company">Soy empresa</button>
-    </div>
+  <label class="upload-btn">
+    <input type="file" hidden>
+    📎 Adjuntar CV
+  </label>
 
-    <div class="claim">
-      Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
-    </div>
-  </div>
-</section>
+  <br><br>
 
-<!-- Sección de Mapa y Filtros -->
-<section class="map-section">
-
-  <div class="filters">
-    <select id="categoria">
-      <option value="">Categoría profesional</option>
-      <option value="camarero">Camarero</option>
-      <option value="cocinero">Cocinero</option>
-    </select>
-
-    <input id="provincia" list="provincias" placeholder="Provincia">
-    <datalist id="provincias">
-      <option value="Madrid">
-      <option value="Barcelona">
-    </datalist>
-
-    <input id="poblacion" list="poblaciones" placeholder="Población">
-    <datalist id="poblaciones">
-      <option value="Madrid">
-      <option value="Getafe">
-      <option value="Alcalá de Henares">
-      <option value="Móstoles">
-      <option value="Leganés">
-      <option value="Barcelona">
-      <option value="Hospitalet">
-      <option value="Badalona">
-      <option value="Sabadell">
-      <option value="Terrassa">
-    </datalist>
-
-    <input id="fechaInicio" type="date" placeholder="Fecha inicio">
-    <input id="fechaFin" type="date" placeholder="Fecha fin">
-    <input id="precio" type="number" placeholder="€/hora máx.">
-  </div>
-
-  <!-- Calendario Semanal de Disponibilidad -->
-  <div class="week" id="week"></div>
-
-  <div style="text-align:center; margin-top: 30px;">
-    <button id="buscarBtn">BUSCAR CANDIDATOS</button>
-  </div>
-
-  <div id="map"></div>
-
-</section>
-
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <textarea style="width:100%; height:100px; border-radius:10px;"></textarea>
+</div>
 
 <script>
-// ✅ DATOS DE VOLUMEN (CUANDO NO HAY SELECCIÓN)
-const allData = [
-  {prov:"Madrid", city:"Madrid", lat:40.41, lng:-3.7, price:10, people:120, availability:["Lunes","Martes"]},
-  {prov:"Madrid", city:"Getafe", lat:40.3, lng:-3.7, price:9, people:80, availability:["Miércoles"]},
-  {prov:"Madrid", city:"Alcalá de Henares", lat:40.48, lng:-3.36, price:11, people:70, availability:["Jueves"]},
-  {prov:"Madrid", city:"Móstoles", lat:40.32, lng:-3.86, price:10, people:60, availability:["Viernes"]},
-  {prov:"Madrid", city:"Leganés", lat:40.33, lng:-3.76, price:8, people:50, availability:["Sábado"]},
-
-  {prov:"Barcelona", city:"Barcelona", lat:41.38, lng:2.17, price:12, people:130, availability:["Lunes"]},
-  {prov:"Barcelona", city:"Hospitalet", lat:41.36, lng:2.11, price:10, people:90, availability:["Martes"]},
-  {prov:"Barcelona", city:"Badalona", lat:41.44, lng:2.24, price:9, people:80, availability:["Miércoles"]},
-  {prov:"Barcelona", city:"Sabadell", lat:41.54, lng:2.10, price:11, people:70, availability:["Jueves"]},
-  {prov:"Barcelona", city:"Terrassa", lat:41.56, lng:2.01, price:10, people:60, availability:["Viernes"]}
-];
-
-// ✅ BASE DE DATOS DE CANDIDATOS INDIVIDUALES (ENRIQUECIDA CON EXPERIENCIA Y VALORACIONES)
-const candidates = [
-  { 
-    name: "Alejandro Gómez", 
-    category: "camarero", 
-    prov: "Madrid", 
-    city: "Madrid", 
-    lat: 40.416, 
-    lng: -3.703, 
-    price: 10, 
-    availability: { "Lunes": { inicio: "08:00", fin: "16:00" }, "Martes": { inicio: "08:00", fin: "16:00" } },
-    experience: [
-      { cargo: "Camarero de Sala", local: "Restaurante La Pampa, Madrid", periodo: "2023 - 2025", desc: "Servicio de mesas, gestión de cobros con TPV y atención directa en salón de alta capacidad." },
-      { cargo: "Ayudante de Barra", local: "Cafetería Central, Getafe", periodo: "2021 - 2023", desc: "Apoyo en barra, servicio de terraza exterior y preparación de desayunos y pedidos rápidos." }
-    ],
-    rating: 4.8,
-    reviews: [
-      { autor: "Restaurante La Pampa", stars: 5, comentario: "Excelente trato con el público y puntualidad impecable. Muy recomendado." },
-      { autor: "Cafetería Central", stars: 4, comentario: "Trabajador incansable, muy buena velocidad en horas punta de desayunos." }
-    ]
-  },
-  { 
-    name: "Lucía Fernández", 
-    category: "cocinero", 
-    prov: "Madrid", 
-    city: "Getafe", 
-    lat: 40.308, 
-    lng: -3.732, 
-    price: 12, 
-    availability: { "Miércoles": { inicio: "09:00", fin: "17:00" }, "Jueves": { inicio: "09:00", fin: "17:00" } },
-    experience: [
-      { cargo: "Jefa de Partida", local: "Catering Eventos, Madrid", periodo: "2022 - 2025", desc: "Coordinación de partidas calientes y preparación de menús para grandes banquetes." },
-      { cargo: "Cocinera de Menú", local: "Restaurante El Olivo, Getafe", periodo: "2020 - 2022", desc: "Elaboración del menú diario casero, control de materias primas y recepción de proveedores." }
-    ],
-    rating: 4.9,
-    reviews: [
-      { autor: "Catering Eventos", stars: 5, comentario: "Tiene un liderazgo innato en cocina. Trabaja bajo presión manteniendo la calidad." },
-      { autor: "Restaurante El Olivo", stars: 5, comentario: "Su sabor tradicional es espectacular. Limpieza y orden de primer nivel." }
-    ]
-  },
-  { 
-    name: "Carlos Soler", 
-    category: "camarero", 
-    prov: "Madrid", 
-    city: "Alcalá de Henares", 
-    lat: 40.481, 
-    lng: -3.363, 
-    price: 9, 
-    availability: { "Jueves": { inicio: "13:00", fin: "21:00" }, "Viernes": { inicio: "13:00", fin: "21:00" } },
-    experience: [
-      { cargo: "Camarero de Terraza", local: "Cafetería La Estación, Alcalá", periodo: "2023 - 2025", desc: "Servicio ágil de mesas en terraza exterior y cobro directo con comandero electrónico." }
-    ],
-    rating: 4.5,
-    reviews: [
-      { autor: "Cafetería La Estación", stars: 4, comentario: "Simpático con los clientes y muy ágil llevando la bandeja." }
-    ]
-  },
-  { 
-    name: "María Pedraza", 
-    category: "cocinero", 
-    prov: "Madrid", 
-    city: "Móstoles", 
-    lat: 40.323, 
-    lng: -3.864, 
-    price: 14, 
-    availability: { "Viernes": { inicio: "12:00", fin: "16:00", inicio2: "19:00", fin2: "23:00", partida: true } },
-    experience: [
-      { cargo: "Cocinera Principal", local: "Restaurante Italia Mía, Móstoles", periodo: "2021 - 2025", desc: "Elaboración de pasta fresca artesanal, salsas caseras y gestión del inventario semanal." }
-    ],
-    rating: 4.7,
-    reviews: [
-      { autor: "Italia Mía Móstoles", stars: 5, comentario: "Excelente dominio de la cocina italiana, muy organizada y veloz." }
-    ]
-  },
-  { 
-    name: "David Bustos", 
-    category: "camarero", 
-    prov: "Madrid", 
-    city: "Leganés", 
-    lat: 40.327, 
-    lng: -3.763, 
-    price: 8, 
-    availability: { "Sábado": { inicio: "08:00", fin: "16:00" }, "Domingo": { inicio: "08:00", fin: "16:00" } },
-    experience: [
-      { cargo: "Camarero de Refuerzo", local: "Cervecería El Paso, Leganés", periodo: "2024", desc: "Apoyo en el servicio de barra y reposición de bebidas durante los fines de semana." }
-    ],
-    rating: 4.2,
-    reviews: [
-      { autor: "Cervecería El Paso", stars: 4, comentario: "Actitud muy positiva y colaboradora, ideal para fines de semana." }
-    ]
-  },
-  { 
-    name: "Laura Escanes", 
-    category: "camarero", 
-    prov: "Barcelona", 
-    city: "Barcelona", 
-    lat: 41.385, 
-    lng: 2.173, 
-    price: 11, 
-    availability: { "Lunes": { inicio: "09:00", fin: "15:00" }, "Martes": { inicio: "09:00", fin: "15:00" } },
-    experience: [
-      { cargo: "Camarera y Coctelera", local: "Sky Bar, Barcelona", periodo: "2022 - 2025", desc: "Preparación de coctelería moderna y clásica en terraza de hotel de lujo." }
-    ],
-    rating: 4.8,
-    reviews: [
-      { autor: "Hotel Sky Bar", stars: 5, comentario: "Gran conocimiento de mixología y una excelente atención comercial." }
-    ]
-  },
-  { 
-    name: "Jordi Cruz", 
-    category: "cocinero", 
-    prov: "Barcelona", 
-    city: "Hospitalet", 
-    lat: 41.359, 
-    lng: 2.115, 
-    price: 15, 
-    availability: { "Martes": { inicio: "12:00", fin: "16:00", inicio2: "20:00", fin2: "00:00", partida: true } },
-    experience: [
-      { cargo: "Chef de Cuisine", local: "Hotel Miramar, Barcelona", periodo: "2019 - 2025", desc: "Diseño de platos de temporada, control de costes (food cost) y dirección de brigada." }
-    ],
-    rating: 5.0,
-    reviews: [
-      { autor: "Hotel Miramar", stars: 5, comentario: "Un profesional técnico impecable. Limpieza, orden y creatividad absoluta." }
-    ]
-  },
-  { 
-    name: "Marta Torné", 
-    category: "camarero", 
-    prov: "Barcelona", 
-    city: "Badalona", 
-    lat: 41.448, 
-    lng: 2.246, 
-    price: 10, 
-    availability: { "Miércoles": { inicio: "10:00", fin: "18:00" } },
-    experience: [
-      { cargo: "Camarera", local: "Café del Mar, Badalona", periodo: "2023 - 2025", desc: "Servicio de mesa con comandero digital, atención en inglés fluido a turistas." }
-    ],
-    rating: 4.6,
-    reviews: [
-      { autor: "Café del Mar", stars: 5, comentario: "Dominio excelente del inglés. Muy resolutiva en barra con cobros rápidos." }
-    ]
-  },
-  { 
-    name: "Albert Espinosa", 
-    category: "cocinero", 
-    prov: "Barcelona", 
-    city: "Sabadell", 
-    lat: 41.543, 
-    lng: 2.102, 
-    price: 13, 
-    availability: { "Jueves": { inicio: "08:00", fin: "16:00" }, "Viernes": { inicio: "08:00", fin: "16:00" } },
-    experience: [
-      { cargo: "Segundo de Cocina", local: "Restaurante Sant Pau, Sabadell", periodo: "2021 - 2024", desc: "Encargado de la preparación de pescados y arroces. Control del APPCC (higiene alimentaria)." }
-    ],
-    rating: 4.7,
-    reviews: [
-      { autor: "Restaurante Sant Pau", stars: 4, comentario: "Excelente arrocero, limpio en su estación de trabajo y muy veloz." }
-    ]
-  },
-  { 
-    name: "Paula Echevarría", 
-    category: "camarero", 
-    prov: "Barcelona", 
-    city: "Terrassa", 
-    lat: 41.564, 
-    lng: 2.011, 
-    price: 10, 
-    availability: { "Viernes": { inicio: "16:00", fin: "22:00" }, "Sábado": { inicio: "16:00", fin: "22:00" } },
-    experience: [
-      { cargo: "Camarera de Protocolo", local: "Masia Mas Solers, Barcelona", periodo: "2022 - 2025", desc: "Servicio de bodas, galas de empresa y protocolo de etiqueta en banquetes." }
-    ],
-    rating: 4.6,
-    reviews: [
-      { autor: "Masia Mas Solers", stars: 5, comentario: "Excelente técnica en mesa de etiqueta. Muy educada y discreta." }
-    ]
-  },
-  { 
-    name: "Javier Cámara", 
-    category: "cocinero", 
-    prov: "Madrid", 
-    city: "Madrid", 
-    lat: 40.422, 
-    lng: -3.692, 
-    price: 13, 
-    availability: { "Lunes": { inicio: "10:00", fin: "18:00" }, "Martes": { inicio: "10:00", fin: "18:00" } },
-    experience: [
-      { cargo: "Cocinero", local: "Taberna La Latina, Madrid", periodo: "2022 - 2025", desc: "Preparación de raciones tradicionales, tapas calientes y control diario de mermas." }
-    ],
-    rating: 4.8,
-    reviews: [
-      { autor: "Taberna La Latina", stars: 5, comentario: "Compañero excelente en la línea. Muy rápido despachando comandas." }
-    ]
-  },
-  { 
-    name: "Sara Carbonero", 
-    category: "camarero", 
-    prov: "Madrid", 
-    city: "Getafe", 
-    lat: 40.312, 
-    lng: -3.722, 
-    price: 11, 
-    availability: { "Miércoles": { inicio: "08:00", fin: "14:00" } },
-    experience: [
-      { cargo: "Camarera de Cafetería", local: "Bulevar Café, Getafe", periodo: "2023 - 2025", desc: "Atención al cliente en desayunos, cobros rápidos, preparación de bollería y cafés." }
-    ],
-    rating: 4.9,
-    reviews: [
-      { autor: "Bulevar Café", stars: 5, comentario: "Fidelizó a muchos clientes de desayuno por su amabilidad y sonrisa." }
-    ]
-  },
-  { 
-    name: "Antonio Banderas", 
-    category: "cocinero", 
-    prov: "Madrid", 
-    city: "Móstoles", 
-    lat: 40.334, 
-    lng: -3.875, 
-    price: 18, 
-    availability: { "Sábado": { inicio: "12:00", fin: "17:00", inicio2: "20:00", fin2: "00:00", partida: true } },
-    experience: [
-      { cargo: "Jefe de Parrilla", local: "Asador Real, Móstoles", periodo: "2018 - 2025", desc: "Encargado de la selección de carnes, control del punto de asados y brasas al carbón." }
-    ],
-    rating: 4.9,
-    reviews: [
-      { autor: "Asador Real", stars: 5, comentario: "Maestro parrillero con un sentido de la organización brillante. Excelente." }
-    ]
-  },
-  { 
-    name: "Rosalía Vila", 
-    category: "camarero", 
-    prov: "Barcelona", 
-    city: "Barcelona", 
-    lat: 41.392, 
-    lng: 2.184, 
-    price: 14, 
-    availability: { "Sábado": { inicio: "18:00", fin: "02:00" }, "Domingo": { inicio: "18:00", fin: "02:00" } },
-    experience: [
-      { cargo: "Camarera de Barra", local: "Club Razzmatazz, Barcelona", periodo: "2023 - 2025", desc: "Despacho rápido de consumiciones en sala principal de discoteca con alto volumen de ruido." }
-    ],
-    rating: 4.7,
-    reviews: [
-      { autor: "Club Razzmatazz", stars: 5, comentario: "Veloz, seria y muy ordenada manejando el cuadre de caja nocturno." }
-    ]
-  },
-  { 
-    name: "Gerard Piqué", 
-    category: "camarero", 
-    prov: "Barcelona", 
-    city: "Sabadell", 
-    lat: 41.551, 
-    lng: 2.115, 
-    price: 10, 
-    availability: { "Lunes": { inicio: "08:00", fin: "16:00" }, "Miércoles": { inicio: "08:00", fin: "16:00" } },
-    experience: [
-      { cargo: "Camarero", local: "Bar El Born, Sabadell", periodo: "2023 - 2025", desc: "Servicio de terraza, reposición de almacén y preparación diaria del local." }
-    ],
-    rating: 4.4,
-    reviews: [
-      { autor: "Bar El Born", stars: 4, comentario: "Dinámico, puntual y serio con los turnos de apertura." }
-    ]
-  }
-];
-
-// VARIABLES DE ESTADO PARA DESBLOQUEOS
-let batchUnlocked = false;
-const unlockedCandidates = new Set();
-let paymentTarget = {}; // Guardará { type: 'single'|'batch', name, randomId, price }
-let currentExpCandidateIndex = null;
-let currentExpCandidateRandomId = null;
-
-// MAPA LEAFLET
-const map = L.map("map").setView([40.4, -3.7], 6);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-
-const populationLayer = L.markerClusterGroup({
-  maxClusterRadius: 60,
-  iconCreateFunction: function(cluster) {
-    let total = 0;
-    cluster.getAllChildMarkers().forEach(m => { total += m.options.personCount; });
-    return L.divIcon({ html: `<div class="cluster-bubble">${total}</div>`, className: "" });
+// EMAIL
+document.getElementById('email').addEventListener('input', function () {
+  if (!this.value.includes('@')) {
+    this.setCustomValidity('Email inválido');
+  } else {
+    this.setCustomValidity('');
   }
 });
-map.addLayer(populationLayer);
 
-// ✅ CARGAR PROVINCIAS Y MUNICIPIOS DE ESPAÑA (REALES)
-let allProvinces = [
-  { code: "28", label: "Madrid" },
-  { code: "08", label: "Barcelona" }
-];
-let allMunicipalities = [
-  { parent_code: "28", label: "Madrid" },
-  { parent_code: "28", label: "Getafe" },
-  { parent_code: "28", label: "Alcalá de Henares" },
-  { parent_code: "28", label: "Móstoles" },
-  { parent_code: "28", label: "Leganés" },
-  { parent_code: "08", label: "Barcelona" },
-  { parent_code: "08", label: "Hospitalet" },
-  { parent_code: "08", label: "Badalona" },
-  { parent_code: "08", label: "Sabadell" },
-  { parent_code: "08", label: "Terrassa" }
-];
+// AUTOCOMPLETE
+function activarAutocomplete(inputId, listaId, datos) {
+  const input = document.getElementById(inputId);
+  const lista = document.getElementById(listaId);
 
-async function loadGeographicData() {
-  try {
-    // Provincias
-    const provRes = await fetch("https://raw.githubusercontent.com/frontid/ComunidadesProvinciasPoblaciones/master/provincias.json");
-    if (provRes.ok) {
-      allProvinces = await provRes.json();
-      const provDatalist = document.getElementById("provincias");
-      provDatalist.innerHTML = "";
-      allProvinces.sort((a,b) => a.label.localeCompare(b.label)).forEach(p => {
-        const opt = document.createElement("option");
-        opt.value = p.label;
-        provDatalist.appendChild(opt);
+  input.addEventListener("input", () => {
+    const valor = input.value.toLowerCase();
+    lista.innerHTML = "";
+
+    const filtrados = datos.filter(d => d.toLowerCase().includes(valor));
+
+    if (valor && filtrados.length) {
+      lista.style.display = "block";
+      filtrados.forEach(item => {
+        const div = document.createElement("div");
+        div.textContent = item;
+        div.onclick = () => {
+          input.value = item;
+          lista.style.display = "none";
+        };
+        lista.appendChild(div);
       });
+    } else {
+      lista.style.display = "none";
     }
+  });
 
-    // Municipios
-    const pobRes = await fetch("https://raw.githubusercontent.com/frontid/ComunidadesProvinciasPoblaciones/master/poblaciones.json");
-    if (pobRes.ok) {
-      allMunicipalities = await pobRes.json();
-      updateMunicipalitiesDatalist();
-    }
-  } catch (err) {
-    console.warn("No se pudo cargar la base geográfica remota. Usando datos por defecto.", err);
-  }
-}
-
-function updateMunicipalitiesDatalist() {
-  const provValue = document.getElementById("provincia").value.trim().toLowerCase();
-  const pobDatalist = document.getElementById("poblaciones");
-  pobDatalist.innerHTML = "";
-
-  const matchedProv = allProvinces.find(p => p.label.toLowerCase() === provValue);
-
-  let filteredMuns = allMunicipalities;
-  if (matchedProv) {
-    filteredMuns = allMunicipalities.filter(m => m.parent_code === matchedProv.code);
-  }
-
-  filteredMuns.sort((a, b) => a.label.localeCompare(b.label));
-  const limit = 200;
-  let count = 0;
-
-  filteredMuns.forEach(m => {
-    if (count < limit) {
-      const opt = document.createElement("option");
-      opt.value = m.label;
-      pobDatalist.appendChild(opt);
-      count++;
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target)) {
+      lista.style.display = "none";
     }
   });
 }
 
-// Escuchar cambios de provincia para filtrar poblaciones
-document.getElementById("provincia").addEventListener("input", () => {
-  updateMunicipalitiesDatalist();
-  applyFilters(true);
-});
+activarAutocomplete("provincia","listaProvincia",["Barcelona","Madrid"]);
+activarAutocomplete("poblacion","listaPoblacion",["Badalona","Getafe"]);
 
-// ✅ FUNCIÓN DE FILTRADO Y COMPATIBILIDAD
-let lastSearchResults = [];
-
-function applyFilters(shouldZoom = true) {
-  const prov = document.getElementById("provincia").value.trim().toLowerCase();
-  const pob = document.getElementById("poblacion").value.trim().toLowerCase();
-  const precio = parseFloat(document.getElementById("precio").value);
-  const categoria = document.getElementById("categoria").value;
-
-  const selectedDays = [];
-  const nombresDias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-  
-  document.querySelectorAll(".day-card").forEach((card, i) => {
-    const inicio = card.querySelector(".inicio").value;
-    const fin = card.querySelector(".fin").value;
-    const partida = card.querySelector(".partida").checked;
-    const inicio2 = card.querySelector(".inicio2").value;
-    const fin2 = card.querySelector(".fin2").value;
-
-    if (inicio || fin || partida) {
-      selectedDays.push({
-        name: nombresDias[i],
-        inicio,
-        fin,
-        partida,
-        inicio2,
-        fin2
-      });
-    }
-  });
-
-  const hasFilter = prov || pob || !isNaN(precio) || categoria || selectedDays.length > 0;
-
-  populationLayer.clearLayers();
-  const bounds = [];
-
-  if (!hasFilter) {
-    // 1. SIN SELECCIÓN: Globos con el volumen total de personas por zona
-    allData.forEach(d => {
-      const marker = L.marker([d.lat, d.lng], {
-        personCount: d.people,
-        icon: L.divIcon({
-          html: `<div class="bubble" title="${d.city} (${d.people} personas disponibles)">${d.people}</div>`,
-          className: ""
-        })
-      });
-      
-      marker.bindPopup(`
-        <div style="font-family: 'Inter', sans-serif; min-width: 150px; line-height: 1.4;">
-          <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600;">${d.city}</h4>
-          <p style="margin: 0; font-size: 12px; color: #64748b;">
-            <strong>Provincia:</strong> ${d.prov}<br>
-            <strong>Talento disponible:</strong> ${d.people} personas
-          </p>
-        </div>
-      `);
-      
-      populationLayer.addLayer(marker);
-      bounds.push([d.lat, d.lng]);
-    });
-
-    lastSearchResults = candidates.map(c => ({ ...c, matchPercentage: 100 }));
-  } else {
-    // 2. CON SELECCIÓN: Evaluar nivel de coincidencia
-    let scoredCandidates = candidates.map(c => {
-      let totalCriteria = 0;
-      let matchedCriteria = 0;
-
-      if (categoria) {
-        totalCriteria += 3;
-        if (c.category.toLowerCase() === categoria.toLowerCase()) {
-          matchedCriteria += 3;
-        }
-      }
-
-      if (prov && pob) {
-        totalCriteria += 3;
-        if (c.prov.toLowerCase() === prov && c.city.toLowerCase() === pob) {
-          matchedCriteria += 3;
-        } else if (c.prov.toLowerCase() === prov) {
-          matchedCriteria += 1.5;
-        }
-      } else if (prov) {
-        totalCriteria += 3;
-        if (c.prov.toLowerCase() === prov) {
-          matchedCriteria += 3;
-        }
-      } else if (pob) {
-        totalCriteria += 3;
-        if (c.city.toLowerCase() === pob) {
-          matchedCriteria += 3;
-        }
-      }
-
-      if (!isNaN(precio) && precio > 0) {
-        totalCriteria += 2;
-        if (c.price <= precio) {
-          matchedCriteria += 2;
-        } else {
-          let diff = (c.price - precio) / precio;
-          if (diff <= 0.3) {
-            matchedCriteria += 2 * (1 - diff / 0.3);
-          }
-        }
-      }
-
-      if (selectedDays.length > 0) {
-        totalCriteria += 2;
-        let dayScore = 0;
-        selectedDays.forEach(day => {
-          const cDay = c.availability[day.name];
-          if (cDay) {
-            let matchesHours = true;
-            if (day.inicio && cDay.inicio && cDay.inicio > day.inicio) matchesHours = false;
-            if (day.fin && cDay.fin && cDay.fin < day.fin) matchesHours = false;
-            
-            if (day.partida && !cDay.partida) {
-              matchesHours = false;
-            }
-            if (day.partida && cDay.partida) {
-              if (day.inicio2 && cDay.inicio2 && cDay.inicio2 > day.inicio2) matchesHours = false;
-              if (day.fin2 && cDay.fin2 && cDay.fin2 < day.fin2) matchesHours = false;
-            }
-
-            if (matchesHours) dayScore += 1;
-            else dayScore += 0.5;
-          }
-        });
-        matchedCriteria += 2 * (dayScore / selectedDays.length);
-      }
-
-      let percentage = 100;
-      if (totalCriteria > 0) {
-        percentage = Math.round((matchedCriteria / totalCriteria) * 100);
-      }
-
-      return { ...c, matchPercentage: percentage };
-    });
-
-    lastSearchResults = scoredCandidates.filter(c => c.matchPercentage > 0);
-    lastSearchResults.sort((a, b) => b.matchPercentage - a.matchPercentage || a.price - b.price);
-
-    // Pintar los marcadores
-    lastSearchResults.forEach(c => {
-      const initials = c.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-      const isUnlocked = batchUnlocked || unlockedCandidates.has(c.name);
-      
-      const marker = L.marker([c.lat, c.lng], {
-        personCount: 1,
-        icon: L.divIcon({
-          html: `<div class="bubble" title="Candidato (${c.matchPercentage}% coincidencia)">${initials}</div>`,
-          className: ""
-        })
-      });
-      
-      marker.bindPopup(`
-        <div style="font-family: 'Inter', sans-serif; min-width: 170px; line-height: 1.4;">
-          <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
-            <span>Candidato</span> <span class="${isUnlocked ? '' : 'blurred-text'}">${c.name}</span>
-          </h4>
-          <span style="font-size: 10px; padding: 2px 6px; background: #e0e7ff; color: #4f46e5; border-radius: 4px; font-weight: 700; text-transform: uppercase;">${c.category}</span>
-          <p style="margin: 8px 0 0 0; font-size: 12px; color: #475569;">
-            <strong>Precio:</strong> ${c.price} €/h<br>
-            <strong>Ciudad:</strong> ${c.city}<br>
-            <strong>Coincidencia:</strong> ${c.matchPercentage}%
-            ${isUnlocked ? '<br><strong>Contacto:</strong> +34 689 12 34 56' : ''}
-          </p>
-        </div>
-      `);
-
-      populationLayer.addLayer(marker);
-      bounds.push([c.lat, c.lng]);
-    });
-  }
-
-  if (shouldZoom) {
-    if (bounds.length > 0) {
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
-    } else {
-      map.setView([40.4, -3.7], 6);
-    }
-  }
-}
-
-// Iniciar carga de datos geográficos
-loadGeographicData();
-
-// Eventos de filtros instantáneos
-["provincia", "poblacion", "precio", "categoria", "fechaInicio", "fechaFin"].forEach(id => {
-  document.getElementById(id).addEventListener("input", () => applyFilters(true));
-});
-
-// Botón buscar y renderizado de resultados
-document.getElementById("buscarBtn").addEventListener("click", () => {
-  applyFilters(true);
-  renderCandidatesList();
-  document.getElementById("overlay").style.display = "flex";
-});
-
-function closePopup() {
-  document.getElementById("overlay").style.display = "none";
-}
-
-// ✅ RENDERIZAR LISTA DE RESULTADOS CON LÓGICA DE DESBLOQUEOS
-function renderCandidatesList() {
-  const listContainer = document.getElementById("candidatesList");
-  const countContainer = document.getElementById("resultsCount");
-  const paymentPrompt = document.getElementById("paymentPrompt");
-  
-  countContainer.innerHTML = `Hemos encontrado <strong>${lastSearchResults.length}</strong> candidato${lastSearchResults.length === 1 ? '' : 's'} ordenados por nivel de ajuste.`;
-  listContainer.innerHTML = "";
-  
-  if (lastSearchResults.length === 0) {
-    paymentPrompt.style.display = "none";
-    listContainer.innerHTML = `
-      <div style="text-align: center; padding: 40px 20px; color: #64748b;">
-        <svg style="width: 48px; height: 48px; margin: 0 auto 16px auto; display: block; color: #94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <p style="margin: 0; font-weight: 600; font-size: 15px; color: #334155;">No se encontraron candidatos</p>
-        <p style="margin: 4px 0 0 0; font-size: 13px;">Prueba ampliando los rangos de precios o la disponibilidad horaria.</p>
-      </div>
-    `;
-  } else {
-    // Si el lote NO está desbloqueado por completo
-    if (!batchUnlocked) {
-      paymentPrompt.style.display = "block";
-      const count = lastSearchResults.length;
-      const originalPrice = (count * 4.99).toFixed(2);
-      const discountedPrice = (count * 4.99 * 0.5).toFixed(2); // Suma de todos con 50% de descuento
-      document.getElementById("batchPayBtn").innerHTML = `
-        Desbloquear todo el lote (${count} candidatos) por <strong>${discountedPrice.replace('.', ',')} €</strong> 
-        <span style="text-decoration: line-through; font-size: 11px; opacity: 0.8; margin-left: 6px;">${originalPrice.replace('.', ',')} €</span> (50% dto.)
-      `;
-    } else {
-      paymentPrompt.style.display = "none";
-    }
-
-    lastSearchResults.forEach((c, index) => {
-      const randomId = 1000 + index * 47 + Math.floor(Math.random() * 20);
-      const isUnlocked = batchUnlocked || unlockedCandidates.has(c.name);
-      
-      let matchClass = "match-low";
-      if (c.matchPercentage >= 80) matchClass = "match-high";
-      else if (c.matchPercentage >= 50) matchClass = "match-medium";
-      
-      const row = document.createElement("div");
-      row.className = "candidate-row";
-      row.style.flexDirection = "column";
-      row.style.alignItems = "stretch";
-      row.style.gap = "12px";
-
-      row.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-          <div class="candidate-info">
-            <div class="candidate-avatar">👤</div>
-            <div class="candidate-details">
-              <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <span>Candidato #${randomId}</span> 
-                <span class="${isUnlocked ? '' : 'blurred-text'}">${c.name}</span>
-              </h4>
-              <span class="candidate-badge">${c.category}</span>
-              <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">📍 ${c.city}, ${c.prov}</p>
-              <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8;">
-                Contacto: <span class="${isUnlocked ? '' : 'blurred-text'}">${isUnlocked ? '+34 689 12 34 56 / ' + c.name.toLowerCase().replace(' ', '.') + '@gmail.com' : '+34 689 XX XX / info@candidato.com'}</span>
-              </p>
-            </div>
-          </div>
-          <div class="candidate-match" style="align-items: flex-end;">
-            <span class="match-percent ${matchClass}">${c.matchPercentage}% Coincidencia</span>
-            <span class="candidate-price">${c.price} €/h</span>
-          </div>
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 4px; flex-wrap: wrap; gap: 8px;">
-          <button onclick="openExperienceModal(${index}, ${randomId})" class="btn-view-profile">
-            📄 Ver experiencia y valoraciones
-          </button>
-          
-          <div>
-            ${isUnlocked ? `
-              <span class="unlocked-badge">
-                ✅ Contacto disponible
-              </span>
-            ` : `
-              <button onclick="openSinglePaymentGateway('${c.name}', ${randomId})" class="btn-unlock-single">
-                🔓 Desbloquear contacto (4,99 €)
-              </button>
-            `}
-          </div>
-        </div>
-      `;
-      listContainer.appendChild(row);
-    });
-  }
-}
-
-// ✅ MODAL DE EXPERIENCIA Y VALORACIONES
-function openExperienceModal(index, randomId) {
-  currentExpCandidateIndex = index;
-  currentExpCandidateRandomId = randomId;
-  
-  const c = lastSearchResults[index];
-  const isUnlocked = batchUnlocked || unlockedCandidates.has(c.name);
-
-  document.getElementById("expModalCandName").innerHTML = `
-    <span>Candidato #${randomId}</span> 
-    <span class="${isUnlocked ? '' : 'blurred-text'}">${c.name}</span>
-  `;
-  document.getElementById("expModalCategory").innerText = c.category.toUpperCase();
-  document.getElementById("expModalRating").innerText = `⭐ ${c.rating.toFixed(1)} (${c.reviews.length} valoraciones)`;
-  document.getElementById("expModalLocation").innerText = `📍 ${c.city}, ${c.prov} | Tarifa: ${c.price} €/h`;
-
-  // Cargar experiencia
-  const expList = document.getElementById("expModalExperienceList");
-  expList.innerHTML = "";
-  if (c.experience && c.experience.length > 0) {
-    c.experience.forEach(exp => {
-      const expDiv = document.createElement("div");
-      expDiv.style.marginBottom = "14px";
-      expDiv.style.padding = "12px";
-      expDiv.style.background = "#f8fafc";
-      expDiv.style.border = "1px solid #e2e8f0";
-      expDiv.style.borderRadius = "8px";
-      expDiv.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
-          <strong style="font-size: 14px; color: #334155;">${exp.cargo}</strong>
-          <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">${exp.periodo}</span>
-        </div>
-        <div style="font-size: 12px; color: #6366f1; font-weight: 600; margin-bottom: 4px;">${exp.local}</div>
-        <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.4;">${exp.desc}</p>
-      `;
-      expList.appendChild(expDiv);
-    });
-  } else {
-    expList.innerHTML = `<p style="font-size: 13px; color: #94a3b8; font-style: italic;">Sin experiencia registrada.</p>`;
-  }
-
-  // Cargar valoraciones
-  const revList = document.getElementById("expModalReviewsList");
-  revList.innerHTML = "";
-  if (c.reviews && c.reviews.length > 0) {
-    c.reviews.forEach(rev => {
-      const revDiv = document.createElement("div");
-      revDiv.style.marginBottom = "12px";
-      revDiv.style.padding = "10px 12px";
-      revDiv.style.borderLeft = "3px solid #cbd5e1";
-      revDiv.style.background = "#ffffff";
-      
-      let starsHtml = "";
-      for (let i = 1; i <= 5; i++) {
-        starsHtml += i <= rev.stars ? "★" : "☆";
-      }
-      
-      revDiv.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-          <span style="font-size: 12px; font-weight: 600; color: #475569;">${rev.autor}</span>
-          <span style="font-size: 12px; color: #d97706;">${starsHtml}</span>
-        </div>
-        <p style="margin: 0; font-size: 12px; color: #64748b; font-style: italic;">"${rev.comentario}"</p>
-      `;
-      revList.appendChild(revDiv);
-    });
-  } else {
-    revList.innerHTML = `<p style="font-size: 13px; color: #94a3b8; font-style: italic;">Aún no cuenta con valoraciones.</p>`;
-  }
-
-  // Botón dinámico inferior de desbloqueo
-  const unlockContainer = document.getElementById("expModalUnlockContainer");
-  if (isUnlocked) {
-    unlockContainer.innerHTML = `
-      <span class="unlocked-badge">
-        ✅ Contacto desbloqueado
-      </span>
-    `;
-  } else {
-    unlockContainer.innerHTML = `
-      <button onclick="openSinglePaymentGateway('${c.name}', ${randomId})" style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);">
-        🔓 Desbloquear por 4,99 €
-      </button>
-    `;
-  }
-
-  document.getElementById("experienceModal").style.display = "flex";
-}
-
-function closeExperienceModal() {
-  document.getElementById("experienceModal").style.display = "none";
-}
-
-// ✅ CONTROL DE PASARELA DE PAGO SIMULADA (DINÁMICA)
-function openBatchPaymentGateway() {
-  const count = lastSearchResults.length;
-  const originalPrice = count * 4.99;
-  const discountedPrice = parseFloat((originalPrice * 0.5).toFixed(2));
-
-  paymentTarget = { type: "batch", price: discountedPrice };
-
-  document.getElementById("paymentCandidateName").innerText = `Lote completo (${count} candidatos)`;
-  document.getElementById("paymentPriceDisplay").innerText = `${discountedPrice.toFixed(2).replace('.', ',')} €`;
-  document.getElementById("paymentModal").style.display = "flex";
-}
-
-function openSinglePaymentGateway(name, randomId) {
-  paymentTarget = { type: "single", name: name, randomId: randomId, price: 4.99 };
-
-  document.getElementById("paymentCandidateName").innerText = `Candidato #${randomId}`;
-  document.getElementById("paymentPriceDisplay").innerText = `4,99 €`;
-  document.getElementById("paymentModal").style.display = "flex";
-}
-
-function closePayment() {
-  document.getElementById("paymentModal").style.display = "none";
-}
-
-function processSimulatedPayment(e) {
-  e.preventDefault();
-  
-  if (paymentTarget.type === "batch") {
-    batchUnlocked = true;
-    alert(`¡Pago simulado con éxito! Se han desbloqueado los nombres y datos de contacto de todo el lote.`);
-  } else if (paymentTarget.type === "single") {
-    unlockedCandidates.add(paymentTarget.name);
-    alert(`¡Pago simulado con éxito! Se han desbloqueado los datos de contacto del Candidato #${paymentTarget.randomId}.`);
-  }
-  
-  // Refrescar vistas
-  renderCandidatesList();
-  
-  if (document.getElementById("experienceModal").style.display === "flex" && currentExpCandidateIndex !== null) {
-    openExperienceModal(currentExpCandidateIndex, currentExpCandidateRandomId);
-  }
-  
-  // Refrescar mapa sin mover el zoom del usuario
-  applyFilters(false);
-  
-  closePayment();
-}
-
-// ✅ CONSTRUCCIÓN DE CALENDARIO DE DISPONIBILIDAD
-const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-const week = document.getElementById("week");
+// DÍAS
+const dias = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const semana = document.getElementById("semana");
 
 dias.forEach(dia => {
+
   const card = document.createElement("div");
-  card.className = "day-card";
+  card.className = "dia-card";
 
   card.innerHTML = `
-    <h4>${dia}</h4>
-    <input type="time" class="inicio" title="Hora de inicio">
-    <input type="time" class="fin" title="Hora de fin">
-    <label><input type="checkbox" class="partida"> Jornada partida</label>
-    <div class="tarde hidden">
-      <input type="time" class="inicio2" title="Inicio tarde">
-      <input type="time" class="fin2" title="Fin tarde">
+    <strong>${dia}</strong>
+
+    <div class="horas base">
+      <input type="time">
+      <input type="time">
     </div>
+
+    <label class="check">
+      <input type="checkbox" class="partida"> Jornada partida
+    </label>
+
+    <div class="horas partida-horas">
+      <input type="time">
+      <input type="time">
+    </div>
+
+    <label class="check">
+      <input type="checkbox" class="todo"> Todo el día
+    </label>
   `;
 
-  week.appendChild(card);
+  semana.appendChild(card);
 
   const partida = card.querySelector(".partida");
-  const tarde = card.querySelector(".tarde");
+  const todo = card.querySelector(".todo");
+  const partidaHoras = card.querySelector(".partida-horas");
+  const base = card.querySelector(".base");
 
   partida.addEventListener("change", () => {
-    tarde.classList.toggle("hidden", !partida.checked);
-    applyFilters(false);
+    partidaHoras.style.display = partida.checked ? "block" : "none";
   });
 
-  card.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", () => applyFilters(false));
+  todo.addEventListener("change", () => {
+    if (todo.checked) {
+      base.style.display = "none";
+      partidaHoras.style.display = "none";
+      partida.closest('label').style.display = "none";
+    } else {
+      base.style.display = "block";
+      partida.closest('label').style.display = "block";
+      if (partida.checked) partidaHoras.style.display = "block";
+    }
   });
+
 });
-
-// Inicializar filtros al cargar la página por primera vez (con zoom inicial)
-applyFilters(true);
 </script>
 
 </body>
 </html>
+``
