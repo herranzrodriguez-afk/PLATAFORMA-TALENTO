@@ -813,6 +813,8 @@ body {
 .et-note { color:#64748b; font-size:11px; margin-top:10px; }
 @media(max-width:1100px){ .et-kpis{grid-template-columns:repeat(3,1fr)} .et-grid{grid-template-columns:1fr;} }
 @media(max-width:650px){ .et-kpis{grid-template-columns:repeat(2,1fr)} .et-admin-header{padding:14px 16px;} .et-admin-wrap{padding:20px 14px 40px;} .et-bar-row{grid-template-columns:110px 1fr 42px;} }
+
+.role-access-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}.role-access-card{border:1px solid #e2e8f0;background:#f8fafc;border-radius:16px;padding:18px;text-align:left;cursor:pointer;transition:.2s}.role-access-card:hover{border-color:#6366f1;background:#eef2ff;transform:translateY(-1px)}.role-access-card strong{display:block;color:#0f172a;font-size:15px;margin-bottom:5px}.role-access-card span{display:block;color:#64748b;font-size:12px;line-height:1.5}.role-access-disabled{cursor:default;opacity:.7}.role-access-disabled:hover{transform:none;border-color:#e2e8f0;background:#f8fafc}.public-candidate-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px 18px}@media(max-width:650px){.role-access-grid{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -824,34 +826,33 @@ body {
   <!-- Hero Section -->
   <section class="hero">
     <div>
-      <h1>El talento que necesitas,<br>justo donde lo necesitas</h1>
-      <p class="tagline">La plataforma inteligente de matching laboral basada en disponibilidad horaria inmediata y geolocalizada en España.</p>
-
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.02em;margin-bottom:18px;">
+        ⚡ TALENTO DISPONIBLE · ESPAÑA
+      </div>
+      <h1>Busca el talento que necesitas.<br>Comprueba que existe.</h1>
+      <p class="tagline">Explora disponibilidad, experiencia, ubicación y categorías profesionales antes de registrarte. Los datos personales permanecen protegidos.</p>
       <div class="hero-buttons">
-        <button onclick="openRegisterModal()" class="btn btn-worker">
-          <span>✍️</span> Registrarme como Candidato
-        </button>
-        <button onclick="openLoginModal()" class="btn btn-secondary">
-          <span>🔑</span> Ya estoy inscrito
-        </button>
-        <button onclick="scrollToCompanySection()" class="btn btn-company">
-          <span>🏢</span> Soy empresa (Buscar Talento)
-        </button>
-        <button onclick="openCompanyAdminDashboard()" class="et-admin-btn">⚙️ Seguimiento Empresa Talento</button>
+        <button onclick="openCandidateAccessModal()" class="btn btn-worker"><span>👤</span> Soy candidato</button>
+        <button onclick="openCompanyAccessModal()" class="btn btn-company"><span>🏢</span> Soy empresa</button>
+        <button onclick="openCompanyAdminDashboard()" class="et-admin-btn">📊 Ver afluencia y funcionamiento</button>
       </div>
-
-      <div class="claim">
-        Encuentra o sé el talento que mueve el trabajo real. Aquí empieza todo.
-      </div>
+      <div class="claim">↓ Explora ahora los perfiles disponibles y filtra lo que necesitas</div>
     </div>
   </section>
 
   <!-- Sección de Mapa y Filtros (Buscador de Empresa) -->
   <section class="map-section" id="companySearchSection">
 
+    <div style="text-align:center;margin-bottom:26px;">
+      <div style="font-size:12px;color:#6366f1;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;">PRESELECTOR DE TALENTO</div>
+      <h2 style="margin:0;color:#0f172a;font-size:28px;font-weight:800;">Mira cuántos profesionales hay para lo que necesitas</h2>
+      <p style="margin:9px auto 0;max-width:720px;color:#64748b;font-size:14px;line-height:1.6;">
+        Filtra por categoría, ubicación, tarifa y disponibilidad. Verás volumen y nivel de coincidencia, pero los datos personales permanecen ocultos.
+      </p>
+    </div>
     <div class="company-mode-banner">
-      <span>🏢 <strong>Modo Empresa:</strong> Explora y filtra candidatos disponibles según tus turnos y necesidades operativas.</span>
-      <button onclick="openRegisterModal()" style="background: white; color: #4f46e5; border: 1px solid #c7d2fe; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;">¿Eres candidato? Regístrate aquí</button>
+      <span>🔎 <strong>Exploración pública:</strong> comprueba la afluencia de talento sin registrarte.</span>
+      <button onclick="openCompanyAccessModal()" style="background:white;color:#4f46e5;border:1px solid #c7d2fe;padding:6px 14px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;">Soy empresa</button>
     </div>
 
     <div class="filters">
@@ -1247,6 +1248,32 @@ body {
 </div>
 
 <!-- MODAL REGISTRO TRABAJADOR -->
+<div id="candidateAccessModal" class="overlay" style="z-index:10030;">
+  <div class="popup" style="max-width:520px;padding:28px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:12px;">
+      <div><h3 style="margin:0;color:#0f172a;font-size:20px;font-weight:800;">👤 Área de candidato</h3><p style="margin:5px 0 0;color:#64748b;font-size:13px;">Gestiona tu perfil, disponibilidad y experiencia.</p></div>
+      <button onclick="closeCandidateAccessModal()" style="background:none;border:0;font-size:24px;cursor:pointer;color:#94a3b8;">&times;</button>
+    </div>
+    <div class="role-access-grid">
+      <button class="role-access-card" onclick="closeCandidateAccessModal();openRegisterModal();"><strong>📝 Aún no estoy registrado</strong><span>Crear mi perfil profesional y aparecer en las búsquedas.</span></button>
+      <button class="role-access-card" onclick="closeCandidateAccessModal();openLoginModal();"><strong>🔑 Ya estoy inscrito</strong><span>Entrar en mi área privada y gestionar mis datos.</span></button>
+    </div>
+  </div>
+</div>
+<div id="companyAccessModal" class="overlay" style="z-index:10030;">
+  <div class="popup" style="max-width:520px;padding:28px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:12px;">
+      <div><h3 style="margin:0;color:#0f172a;font-size:20px;font-weight:800;">🏢 Área de empresa</h3><p style="margin:5px 0 0;color:#64748b;font-size:13px;">El acceso y registro de empresa se desarrollará en la siguiente fase.</p></div>
+      <button onclick="closeCompanyAccessModal()" style="background:none;border:0;font-size:24px;cursor:pointer;color:#94a3b8;">&times;</button>
+    </div>
+    <div class="role-access-grid">
+      <button class="role-access-card role-access-disabled" onclick="alert('El registro de empresa todavía está en desarrollo.');"><strong>📝 Aún no estoy registrado</strong><span>Registro de empresa — próximamente.</span></button>
+      <button class="role-access-card role-access-disabled" onclick="alert('El acceso de empresa todavía está en desarrollo.');"><strong>🔑 Ya estoy inscrito</strong><span>Acceso de empresa — próximamente.</span></button>
+    </div>
+    <button onclick="closeCompanyAccessModal();scrollToCompanySection();" style="width:100%;margin-top:14px;padding:12px;border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca;border-radius:10px;font-weight:800;cursor:pointer;">🔎 Ver preselector de talento</button>
+  </div>
+</div>
+
 <div id="registerModal" class="overlay" style="z-index: 10020;">
   <div class="popup" style="max-width: 860px; padding: 32px;">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 20px;">
@@ -1920,6 +1947,9 @@ function initCompanyWeekFilter() {
 function showPublicView() {
   document.getElementById("publicView").style.display = "block";
   document.getElementById("workerPortalView").style.display = "none";
+  const ca=document.getElementById("candidateAccessModal"), co=document.getElementById("companyAccessModal");
+  if(ca) ca.style.display="none";
+  if(co) co.style.display="none";
 }
 
 function showWorkerPortalView(cand) {
@@ -1990,6 +2020,11 @@ function buildRegisterWeekGrid() {
     container.appendChild(card);
   });
 }
+
+function openCandidateAccessModal(){document.getElementById("candidateAccessModal").style.display="flex";}
+function closeCandidateAccessModal(){document.getElementById("candidateAccessModal").style.display="none";}
+function openCompanyAccessModal(){document.getElementById("companyAccessModal").style.display="flex";}
+function closeCompanyAccessModal(){document.getElementById("companyAccessModal").style.display="none";}
 
 function openRegisterModal() {
   buildRegisterWeekGrid();
@@ -2793,34 +2828,12 @@ function applyFilters(shouldZoom = true) {
     lastSearchResults.sort((a, b) => b.matchPercentage - a.matchPercentage || a.price - b.price);
 
     lastSearchResults.forEach(c => {
-      const initials = c.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-      const isUnlocked = batchUnlocked || unlockedCandidates.has(c.name);
-      
-      const marker = L.marker([c.lat, c.lng], {
-        personCount: 1,
-        icon: L.divIcon({
-          html: `<div class="bubble" title="Candidato (${c.matchPercentage}% coincidencia)">${initials}</div>`,
-          className: ""
-        })
+      const marker = L.marker([c.lat,c.lng],{
+        personCount:1,
+        icon:L.divIcon({html:`<div class="bubble" title="Talento disponible (${c.matchPercentage}% coincidencia)">•</div>`,className:""})
       });
-      
-      const catBadgesHtml = (c.categories || [c.category]).map(cat => `<span style="font-size: 9px; padding: 2px 5px; background: #e0e7ff; color: #4f46e5; border-radius: 4px; font-weight: 700; text-transform: uppercase;">${cat}</span>`).join(" ");
-
-      marker.bindPopup(`
-        <div style="font-family: 'Inter', sans-serif; min-width: 170px; line-height: 1.4;">
-          <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
-            <span>Candidato</span> <span class="${isUnlocked ? '' : 'blurred-text'}">${c.name}</span>
-          </h4>
-          <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px;">${catBadgesHtml}</div>
-          <p style="margin: 6px 0 0 0; font-size: 12px; color: #475569;">
-            <strong>Precio:</strong> ${c.price} €/h<br>
-            <strong>Ciudad:</strong> ${c.city}<br>
-            <strong>Coincidencia:</strong> ${c.matchPercentage}%
-            ${isUnlocked ? `<br><strong>Contacto:</strong> ${c.phone || '+34 689 12 34 56'}` : ''}
-          </p>
-        </div>
-      `);
-
+      const catBadgesHtml=(c.categories||[c.category]).map(cat=>`<span style="font-size:9px;padding:2px 5px;background:#e0e7ff;color:#4f46e5;border-radius:4px;font-weight:700;text-transform:uppercase;">${cat}</span>`).join(" ");
+      marker.bindPopup(`<div style="font-family:'Inter',sans-serif;min-width:180px;line-height:1.4;"><h4 style="margin:0 0 4px;color:#0f172a;font-size:14px;font-weight:700;">Talento disponible</h4><div style="display:flex;gap:4px;flex-wrap:wrap;">${catBadgesHtml}</div><p style="margin:6px 0 0;font-size:12px;color:#475569;"><strong>Zona:</strong> ${c.city}<br><strong>Tarifa:</strong> ${c.price} €/h<br><strong>Coincidencia:</strong> ${c.matchPercentage}%<br>🔒 Datos personales protegidos</p></div>`);
       populationLayer.addLayer(marker);
       bounds.push([c.lat, c.lng]);
     });
@@ -2839,95 +2852,50 @@ function renderCandidatesList() {
   const listContainer = document.getElementById("candidatesList");
   const countContainer = document.getElementById("resultsCount");
   const paymentPrompt = document.getElementById("paymentPrompt");
-  
-  countContainer.innerHTML = `Hemos encontrado <strong>${lastSearchResults.length}</strong> candidato${lastSearchResults.length === 1 ? '' : 's'} ordenados por nivel de ajuste.`;
+
+  countContainer.innerHTML = `Hemos encontrado <strong>${lastSearchResults.length}</strong> profesionales que encajan con tu búsqueda.`;
   listContainer.innerHTML = "";
-  
+
   if (lastSearchResults.length === 0) {
     paymentPrompt.style.display = "none";
-    listContainer.innerHTML = `
-      <div style="text-align: center; padding: 40px 20px; color: #64748b;">
-        <p style="margin: 0; font-weight: 600; font-size: 15px; color: #334155;">No se encontraron candidatos</p>
-        <p style="margin: 4px 0 0 0; font-size: 13px;">Prueba ampliando los rangos de precios o la disponibilidad horaria.</p>
-      </div>
-    `;
-  } else {
-    if (!batchUnlocked) {
-      paymentPrompt.style.display = "block";
-      const count = lastSearchResults.length;
-      const originalPrice = (count * 4.99).toFixed(2);
-      const discountedPrice = (count * 4.99 * 0.5).toFixed(2);
-      document.getElementById("batchPayBtn").innerHTML = `
-        Desbloquear todo el lote (${count} candidatos) por <strong>${discountedPrice.replace('.', ',')} €</strong> 
-        <span style="text-decoration: line-through; font-size: 11px; opacity: 0.8; margin-left: 6px;">${originalPrice.replace('.', ',')} €</span> (50% dto.)
-      `;
-    } else {
-      paymentPrompt.style.display = "none";
-    }
-
-    lastSearchResults.forEach((c, index) => {
-      const randomId = 1000 + index * 47 + Math.floor(Math.random() * 20);
-      const isUnlocked = batchUnlocked || unlockedCandidates.has(c.name);
-      
-      let matchClass = "match-low";
-      if (c.matchPercentage >= 80) matchClass = "match-high";
-      else if (c.matchPercentage >= 50) matchClass = "match-medium";
-      
-      const row = document.createElement("div");
-      row.className = "candidate-row";
-      row.style.flexDirection = "column";
-      row.style.alignItems = "stretch";
-      row.style.gap = "12px";
-
-      const contactPhone = c.phone || "+34 689 12 34 56";
-      const contactEmail = c.email || c.name.toLowerCase().replace(/\s+/g, '.') + "@gmail.com";
-      const catBadgesHtml = (c.categories || [c.category]).map(cat => `<span class="candidate-badge">${cat}</span>`).join("");
-
-      row.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-          <div class="candidate-info">
-            <div class="candidate-avatar">
-              ${c.photoUrl ? `<img src="${c.photoUrl}">` : '👤'}
-            </div>
-            <div class="candidate-details">
-              <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <span>Candidato #${randomId}</span> 
-                <span class="${isUnlocked ? '' : 'blurred-text'}">${c.name}</span>
-              </h4>
-              <div style="margin-top: 4px;">${catBadgesHtml}</div>
-              <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;">📍 ${c.city}, ${c.prov}</p>
-              <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8;">
-                Contacto: <span class="${isUnlocked ? '' : 'blurred-text'}">${isUnlocked ? `${contactPhone} / ${contactEmail}` : '+34 689 XX XX / info@candidato.com'}</span>
-              </p>
-            </div>
-          </div>
-          <div class="candidate-match" style="align-items: flex-end;">
-            <span class="match-percent ${matchClass}">${c.matchPercentage}% Coincidencia</span>
-            <span class="candidate-price">${c.price} €/h</span>
-          </div>
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 4px; flex-wrap: wrap; gap: 8px;">
-          <button onclick="openExperienceModal(${index}, ${randomId})" class="btn-view-profile">
-            📄 Ver experiencia y valoraciones
-          </button>
-          
-          <div>
-            ${isUnlocked ? `
-              <span class="unlocked-badge">
-                ✅ Contacto disponible
-              </span>
-            ` : `
-              <button onclick="openSinglePaymentGateway('${c.name}', ${randomId})" class="btn-unlock-single">
-                🔓 Desbloquear contacto (4,99 €)
-              </button>
-            `}
-          </div>
-        </div>
-      `;
-      listContainer.appendChild(row);
-    });
+    listContainer.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#64748b;"><p style="margin:0;font-weight:600;font-size:15px;color:#334155;">No se encontraron candidatos</p><p style="margin:4px 0 0;font-size:13px;">Prueba ampliando los filtros de ubicación, tarifa o disponibilidad.</p></div>`;
+    return;
   }
+
+  paymentPrompt.style.display = "none";
+
+  lastSearchResults.forEach((c,index)=>{
+    const randomId=1000+index;
+    let matchClass="match-low";
+    if(c.matchPercentage>=80) matchClass="match-high";
+    else if(c.matchPercentage>=50) matchClass="match-medium";
+
+    const labels={camarero:"Camarero/a",cocinero:"Cocinero/a",coctelero:"Coctelero/a",ayudante_cocina:"Ayudante de cocina",recepcionista:"Recepcionista",limpieza:"Personal de limpieza",barman:"Barman / Barra",promotor:"Promotor/a",promotor_tecnologico:"Promotor/a tecnológico",promotor_pae:"Promotor/a PAE",azafata:"Azafata/o",azafata_imagen:"Azafata/o de imagen",eventos:"Personal de eventos"};
+    const cats=(c.categories||[c.category]).map(x=>labels[x]||x);
+    const badges=cats.map(x=>`<span class="candidate-badge">${x}</span>`).join("");
+
+    const row=document.createElement("div");
+    row.className="candidate-row";
+    row.innerHTML=`
+      <div class="public-candidate-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div style="font-weight:800;color:#0f172a;">Profesional disponible #${randomId}</div>
+            <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">${badges}</div>
+            <div style="margin-top:7px;font-size:12px;color:#64748b;">📍 ${c.city} · 💶 ${c.price} €/h</div>
+          </div>
+          <div class="candidate-match" style="align-items:flex-end;">
+            <span class="match-percent ${matchClass}">${c.matchPercentage}% Coincidencia</span>
+            <span style="font-size:11px;color:#64748b;font-weight:600;">Disponible</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e2e8f0;padding-top:12px;margin-top:12px;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:#64748b;">🔒 Nombre, contacto, foto y experiencia detallada protegidos</span>
+          <button onclick="openCompanyAccessModal()" class="btn-unlock-single">🏢 Acceso empresa</button>
+        </div>
+      </div>`;
+    listContainer.appendChild(row);
+  });
 }
 
 function openExperienceModal(index, randomId) {
