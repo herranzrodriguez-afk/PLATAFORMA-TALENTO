@@ -824,6 +824,8 @@ body {
 .company-payment-option span{display:flex;flex-direction:column;gap:3px;color:#0f172a}
 .company-payment-option strong{font-size:13px}.company-payment-option small{font-size:11px;color:#64748b}
 @media(max-width:700px){.company-payment-option{grid-column:1/-1}.company-reg-step .register-form-grid{grid-template-columns:1fr}.company-reg-step .register-form-grid [style*="grid-column:1/-1"]{grid-column:1/-1!important}}
+
+.company-dashboard-overlay{position:fixed;inset:0;background:#f8fafc;z-index:10060;display:none;overflow:auto}.company-dashboard{min-height:100%;font-family:Inter,sans-serif;color:#0f172a}.company-dash-header{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid #e2e8f0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px}.company-dash-brand{font-weight:850;font-size:19px;color:#4f46e5}.company-dash-head-actions{display:flex;gap:9px;align-items:center}.company-dash-close,.company-dash-primary{border:0;border-radius:10px;padding:10px 14px;font-weight:750;cursor:pointer}.company-dash-close{background:#f1f5f9;color:#475569}.company-dash-primary{background:#4f46e5;color:#fff}.company-dash-layout{display:grid;grid-template-columns:235px 1fr;min-height:calc(100vh - 65px)}.company-dash-sidebar{background:#fff;border-right:1px solid #e2e8f0;padding:20px 14px}.company-dash-nav{display:grid;gap:5px}.company-dash-nav button{border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#475569;font-weight:650;cursor:pointer;font-size:13px}.company-dash-nav button.active,.company-dash-nav button:hover{background:#eef2ff;color:#4338ca}.company-dash-main{padding:28px;max-width:1280px;width:100%;box-sizing:border-box}.company-dash-section{display:none}.company-dash-section.active{display:block}.company-dash-title{margin:0;font-size:26px;letter-spacing:-.5px}.company-dash-subtitle{margin:6px 0 22px;color:#64748b;font-size:13px}.company-dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.company-dash-kpi{background:#fff;border:1px solid #e2e8f0;border-radius:15px;padding:17px}.company-dash-kpi .label{font-size:11px;color:#64748b;font-weight:700}.company-dash-kpi .value{font-size:27px;font-weight:850;margin-top:7px}.company-dash-kpi .note{font-size:11px;color:#16a34a;margin-top:5px;font-weight:650}.company-dash-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}.company-dash-card{background:#fff;border:1px solid #e2e8f0;border-radius:15px;padding:20px}.company-dash-card h3{margin:0 0 14px;font-size:16px}.company-activity{display:grid;gap:9px}.company-activity-item{display:flex;gap:11px;align-items:flex-start;padding:12px;border:1px solid #f1f5f9;border-radius:11px}.company-activity-icon{width:32px;height:32px;border-radius:9px;background:#eef2ff;display:grid;place-items:center;flex:none}.company-activity-item strong{font-size:12px}.company-activity-item span{display:block;color:#64748b;font-size:11px;margin-top:3px}.company-dash-table{width:100%;border-collapse:collapse;font-size:12px}.company-dash-table th{text-align:left;color:#64748b;font-size:10px;text-transform:uppercase;padding:9px;border-bottom:1px solid #e2e8f0}.company-dash-table td{padding:12px 9px;border-bottom:1px solid #f1f5f9}.company-status{display:inline-flex;padding:5px 8px;border-radius:99px;font-size:10px;font-weight:750}.company-status.ok{background:#dcfce7;color:#15803d}.company-status.info{background:#e0e7ff;color:#4338ca}.company-status.warn{background:#fef3c7;color:#92400e}.company-dash-empty{padding:35px;text-align:center;color:#64748b;font-size:13px}.company-search-summary{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#eef2ff;border:1px solid #c7d2fe;border-radius:12px;padding:14px;margin-bottom:14px}.company-search-summary strong{color:#3730a3}.company-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.company-profile-item{padding:13px;background:#f8fafc;border-radius:10px}.company-profile-item small{display:block;color:#64748b;font-size:10px;margin-bottom:4px}.company-profile-item strong{font-size:12px}@media(max-width:850px){.company-dash-layout{grid-template-columns:1fr}.company-dash-sidebar{border-right:0;border-bottom:1px solid #e2e8f0;padding:9px}.company-dash-nav{display:flex;overflow:auto}.company-dash-nav button{white-space:nowrap}.company-dash-kpis{grid-template-columns:repeat(2,1fr)}.company-dash-grid{grid-template-columns:1fr}.company-dash-main{padding:18px}.company-profile-grid{grid-template-columns:1fr}}@media(max-width:560px){.company-dash-header{padding:12px 15px}.company-dash-brand{font-size:16px}.company-dash-primary{display:none}.company-dash-kpis{grid-template-columns:1fr 1fr}.company-dash-kpi .value{font-size:23px}}
 </style>
 </head>
 
@@ -1256,6 +1258,49 @@ body {
   </main>
 </div>
 
+
+<!-- ÁREA PRIVADA EMPRESA -->
+<div id="companyDashboardOverlay" class="company-dashboard-overlay">
+  <div class="company-dashboard">
+    <header class="company-dash-header">
+      <div><div class="company-dash-brand">⚡ Empresa Talento</div><div style="font-size:10px;color:#64748b;margin-top:2px;">Área privada de empresa</div></div>
+      <div class="company-dash-head-actions"><button class="company-dash-primary" onclick="companyDashGo('buscar')">🔎 Buscar talento</button><button class="company-dash-close" onclick="closeCompanyDashboard()">Salir</button></div>
+    </header>
+    <div class="company-dash-layout">
+      <aside class="company-dash-sidebar">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;font-weight:800;padding:8px 12px;">Mi empresa</div>
+        <nav class="company-dash-nav">
+          <button id="cdnav-inicio" class="active" onclick="companyDashGo('inicio')">🏠 Inicio</button>
+          <button id="cdnav-buscar" onclick="companyDashGo('buscar')">🔎 Buscar talento</button>
+          <button id="cdnav-preseleccion" onclick="companyDashGo('preseleccion')">⭐ Mis preseleccionados</button>
+          <button id="cdnav-busquedas" onclick="companyDashGo('busquedas')">🕘 Mis búsquedas</button>
+          <button id="cdnav-contrataciones" onclick="companyDashGo('contrataciones')">📋 Contrataciones</button>
+          <button id="cdnav-pagos" onclick="companyDashGo('pagos')">💳 Pagos y facturación</button>
+          <button id="cdnav-empresa" onclick="companyDashGo('empresa')">⚙️ Mi empresa</button>
+        </nav>
+      </aside>
+      <main class="company-dash-main">
+        <section id="cdsection-inicio" class="company-dash-section active">
+          <h1 class="company-dash-title">Hola, Empresa Demo 👋</h1><p class="company-dash-subtitle">Aquí tienes un resumen de tu actividad en Empresa Talento.</p>
+          <div class="company-dash-kpis"><div class="company-dash-kpi"><div class="label">BÚSQUEDAS</div><div class="value">12</div><div class="note">+3 este mes</div></div><div class="company-dash-kpi"><div class="label">PRESELECCIONADOS</div><div class="value">8</div><div class="note">2 pendientes</div></div><div class="company-dash-kpi"><div class="label">CONTRATACIONES</div><div class="value">3</div><div class="note">1 activa</div></div><div class="company-dash-kpi"><div class="label">PAGOS</div><div class="value">4</div><div class="note">Sin incidencias</div></div></div>
+          <div class="company-dash-grid"><div class="company-dash-card"><h3>Actividad reciente</h3><div class="company-activity">
+            <div class="company-activity-item"><div class="company-activity-icon">🔎</div><div><strong>Búsqueda: Electricistas · Barcelona</strong><span>24 profesionales encontrados · hoy, 10:42</span></div></div>
+            <div class="company-activity-item"><div class="company-activity-icon">⭐</div><div><strong>Profesional preseleccionado</strong><span>Electricista · Barcelona · coincidencia 92%</span></div></div>
+            <div class="company-activity-item"><div class="company-activity-icon">💳</div><div><strong>Pago realizado · 185,00 €</strong><span>Servicio de preselección · 28 sep 2026</span></div></div>
+            <div class="company-activity-item"><div class="company-activity-icon">📄</div><div><strong>Factura disponible · FT-2026-0012</strong><span>28 sep 2026</span></div></div>
+          </div></div><div class="company-dash-card"><h3>Acciones rápidas</h3><div style="display:grid;gap:9px"><button class="company-dash-primary" style="text-align:left" onclick="companyDashGo('buscar')">🔎 Iniciar una búsqueda</button><button class="company-dash-close" style="text-align:left" onclick="companyDashGo('busquedas')">🕘 Repetir una búsqueda anterior</button><button class="company-dash-close" style="text-align:left" onclick="companyDashGo('preseleccion')">⭐ Revisar preseleccionados</button><button class="company-dash-close" style="text-align:left" onclick="companyDashGo('pagos')">📄 Consultar facturas</button></div></div></div>
+        </section>
+        <section id="cdsection-buscar" class="company-dash-section"><h1 class="company-dash-title">Buscar talento</h1><p class="company-dash-subtitle">Utiliza el preselector de Empresa Talento para encontrar profesionales según tus necesidades.</p><div class="company-search-summary"><div><strong>Buscador de talento disponible</strong><div style="font-size:11px;color:#64748b;margin-top:3px">Categoría · ubicación · disponibilidad · experiencia · tarifa</div></div><button class="company-dash-primary" onclick="closeCompanyDashboard();scrollToCompanySection();">Abrir buscador</button></div><div class="company-dash-card"><h3>Última búsqueda</h3><table class="company-dash-table"><tr><th>Búsqueda</th><th>Resultados</th><th>Fecha</th><th></th></tr><tr><td>Electricistas · Barcelona · hasta 25 €/h</td><td>24</td><td>Hoy</td><td><button class="company-dash-close" onclick="alert('Búsqueda demo cargada. En la versión conectada se aplicarían automáticamente los filtros.')">Repetir</button></td></tr></table></div></section>
+        <section id="cdsection-preseleccion" class="company-dash-section"><h1 class="company-dash-title">Mis preseleccionados</h1><p class="company-dash-subtitle">Profesionales que has guardado durante tus búsquedas.</p><div class="company-dash-card"><table class="company-dash-table"><tr><th>Profesional</th><th>Categoría</th><th>Ubicación</th><th>Coincidencia</th><th>Estado</th></tr><tr><td><strong>Profesional #1042</strong></td><td>Electricista</td><td>Barcelona</td><td>92%</td><td><span class="company-status info">Pendiente</span></td></tr><tr><td><strong>Profesional #1018</strong></td><td>Electricista</td><td>Badalona</td><td>87%</td><td><span class="company-status ok">Contactado</span></td></tr><tr><td><strong>Profesional #1007</strong></td><td>Mantenimiento</td><td>Barcelona</td><td>81%</td><td><span class="company-status warn">En revisión</span></td></tr></table></div></section>
+        <section id="cdsection-busquedas" class="company-dash-section"><h1 class="company-dash-title">Mis búsquedas</h1><p class="company-dash-subtitle">Historial de búsquedas y posibilidad de repetirlas.</p><div class="company-dash-card"><table class="company-dash-table"><tr><th>Búsqueda</th><th>Resultados</th><th>Fecha</th><th>Acción</th></tr><tr><td>Electricistas · Barcelona · ≤25 €/h</td><td>24</td><td>Hoy</td><td><button class="company-dash-close" onclick="alert('Búsqueda demo repetida.')">Repetir búsqueda</button></td></tr><tr><td>Personal de eventos · Madrid</td><td>41</td><td>18 sep 2026</td><td><button class="company-dash-close" onclick="alert('Búsqueda demo repetida.')">Repetir búsqueda</button></td></tr><tr><td>Camareros · Barcelona · fines de semana</td><td>63</td><td>04 sep 2026</td><td><button class="company-dash-close" onclick="alert('Búsqueda demo repetida.')">Repetir búsqueda</button></td></tr></table></div></section>
+        <section id="cdsection-contrataciones" class="company-dash-section"><h1 class="company-dash-title">Contrataciones</h1><p class="company-dash-subtitle">Seguimiento de servicios y contrataciones realizadas.</p><div class="company-dash-card"><table class="company-dash-table"><tr><th>Servicio</th><th>Profesional</th><th>Periodo</th><th>Importe</th><th>Estado</th></tr><tr><td>Electricista</td><td>Profesional #1042</td><td>30 sep – 02 oct</td><td>185,00 €</td><td><span class="company-status ok">Activa</span></td></tr><tr><td>Mantenimiento</td><td>Profesional #1007</td><td>12 – 14 sep</td><td>320,00 €</td><td><span class="company-status info">Finalizada</span></td></tr><tr><td>Evento corporativo</td><td>Profesional #0981</td><td>06 sep</td><td>240,00 €</td><td><span class="company-status info">Finalizada</span></td></tr></table></div></section>
+        <section id="cdsection-pagos" class="company-dash-section"><h1 class="company-dash-title">Pagos y facturación</h1><p class="company-dash-subtitle">Consulta pagos realizados, facturas y método de pago.</p><div class="company-dash-kpis"><div class="company-dash-kpi"><div class="label">TOTAL PAGADO</div><div class="value">745 €</div><div class="note">Últimos 90 días</div></div><div class="company-dash-kpi"><div class="label">FACTURAS</div><div class="value">4</div><div class="note">Disponibles</div></div></div><div class="company-dash-card"><table class="company-dash-table"><tr><th>Factura</th><th>Concepto</th><th>Fecha</th><th>Importe</th><th></th></tr><tr><td>FT-2026-0012</td><td>Preselección talento</td><td>28 sep 2026</td><td>185,00 €</td><td><button class="company-dash-close" onclick="alert('En la versión conectada aquí se descargaría el PDF de la factura.')">Ver factura</button></td></tr><tr><td>FT-2026-0009</td><td>Servicio de personal</td><td>14 sep 2026</td><td>320,00 €</td><td><button class="company-dash-close" onclick="alert('En la versión conectada aquí se descargaría el PDF de la factura.')">Ver factura</button></td></tr></table></div></section>
+        <section id="cdsection-empresa" class="company-dash-section"><h1 class="company-dash-title">Mi empresa</h1><p class="company-dash-subtitle">Datos de empresa, responsable y configuración de facturación.</p><div class="company-dash-card"><div class="company-profile-grid"><div class="company-profile-item"><small>RAZÓN SOCIAL</small><strong>Empresa Demo S.L.</strong></div><div class="company-profile-item"><small>CIF</small><strong>B12345678</strong></div><div class="company-profile-item"><small>PERSONA RESPONSABLE</small><strong>María García López</strong></div><div class="company-profile-item"><small>EMAIL DE ACCESO</small><strong>maria@empresademo.com</strong></div><div class="company-profile-item"><small>EMAIL DE FACTURACIÓN</small><strong>facturacion@empresademo.com</strong></div><div class="company-profile-item"><small>MÉTODO DE PAGO</small><strong>Tarjeta terminada en 4242</strong></div></div><div style="margin-top:16px;padding:12px;background:#f8fafc;border-radius:10px;color:#64748b;font-size:11px">Los datos mostrados son de demostración. La edición y conexión con facturación/pagos reales se incorporará al conectar la plataforma con backend y proveedor de pagos.</div></div></section>
+      </main>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL REGISTRO TRABAJADOR -->
 <div id="candidateAccessModal" class="overlay" style="z-index:10030;">
   <div class="popup" style="max-width:520px;padding:28px;">
@@ -1277,7 +1322,7 @@ body {
     </div>
     <div class="role-access-grid">
       <button class="role-access-card" onclick="closeCompanyAccessModal();openCompanyRegisterModal();"><strong>📝 Aún no estoy registrado</strong><span>Crear una cuenta de empresa y empezar a buscar talento.</span></button>
-      <button class="role-access-card role-access-disabled" onclick="alert('El acceso de empresa todavía está en desarrollo.');"><strong>🔑 Ya estoy inscrito</strong><span>Acceso de empresa — próximamente.</span></button>
+      <button class="role-access-card" onclick="closeCompanyAccessModal();openCompanyDashboard();"><strong>🔑 Ya estoy inscrito</strong><span>Entrar en mi área privada y gestionar búsquedas, preselecciones, contrataciones y pagos.</span></button>
     </div>
     <button onclick="closeCompanyAccessModal();scrollToCompanySection();" style="width:100%;margin-top:14px;padding:12px;border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca;border-radius:10px;font-weight:800;cursor:pointer;">🔎 Ver preselector de talento</button>
   </div>
@@ -2081,6 +2126,31 @@ function logoutWorker() {
   activeWorkerCandidate = null;
   showPublicView();
   alert("Has cerrado sesión en tu área privada.");
+}
+
+
+function openCompanyDashboard(){
+  const ov=document.getElementById('companyDashboardOverlay');
+  if(!ov) return;
+  document.getElementById('companyAccessModal').style.display='none';
+  ov.style.display='block';
+  companyDashGo('inicio');
+  window.scrollTo(0,0);
+}
+function closeCompanyDashboard(){
+  const ov=document.getElementById('companyDashboardOverlay');
+  if(ov) ov.style.display='none';
+  showPublicView();
+}
+function companyDashGo(section){
+  document.querySelectorAll('.company-dash-section').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.company-dash-nav button').forEach(el=>el.classList.remove('active'));
+  const sec=document.getElementById('cdsection-'+section);
+  const nav=document.getElementById('cdnav-'+section);
+  if(sec) sec.classList.add('active');
+  if(nav) nav.classList.add('active');
+  const main=document.querySelector('.company-dash-main');
+  if(main) main.scrollTop=0;
 }
 
 // ==========================================
