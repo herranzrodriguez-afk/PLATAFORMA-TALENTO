@@ -771,6 +771,48 @@ body {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* ==========================================
+   DASHBOARD INTERNO EMPRESA TALENTO
+   ========================================== */
+.et-admin-btn { background: #0f172a; color: #fff; border: 1px solid #334155; padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: .2s; }
+.et-admin-btn:hover { transform: translateY(-1px); background: #1e293b; }
+.et-admin { min-height: 100vh; background: #f8fafc; color: #0f172a; }
+.et-admin-header { background:#fff; border-bottom:1px solid #e2e8f0; padding:16px 28px; display:flex; justify-content:space-between; align-items:center; gap:20px; position:sticky; top:0; z-index:50; }
+.et-admin-brand { font-size:21px; font-weight:800; color:#4f46e5; }
+.et-admin-wrap { max-width:1400px; margin:0 auto; padding:28px 24px 50px; }
+.et-admin-top { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin-bottom:24px; flex-wrap:wrap; }
+.et-admin-top h2 { margin:0 0 6px; font-size:28px; }
+.et-admin-top p { margin:0; color:#64748b; font-size:14px; }
+.et-period { display:flex; gap:6px; background:#fff; border:1px solid #e2e8f0; padding:5px; border-radius:10px; }
+.et-period button { border:0; background:transparent; padding:8px 12px; border-radius:7px; font-size:12px; font-weight:700; color:#64748b; cursor:pointer; }
+.et-period button.active { background:#eef2ff; color:#4338ca; }
+.et-kpis { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; margin-bottom:18px; }
+.et-kpi { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:18px; box-shadow:0 2px 8px rgba(15,23,42,.03); }
+.et-kpi-label { color:#64748b; font-size:12px; font-weight:700; margin-bottom:8px; }
+.et-kpi-value { font-size:27px; font-weight:800; letter-spacing:-.5px; }
+.et-kpi-sub { margin-top:7px; font-size:11px; color:#16a34a; font-weight:700; }
+.et-kpi-sub.neutral { color:#64748b; }
+.et-grid { display:grid; grid-template-columns:1.35fr 1fr; gap:18px; margin-bottom:18px; }
+.et-card { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:20px; box-shadow:0 2px 8px rgba(15,23,42,.03); }
+.et-card h3 { margin:0 0 16px; font-size:16px; }
+.et-bars { display:grid; gap:13px; }
+.et-bar-row { display:grid; grid-template-columns:150px 1fr 55px; align-items:center; gap:10px; font-size:12px; }
+.et-bar-track { height:9px; background:#eef2f7; border-radius:99px; overflow:hidden; }
+.et-bar-fill { height:100%; background:#6366f1; border-radius:99px; }
+.et-funnel { display:grid; gap:9px; }
+.et-funnel-row { display:flex; justify-content:space-between; align-items:center; padding:11px 12px; background:#f8fafc; border-radius:9px; font-size:13px; }
+.et-funnel-row strong { font-size:15px; }
+.et-table { width:100%; border-collapse:collapse; font-size:12px; }
+.et-table th { text-align:left; color:#64748b; font-size:10px; text-transform:uppercase; letter-spacing:.04em; padding:9px 8px; border-bottom:1px solid #e2e8f0; }
+.et-table td { padding:11px 8px; border-bottom:1px solid #f1f5f9; }
+.et-status { display:inline-flex; padding:4px 8px; border-radius:99px; font-weight:700; font-size:10px; }
+.et-status.ok { background:#dcfce7; color:#15803d; }
+.et-status.info { background:#e0e7ff; color:#4338ca; }
+.et-status.warn { background:#fef3c7; color:#92400e; }
+.et-note { color:#64748b; font-size:11px; margin-top:10px; }
+@media(max-width:1100px){ .et-kpis{grid-template-columns:repeat(3,1fr)} .et-grid{grid-template-columns:1fr;} }
+@media(max-width:650px){ .et-kpis{grid-template-columns:repeat(2,1fr)} .et-admin-header{padding:14px 16px;} .et-admin-wrap{padding:20px 14px 40px;} .et-bar-row{grid-template-columns:110px 1fr 42px;} }
 </style>
 </head>
 
@@ -795,6 +837,7 @@ body {
         <button onclick="scrollToCompanySection()" class="btn btn-company">
           <span>🏢</span> Soy empresa (Buscar Talento)
         </button>
+        <button onclick="openCompanyAdminDashboard()" class="et-admin-btn">⚙️ Seguimiento Empresa Talento</button>
       </div>
 
       <div class="claim">
@@ -858,6 +901,75 @@ body {
     <div id="map"></div>
 
   </section>
+</div>
+
+
+
+<!-- VISTA 3: SEGUIMIENTO INTERNO EMPRESA TALENTO (DEMO) -->
+<div id="companyAdminView" class="et-admin" style="display:none;">
+  <header class="et-admin-header">
+    <div>
+      <div class="et-admin-brand">⚡ Empresa Talento</div>
+      <div style="font-size:11px;color:#64748b;margin-top:3px;font-weight:600;">Panel interno · Datos de demostración</div>
+    </div>
+    <button onclick="closeCompanyAdminDashboard()" class="et-admin-btn">← Volver a la web</button>
+  </header>
+  <main class="et-admin-wrap">
+    <div class="et-admin-top">
+      <div><h2>Seguimiento de Empresa Talento</h2><p>Visión general de adquisición, talento, empresas, actividad y facturación.</p></div>
+      <div class="et-period"><button class="active">7 días</button><button>30 días</button><button>90 días</button></div>
+    </div>
+
+    <section class="et-kpis">
+      <div class="et-kpi"><div class="et-kpi-label">VISITANTES</div><div class="et-kpi-value">2.846</div><div class="et-kpi-sub">↑ 18,4% vs. periodo anterior</div></div>
+      <div class="et-kpi"><div class="et-kpi-label">CANDIDATOS INSCRITOS</div><div class="et-kpi-value">438</div><div class="et-kpi-sub">↑ 11,2% nuevos</div></div>
+      <div class="et-kpi"><div class="et-kpi-label">EMPRESAS INSCRITAS</div><div class="et-kpi-value">67</div><div class="et-kpi-sub">↑ 8 nuevas</div></div>
+      <div class="et-kpi"><div class="et-kpi-label">COMPRAS REALIZADAS</div><div class="et-kpi-value">124</div><div class="et-kpi-sub">↑ 21,6%</div></div>
+      <div class="et-kpi"><div class="et-kpi-label">INGRESOS</div><div class="et-kpi-value">618 €</div><div class="et-kpi-sub">↑ 24,8%</div></div>
+      <div class="et-kpi"><div class="et-kpi-label">TALENTO DISPONIBLE</div><div class="et-kpi-value">312</div><div class="et-kpi-sub neutral">71% de inscritos</div></div>
+    </section>
+
+    <div class="et-grid">
+      <section class="et-card"><h3>Actividad de la plataforma</h3><div class="et-bars">
+        <div class="et-bar-row"><span>Visitas</span><div class="et-bar-track"><div class="et-bar-fill" style="width:92%"></div></div><strong>2.846</strong></div>
+        <div class="et-bar-row"><span>Registros candidato</span><div class="et-bar-track"><div class="et-bar-fill" style="width:62%"></div></div><strong>438</strong></div>
+        <div class="et-bar-row"><span>Registros empresa</span><div class="et-bar-track"><div class="et-bar-fill" style="width:31%"></div></div><strong>67</strong></div>
+        <div class="et-bar-row"><span>Búsquedas talento</span><div class="et-bar-track"><div class="et-bar-fill" style="width:48%"></div></div><strong>214</strong></div>
+        <div class="et-bar-row"><span>Contactos comprados</span><div class="et-bar-track"><div class="et-bar-fill" style="width:28%"></div></div><strong>124</strong></div>
+      </div><div class="et-note">Objetivo: detectar dónde se pierde actividad entre entrada, registro, búsqueda y compra.</div></section>
+
+      <section class="et-card"><h3>Embudo de conversión</h3><div class="et-funnel">
+        <div class="et-funnel-row"><span>Visitas</span><strong>2.846</strong></div>
+        <div class="et-funnel-row"><span>Candidatos inscritos</span><strong>438 · 15,4%</strong></div>
+        <div class="et-funnel-row"><span>Empresas inscritas</span><strong>67 · 2,4%</strong></div>
+        <div class="et-funnel-row"><span>Búsquedas realizadas</span><strong>214</strong></div>
+        <div class="et-funnel-row"><span>Compras realizadas</span><strong>124 · 58,0%</strong></div>
+      </div></section>
+    </div>
+
+    <div class="et-grid">
+      <section class="et-card"><h3>Talento por actividad</h3><table class="et-table"><thead><tr><th>Categoría</th><th>Inscritos</th><th>Disponibles</th><th>Actividad</th></tr></thead><tbody>
+        <tr><td>Promotores</td><td>126</td><td>94</td><td><span class="et-status ok">Alta</span></td></tr>
+        <tr><td>Azafatas / Imagen</td><td>98</td><td>73</td><td><span class="et-status ok">Alta</span></td></tr>
+        <tr><td>Hostelería</td><td>147</td><td>102</td><td><span class="et-status info">Media</span></td></tr>
+        <tr><td>Otros perfiles</td><td>67</td><td>43</td><td><span class="et-status warn">Baja</span></td></tr>
+      </tbody></table></section>
+
+      <section class="et-card"><h3>Actividad reciente</h3><table class="et-table"><tbody>
+        <tr><td><strong>Empresa registrada</strong><br><span style="color:#64748b">Agencia Demo · hace 12 min</span></td><td><span class="et-status info">Empresa</span></td></tr>
+        <tr><td><strong>Compra realizada</strong><br><span style="color:#64748b">3 contactos · hace 28 min</span></td><td><span class="et-status ok">+14,97 €</span></td></tr>
+        <tr><td><strong>Nuevo candidato</strong><br><span style="color:#64748b">Promotor tecnológico · hace 41 min</span></td><td><span class="et-status info">Talento</span></td></tr>
+        <tr><td><strong>Búsqueda realizada</strong><br><span style="color:#64748b">Barcelona · hace 56 min</span></td><td><span class="et-status info">Búsqueda</span></td></tr>
+      </tbody></table></section>
+    </div>
+
+    <section class="et-card"><h3>Indicadores que deberemos conectar al sistema real</h3><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <div style="padding:12px;background:#f8fafc;border-radius:9px;font-size:12px;"><strong>Tiempo hasta encontrar talento</strong><br><span style="color:#64748b">Desde necesidad hasta selección</span></div>
+      <div style="padding:12px;background:#f8fafc;border-radius:9px;font-size:12px;"><strong>% necesidades cubiertas</strong><br><span style="color:#64748b">Qué parte del mercado podemos atender</span></div>
+      <div style="padding:12px;background:#f8fafc;border-radius:9px;font-size:12px;"><strong>Repetición de empresas</strong><br><span style="color:#64748b">Empresas que vuelven a comprar</span></div>
+      <div style="padding:12px;background:#f8fafc;border-radius:9px;font-size:12px;"><strong>Disponibilidad actualizada</strong><br><span style="color:#64748b">Calidad del dato de talento</span></div>
+    </div></section>
+  </main>
 </div>
 
 <!-- VISTA 2: WEB COMPLETA ÁREA PRIVADA DEL TRABAJADOR (PORTAL TRABAJADOR - NO POPUP) -->
@@ -1560,6 +1672,20 @@ SUPABASE_KEY
 );
 console.log("Supabase conectado");
 console.log(supabaseClient);
+
+function openCompanyAdminDashboard() {
+  document.getElementById("publicView").style.display = "none";
+  document.getElementById("workerPortalView").style.display = "none";
+  document.getElementById("companyAdminView").style.display = "block";
+  window.scrollTo(0, 0);
+}
+
+function closeCompanyAdminDashboard() {
+  document.getElementById("companyAdminView").style.display = "none";
+  document.getElementById("publicView").style.display = "block";
+  window.scrollTo(0, 0);
+}
+
 // ==========================================
 // 1. CONSTANTES Y DATOS INICIALES
 // ==========================================
